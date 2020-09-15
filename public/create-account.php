@@ -87,13 +87,14 @@ if (!$_SESSION["username"]) {
         </div>
       </nav>
 
-      <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-        <h1 class="mb-4 font-weight-bold">Intranet</h1>
+      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
         <h2 class="h3 mb-3 font-weight-normal">Créer un compte</h2>
         <label class ="sr-only" for="username">Utilisateur</label>
         <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" autocomplete="off" required autofocus>
         <label class ="sr-only" for="password">Mot de passe</label>
         <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe" required>
+        <label class ="sr-only" for="password_confirm">Confirmer le mot de passe</label>
+        <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Confirmer le mot de passe" required>
         <div class="error-msg text-danger"><?php echo $error["generic"];?>&nbsp;</div>
         <button type="submit" name="login_user" class="btn btn-lg btn-primary btn-block">Login</button>
       </form>
