@@ -24,7 +24,7 @@
     <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
     <label class ="sr-only" for="password">Mot de passe</label>
     <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit" name="login_user">Connexion</button>
+    <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 
