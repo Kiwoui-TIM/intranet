@@ -27,12 +27,12 @@ jobs:
         # uses: SamKirkland/FTP-Deploy-Action@da0d77ff390a13097c60f9b9eb954e503a480d97
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
-          ftp-server: ftp://server313.com:21/../intranet
+          ftp-server: ftp://server313.com:21/
           # FTP account username
-          ftp-username: creationsjb
+          ftp-username: intranet
           # FTP account password
           ftp-password: ${{ secrets.FTP_PASSWORD }}
           # The local folder to copy, defaults to root project folder
-          local-dir: ./public
+          local-dir: ./public/*
           # Passes through options into git-ftp
           git-ftp-args: # optional
