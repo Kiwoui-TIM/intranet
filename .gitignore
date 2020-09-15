@@ -1,0 +1,2 @@
+# Hide config files so as to not leak passwords
+config/app.ini.php
