@@ -12,7 +12,7 @@
 <body class="text-center d-flex align-items-center">
   <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
     <h1 class="mb-4 font-weight-bold">Intranet</h1>
-    <h2 class="h3 mb-3 font-weight-normal">Connexion</h2>
+    <h2 class="h3 mb-3 font-weight-normal">Créer un compte</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
     <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" autocomplete="off" required autofocus>
     <label class ="sr-only" for="password">Mot de passe</label>
