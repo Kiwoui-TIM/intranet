@@ -14,7 +14,6 @@ if (!$_SESSION["username"]) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion - Intranet</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/dashboard.css">
 </head>
 <body>
@@ -55,7 +54,7 @@ if (!$_SESSION["username"]) {
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
-                <span data-feather="bar-chart-2"></span>
+                <span data-feather="file-text"></span>
                 Rapports
               </a>
             </li>
@@ -87,18 +86,21 @@ if (!$_SESSION["username"]) {
         </div>
       </nav>
 
-      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-        <h2 class="h3 mb-3 font-weight-normal">Créer un compte</h2>
-        <label class ="sr-only" for="username">Utilisateur</label>
-        <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" autocomplete="off" required autofocus>
-        <label class ="sr-only" for="password">Mot de passe</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe" required>
-        <label class ="sr-only" for="password_confirm">Confirmer le mot de passe</label>
-        <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Confirmer le mot de passe" required>
-        <div class="error-msg text-danger"><?php echo $error["generic"];?>&nbsp;</div>
-        <button type="submit" name="login_user" class="btn btn-lg btn-primary btn-block">Login</button>
-      </form>
-
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Créer un compte</h1>
+        </div>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+          <label class ="sr-only" for="username">Utilisateur</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Utilisateur" autocomplete="off" required autofocus>
+          <label class ="sr-only" for="password">Mot de passe</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe" required>
+          <label class ="sr-only" for="password_confirm">Confirmer le mot de passe</label>
+          <input type="password" class="form-control" id="password_confirm" name="password_confirm" placeholder="Confirmer le mot de passe" required>
+          <div class="error-msg text-danger"><?php echo $error["generic"];?>&nbsp;</div>
+          <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
+        </form>
+      </main>
     </div>
   </div>
 

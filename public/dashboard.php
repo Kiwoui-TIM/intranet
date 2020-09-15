@@ -56,7 +56,7 @@ if (!$_SESSION["username"]) {
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
-                <span data-feather="bar-chart-2"></span>
+                <span data-feather="file-text"></span>
                 Rapports
               </a>
             </li>
