@@ -12,6 +12,15 @@ body {
  * Sidebar
  */
 
+.popup-alert {
+  position: fixed;
+  width: 20%;
+  top: 0;
+  left: 50%;
+  margin-left: -10%; /* Negative half of width. */
+  z-index: 1050;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
