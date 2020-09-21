@@ -2,22 +2,27 @@
 session_start();
 ob_start();
 
+// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
 if (!$_SESSION["username"]) {
   include "logout.php";
 }
 
+// Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe
 $passwordClass = 'text-muted';
 
 if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user'])) {
-  // define variables and set to empty values
+  // Définir les variables et les mettre vides
   $error = [];
-  $username = $password = $confirm_password = '';
+  $username = $password = $confirm_password = $account_type = $team = '';
 
+  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+  // puis retourner à la page qui a fait la requête.
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['postdata'] = $_POST;
     $_POST = array();
     header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
     exit;
+  // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
     $username = trim($_SESSION['postdata']['username']);
     $password = trim($_SESSION['postdata']['password']);
@@ -27,14 +32,17 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       // Vérifie si le nom d'utilisateur a seulement des lettres et des chiffres
       if (!preg_match("/^[a-zA-Z\d]*$/",$username)) {
         $error['username'] = true;
+      // Vérifie si le nom d'utilisateur est moins de 255 caractères
       } elseif (strlen($username > 255)) {
         $error['username'] = true;
       }
     }
 
     if (isset($password)) {
+      // Vérifie si le mot de passe est au moins 8 caractères
       if (strlen($password) < 8) {
         $error['password'] = true;
+      // Vérifie si le mot de passe est moins de 72 caractères
       } elseif (strlen($password) > 72) {
         $error['password'] = true;
       // Vérifie si le mot de passe a au moins une majuscule, une minuscule, un chiffre et un caractère spécial
@@ -43,63 +51,69 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       }
     }
 
+    // Si le mot de passe a une erreur, changer la classe de l'aide à "text-danger"
     if (isset($error['password'])) {
       $passwordClass = 'text-danger';
     }
 
+    // Si le mot de passe n'a pas d'erreur, afficher si les mots de passe ne correspondent pas.
     if (empty($error['password'])) {
       if ($confirm_password != $password) {
         $error['confirmPassword'] = 'Les mots de passe ne correspondent pas';
       }
     }
 
+    // Inclure la connexion à la base de données
     include 'connect.php';
 
     try {
-      $query_sql = 'SELECT username, email FROM Users WHERE username=:username OR email=:email LIMIT 1';
+      $query_sql = 'SELECT username FROM Users WHERE username=:username LIMIT 1';
       $stmt = $connectedDB->prepare($query_sql);
       $stmt->execute([
-        ':username' => $username,
-        ':email' => $email
+        ':username' => $username
       ]);
       $user = $stmt->fetch();
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
-    if ($user) { // if user exists
+    // Si l'utilisateur existe
+    if ($user) {
       if (strtolower($user['username']) === strtolower($username)) {
         $error['generic'] = 'Le nom d\'utilisateur existe déjà';
       }
     }
 
-    // DB Insert
+    // S'il n'y a aucune erreur
     if (count($error) == 0) {
       try {
+        // Encrypter le mot de passe
         $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
-        $insert_sql = 'INSERT INTO Users (username, email, hashed_password)
-        VALUES (:username, :email, :hashed_password)';
+        $insert_sql = 'INSERT INTO Users (username, hashed_password, account_type, team)
+                       VALUES (:username, :hashed_password, :account_type, :team)';
         $stmt = $connectedDB->prepare($insert_sql);
         $stmt->execute([
           ':username' => $username,
           ':email' => $email,
-          ':hashed_password' => $hashed_password
+          ':hashed_password' => $hashed_password,
+          ':account_type' => $account_type,
+          ':team' => $team
         ]);
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Envoyer un courriel contenant les informations du compte
       $to = 'Jakob.Bouchard@outlook.com';
       $subject = '[KIWOUI INTRANET] Nouveau compte';
       $txt = 'Le compte ' . $username . ' (' . $accountType . ') vient d\'être créé.';
       $headers = 'From: intranet@jakobbouchard.dev';
       mail($to,$subject,$txt,$headers);
 
+      // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
-      $_SESSION['username'] = $username;
       unset($_SESSION['postdata'], $password, $confirm_password);
-      header('Location: landing-page.php',true,303);
-      exit;
+      $creation_success = true;
     }
 
     unset($_SESSION['postdata'], $password, $confirm_password);
@@ -201,7 +215,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
             <div class="form-group">
               <label for="password">Mot de passe</label>
               <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" required>
-              <small id="passwordHelp" class="form-text <?php echo $passwordClass;?>">Doit contenir : 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
+              <small id="passwordHelp" class="form-text <?php echo $passwordClass;?>">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
             </div>
             <div class="form-group">
               <label for="confirm-password">Confirmer le mot de passe</label>
