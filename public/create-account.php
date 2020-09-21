@@ -27,6 +27,8 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
     $username = trim($_SESSION['postdata']['username']);
     $password = trim($_SESSION['postdata']['password']);
     $confirm_password = trim($_SESSION['postdata']['confirm-password']);
+    $account_type = trim($_SESSION['postdata']['account-type']);
+    $team = trim($_SESSION['postdata']['team']);
 
     if (isset($username)) {
       // Vérifie si le nom d'utilisateur a seulement des lettres et des chiffres
@@ -226,38 +228,38 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               <fieldset class="form-group col-sm-6">
                 <legend>Type de compte</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="admin" required>
+                  <input class="form-check-input" type="radio" name="account-type" id="admin" value="0" required>
                   <label class="form-check-label" for="admin">Administrateur</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="student" required>
+                  <input class="form-check-input" type="radio" name="account-type" id="student" value="1" required>
                   <label class="form-check-label" for="student">Étudiant</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="client" required>
+                  <input class="form-check-input" type="radio" name="account-type" id="client" value="2" required>
                   <label class="form-check-label" for="client">Client</label>
                 </div>
               </fieldset>
               <fieldset class="form-group col-sm-6">
                 <legend>Équipe</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" required>
+                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" value="0" required>
                   <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="graphistes" required>
+                  <input class="form-check-input" type="radio" name="team" id="graphistes" value="1" required>
                   <label class="form-check-label" for="graphistes">Graphistes</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="programmeurs" required>
+                  <input class="form-check-input" type="radio" name="team" id="programmeurs" value="2" required>
                   <label class="form-check-label" for="programmeurs">Programmeurs</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" required>
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="3" required>
                   <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" required>
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="4" required>
                   <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
                 </div>
               </fieldset>
