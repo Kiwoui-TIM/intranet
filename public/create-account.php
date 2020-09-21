@@ -222,6 +222,46 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp"  required>
               <small id="confirmPasswordHelp" class="form-text text-danger"><?php echo $error['confirmPassword'];?>&nbsp;</small>
             </div>
+            <div class="row">
+              <fieldset class="form-group col-sm-6">
+                <legend>Type de compte</legend>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="account_type" id="admin">
+                  <label class="form-check-label" for="admin">Administrateur</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="account_type" id="student">
+                  <label class="form-check-label" for="student">Étudiant</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="account_type" id="client">
+                  <label class="form-check-label" for="client">Client</label>
+                </div>
+              </fieldset>
+              <fieldset class="form-group col-sm-6">
+                <legend>Équipe</legend>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="gestionnaires">
+                  <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="graphistes">
+                  <label class="form-check-label" for="graphistes">Graphistes</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="programmeurs">
+                  <label class="form-check-label" for="programmeurs">Programmeurs</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web">
+                  <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video">
+                  <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
+                </div>
+              </fieldset>
+            </div>
             <div class="error-msg text-danger"><?php echo $error['generic'];?>&nbsp;</div>
             <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
           </form>
