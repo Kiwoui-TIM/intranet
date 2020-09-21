@@ -226,38 +226,38 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               <fieldset class="form-group col-sm-6">
                 <legend>Type de compte</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="admin">
+                  <input class="form-check-input" type="radio" name="account_type" id="admin" required>
                   <label class="form-check-label" for="admin">Administrateur</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="student">
+                  <input class="form-check-input" type="radio" name="account_type" id="student" required>
                   <label class="form-check-label" for="student">Étudiant</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account_type" id="client">
+                  <input class="form-check-input" type="radio" name="account_type" id="client" required>
                   <label class="form-check-label" for="client">Client</label>
                 </div>
               </fieldset>
               <fieldset class="form-group col-sm-6">
                 <legend>Équipe</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="gestionnaires">
+                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" required>
                   <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="graphistes">
+                  <input class="form-check-input" type="radio" name="team" id="graphistes" required>
                   <label class="form-check-label" for="graphistes">Graphistes</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="programmeurs">
+                  <input class="form-check-input" type="radio" name="team" id="programmeurs" required>
                   <label class="form-check-label" for="programmeurs">Programmeurs</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web">
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" required>
                   <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video">
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" required>
                   <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
                 </div>
               </fieldset>
