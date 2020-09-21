@@ -7,7 +7,8 @@ if (!$_SESSION["username"]) {
   include "logout.php";
 }
 
-// Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe
+// Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe et du nom d'utilisateur
+$usernameClass = 'text-muted';
 $passwordClass = 'text-muted';
 
 if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user'])) {
@@ -38,6 +39,11 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       } elseif (strlen($username > 255)) {
         $error['username'] = true;
       }
+    }
+
+    // Si le nom d'utilisateur a une erreur, changer la classe de l'aide à "text-danger"
+    if (isset($error['password'])) {
+      $usernameClass = 'text-danger';
     }
 
     if (isset($password)) {
@@ -211,8 +217,8 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
-              <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp"  required autofocus>
-              <small id="usernameHelp" class="form-text text-muted">Peut seulement contenir des lettres sans accents et des chiffres.</small>
+              <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" aria-describedby="usernameHelp" required autofocus>
+              <small id="usernameHelp" class="form-text <?php echo $usernameClass;?>">Peut seulement contenir des lettres sans accents et des chiffres.</small>
             </div>
             <div class="form-group">
               <label for="password">Mot de passe</label>
