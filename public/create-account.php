@@ -254,23 +254,27 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               <fieldset class="form-group col-sm-6">
                 <legend>Équipe</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" value="0" required>
+                  <input class="form-check-input" type="radio" name="team" id="no-team" value="0" required>
+                  <label class="form-check-label" for="no-team">Aucune équipe</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" value="1" required>
                   <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="graphistes" value="1" required>
+                  <input class="form-check-input" type="radio" name="team" id="graphistes" value="2" required>
                   <label class="form-check-label" for="graphistes">Graphistes</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="programmeurs" value="2" required>
+                  <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3" required>
                   <label class="form-check-label" for="programmeurs">Programmeurs</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="3" required>
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4" required>
                   <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="4" required>
+                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5" required>
                   <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
                 </div>
               </fieldset>
