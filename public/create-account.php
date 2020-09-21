@@ -42,7 +42,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
     }
 
     // Si le nom d'utilisateur a une erreur, changer la classe de l'aide à "text-danger"
-    if (isset($error['password'])) {
+    if (isset($error['username'])) {
       $usernameClass = 'text-danger';
     }
 
@@ -102,7 +102,6 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
         $stmt = $connectedDB->prepare($insert_sql);
         $stmt->execute([
           ':username' => $username,
-          ':email' => $email,
           ':hashed_password' => $hashed_password,
           ':account_type' => $account_type,
           ':team' => $team
