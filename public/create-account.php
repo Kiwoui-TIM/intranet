@@ -163,7 +163,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard">
+              <a class="nav-link" href="dashboard.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
