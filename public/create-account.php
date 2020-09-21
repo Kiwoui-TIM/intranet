@@ -139,6 +139,12 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
   <link rel="stylesheet" href="styles/dashboard.css">
 </head>
 <body>
+  <?php if ($creation_success) { ?>
+  <div class="alert alert-success error-alert mt-4" role="alert">
+    Compte créé avec succès !
+  </div>
+  <?php } ?>
+
   <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kiwoui</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -269,7 +275,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
                 </div>
               </fieldset>
             </div>
-            <div class="error-msg text-danger"><?php echo $error['generic'];?>&nbsp;</div>
+            <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>
             <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
           </form>
         </div>

@@ -12,7 +12,7 @@
 </head>
 <body class="text-center d-flex align-items-center">
   <?php if ($error['generic']) { ?>
-  <div class="alert alert-danger error-alert mt-4" role="alert">
+  <div class="alert alert-danger popup-alert mt-4" role="alert">
     Mauvais utilisateur ou mot de passe !
   </div>
   <?php } ?>
