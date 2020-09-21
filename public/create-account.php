@@ -140,7 +140,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
 </head>
 <body>
   <?php if ($creation_success) { ?>
-  <div class="alert alert-success error-alert mt-4" role="alert">
+  <div class="alert alert-success popup-alert mt-4" role="alert">
     Compte créé avec succès !
   </div>
   <?php } ?>
