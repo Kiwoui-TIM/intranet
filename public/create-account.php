@@ -24,7 +24,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
     $confirm_password = trim($_SESSION['postdata']['confirm-password']);
 
     if (isset($username)) {
-      // check if username only contains letters and numbers
+      // Vérifie si le nom d'utilisateur a seulement des lettres et des chiffres
       if (!preg_match("/^[a-zA-Z\d]*$/",$username)) {
         $error['username'] = true;
       } elseif (strlen($username > 255)) {
@@ -37,6 +37,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
         $error['password'] = true;
       } elseif (strlen($password) > 72) {
         $error['password'] = true;
+      // Vérifie si le mot de passe a au moins une majuscule, une minuscule, un chiffre et un caractère spécial
       } elseif (!preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%?&*()=+_,\'.\";:{}<>[\]\/\\|\^`~\-]).*$/", $password)) {
         $error['password'] = true;
       }
