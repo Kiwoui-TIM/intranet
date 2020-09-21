@@ -37,7 +37,7 @@ if (!$_SESSION["username"]) {
             <li class="nav-item">
               <a class="nav-link active" href="dashboard.php">
                 <span data-feather="home"></span>
-                Tableau de bord <span class="sr-only">(current)</span>
+                Tableau de bord
               </a>
             </li>
             <li class="nav-item">
@@ -65,9 +65,9 @@ if (!$_SESSION["username"]) {
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link" href="create-account.php">
+              <a class="nav-link" href="change-password.php">
                 <span data-feather="lock"></span>
-                Changer de mot passe
+                Changer de mot de passe
               </a>
             </li>
           </ul>

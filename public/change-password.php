@@ -193,7 +193,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link" href="change-password.php">
+              <a class="nav-link active" href="change-password.php">
                 <span data-feather="lock"></span>
                 Changer de mot de passe
               </a>
@@ -205,7 +205,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link active" href="create-account.php">
+              <a class="nav-link" href="create-account.php">
                 <span data-feather="user-plus"></span>
                 Créer un compte
               </a>
@@ -216,7 +216,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Créer un compte</h1>
+          <h1 class="h2">Changer de mot de passe</h1>
         </div>
         <div class="container">
           <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
