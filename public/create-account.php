@@ -89,7 +89,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       }
 
       $to = 'Jakob.Bouchard@outlook.com';
-      $subject = '[KIWOUI AAINTRANET] Nouveau compte';
+      $subject = '[KIWOUI INTRANET] Nouveau compte';
       $txt = 'Le compte ' . $username . ' (' . $accountType . ') vient d\'être créé.';
       $headers = 'From: intranet@jakobbouchard.dev';
       mail($to,$subject,$txt,$headers);
