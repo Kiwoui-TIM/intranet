@@ -232,7 +232,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
             </div>
             <div class="form-group">
               <label for="confirm-password">Confirmer le mot de passe</label>
-              <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp"  required>
+              <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
               <small id="confirmPasswordHelp" class="form-text text-danger"><?php echo $error['confirmPassword'];?>&nbsp;</small>
             </div>
             <div class="row">
@@ -275,6 +275,12 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
                 </div>
               </fieldset>
             </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="show-password">
+                <label class="form-check-label" for="show-password">Voir les mots de passe</label>
+              </div>
+            </div>
             <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>
             <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
           </form>
@@ -288,7 +294,20 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   <script src="script/dashboard.js"></script>
   <script>
-    document.querySelector('#password');
+    document.querySelector('#show-password').addEventListener('click', toggleViewPassword);
+    const passwordField = document.querySelector('#password');
+    const confirmPasswordField = document.querySelector('#confirm-password');
+
+    function toggleViewPassword(e) {
+      const checkbox = e.target;
+      if (checkbox.checked) {
+        passwordField.setAttribute("type", "text");
+        confirmPasswordField.setAttribute("type", "text");
+      } else {
+        passwordField.setAttribute("type", "password");
+        confirmPasswordField.setAttribute("type", "password");
+      }
+    }
   </script>
 </body>
 </html>
