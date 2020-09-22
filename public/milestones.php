@@ -14,11 +14,11 @@ try {
   $stmt->execute([
     ':username' => $_SESSION["username"]
   ]);
-  $account_type = $stmt->fetch();
+  $user = $stmt->fetch();
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($account_type == 2) {
+if ($user['account_type'] != 0) {
   header('location: dashboard.php');
   exit;
 }
@@ -26,7 +26,7 @@ $connectedDB = null;
 
 if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
   // Définir les variables et les mettre vides
-  $name = $student_id = $milestone = $due_date = '';
+  $name = $project = $due_date = $team = '';
 
   // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
   // puis retourner à la page qui a fait la requête.
@@ -39,16 +39,16 @@ if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone
   } elseif (array_key_exists('postdata', $_SESSION)) {
     include 'connect.php';
     $name = trim($_SESSION['postdata']['name']);
-    $milestone = trim($_SESSION['postdata']['milestone']);
+    $project = trim($_SESSION['postdata']['project']);
     $due_date = trim($_SESSION['postdata']['due_date']);
-    $sql_query = 'INSERT INTO Tasks (name, student, milestone, creation_date, due_date)
-                   VALUES (:name, :student, :milestone, :creation_date, :due_date)';
+    $team = trim($_SESSION['postdata']['team']);
+    $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
+                   VALUES (:name, :project, :team, :due_date)';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':name' => $name,
-      ':student' => $_SESSION['id'],
-      ':milestone' => $milestone,
-      ':creation_date' => date('Y-m-d'),
+      ':project' => $project,
+      ':team' => $team,
       ':due_date' => $due_date
     ]);
     unset($_SESSION['postdata']);
@@ -71,7 +71,7 @@ if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_mil
   } elseif (array_key_exists('postdata', $_SESSION)) {
     include 'connect.php';
     $id = trim($_SESSION['postdata']['id']);
-    $sql_query = 'DELETE FROM Tasks WHERE id = :id';
+    $sql_query = 'DELETE FROM Milestones WHERE id = :id';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':id' => $id
@@ -104,14 +104,14 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
     ]);
     $task = $stmt->fetch();
 
-    if ($task['task_completion'] == 0) {
-      $sql_query = 'UPDATE Tasks SET completed = \'1\' WHERE id = :id';
+    if ($task['completed'] == 0) {
+      $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
         ':id' => $id
       ]);
     } else {
-      $sql_query = 'UPDATE Tasks SET completed = \'0\' WHERE id = :id';
+      $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
         ':id' => $id
@@ -241,25 +241,25 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
               <div class="form-row">
                 <div class="col-sm-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="graphistes" value="2" required>
+                    <input class="form-check-input" type="radio" name="team" id="graphistes" value="2">
                     <label class="form-check-label" for="graphistes">Graphistes</label>
                   </div>
                 </div>
                 <div class="col-sm-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3" required>
+                    <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3">
                     <label class="form-check-label" for="programmeurs">Programmeurs</label>
                   </div>
                 </div>
                 <div class="col-sm-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4" required>
+                    <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4">
                     <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
                   </div>
                 </div>
                 <div class="col-sm-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5" required>
+                    <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5">
                     <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
                   </div>
                 </div>
@@ -267,33 +267,38 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </fieldset>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
-          <h2>Current Todos</h2>
+          <h2>Jalons</h2>
           <table class="table table-striped">
             <thead class="thead-dark">
-              <th>Task</th>
-              <th>Due date</th>
-              <th>Completion</th>
-              <th>Delete</th>
+              <th>Nom</th>
+              <th>Date d'échéance</th>
+              <th>Équipe</th>
+              <th>Complétion</th>
+              <th>Supprimer</th>
             </thead>
             <tbody>
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Milestones WHERE completed = 0 ORDER BY id DESC");
+          $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
+                        INNER JOIN Teams ON Milestones.team = Teams.id
+                        WHERE completed = 0 ORDER BY Milestones.id ASC';
+          $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
           <tr>
-            <td><?= htmlspecialchars($row['name']) ?></td>
-            <td><?= htmlspecialchars($row['due_date']) ?></td>
+            <td><?= htmlspecialchars($row['1']) ?></td>
+            <td><?= htmlspecialchars($row['2']) ?></td>
+            <td><?= htmlspecialchars($row['3']) ?></td>
             <td>
               <form method="POST">
                 <button type="submit" name="milestone_completion">Uncomplete</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
                 <button type="submit" name="delete_milestone">Delete</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
           </tr>
@@ -301,24 +306,28 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
           }
         ?>
 
-        <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Milestones WHERE completed = 1 ORDER BY id DESC");
+<?php
+          $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
+                        INNER JOIN Teams ON Milestones.team = Teams.id
+                        WHERE completed = 1 ORDER BY Milestones.id ASC';
+          $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
-          <tr class="">
-            <td><?= htmlspecialchars($row['name']) ?></td>
-            <td><?= htmlspecialchars($row['due_date']) ?></td>
+          <tr>
+            <td><?= htmlspecialchars($row['1']) ?></td>
+            <td><?= htmlspecialchars($row['2']) ?></td>
+            <td><?= htmlspecialchars($row['3']) ?></td>
             <td>
               <form method="POST">
                 <button type="submit" name="milestone_completion">Complete</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
                 <button type="submit" name="delete_milestone">Delete</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
           </tr>

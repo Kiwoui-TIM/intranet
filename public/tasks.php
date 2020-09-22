@@ -14,11 +14,11 @@ try {
   $stmt->execute([
     ':username' => $_SESSION["username"]
   ]);
-  $account_type = $stmt->fetch();
+  $user = $stmt->fetch();
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($account_type == 2) {
+if ($user['account_type'] == 2) {
   header('location: dashboard.php');
   exit;
 }
@@ -26,7 +26,7 @@ $connectedDB = null;
 
 if (isset($_POST['add_task']) || isset($_SESSION['postdata']['add_task'])) {
   // Définir les variables et les mettre vides
-  $name = $student_id = $milestone = $due_date = '';
+  $name = $milestone = $due_date = '';
 
   // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
   // puis retourner à la page qui a fait la requête.
@@ -104,7 +104,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
     ]);
     $task = $stmt->fetch();
 
-    if ($task['task_completion'] == 0) {
+    if ($task['completed'] == 0) {
       $sql_query = 'UPDATE Tasks SET completed = \'1\' WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
@@ -239,57 +239,82 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
           </form>
-          <h2>Current Todos</h2>
-          <table class="table table-striped">
+          <h2>Tâches</h2>
+          <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
-              <th>Task</th>
-              <th>Due date</th>
-              <th>Completion</th>
-              <th>Delete</th>
+              <th>Nom</th>
+              <th>Date d'échéance</th>
+              <th>Complétion</th>
+              <th>Supprimer</th>
             </thead>
             <tbody>
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE completed = 0 ORDER BY id DESC");
-          $stmt->execute();
+          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student) ORDER BY due_date ASC");
+          $stmt->execute([
+            ':student' => $_SESSION['id']
+          ]);
           foreach($stmt as $row) {
+            if ($row['due_date'] < date('Y-m-d')) {
+        ?>
+          <tr class="table-danger">
+            <td><?= htmlspecialchars($row['name']) ?></td>
+            <td><?= htmlspecialchars($row['due_date']) ?></td>
+            <td>
+              <form method="POST">
+                <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              </form>
+            </td>
+            <td>
+              <form method="POST">
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              </form>
+            </td>
+          </tr>
+        <?php
+            } else {
         ?>
           <tr>
             <td><?= htmlspecialchars($row['name']) ?></td>
             <td><?= htmlspecialchars($row['due_date']) ?></td>
             <td>
               <form method="POST">
-                <button type="submit" name="task_completion">Uncomplete</button>
+                <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_task">Delete</button>
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
           </tr>
         <?php
+            }
           }
         ?>
 
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE completed = 1 ORDER BY id DESC");
-          $stmt->execute();
+          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student) ORDER BY due_date ASC");
+          $stmt->execute([
+            ':student' => $_SESSION['id']
+          ]);
           foreach($stmt as $row) {
         ?>
-          <tr class="">
-            <td><?= htmlspecialchars($row['name']) ?></td>
-            <td><?= htmlspecialchars($row['due_date']) ?></td>
+          <tr class="table-secondary text-muted">
+            <td><del><?= htmlspecialchars($row['name']) ?></del></td>
+            <td><del><?= htmlspecialchars($row['due_date']) ?></del></td>
             <td>
               <form method="POST">
-                <button type="submit" name="task_completion">Complete</button>
+                <button type="submit" class="btn btn-sm btn-success" name="task_completion">Complet</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_task">Delete</button>
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
