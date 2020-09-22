@@ -18,7 +18,7 @@ try {
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($user['account_type'] != 0) {
+if ($user['account_type'] == 2) {
   header('location: dashboard.php');
   exit;
 }
