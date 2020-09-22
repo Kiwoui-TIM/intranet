@@ -239,6 +239,24 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
             }
             $connectedDB = null;
           ?>
+
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            Support
+          </h6>
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" href="https://github.com/Kiwoui-TIM/intranet/issues/new?assignees=JustinVallee&labels=bug&template=rapport-de-bug.md&title=%5BBUG%5D">
+                <span data-feather="life-buoy"></span>
+                Rapport de bug
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://github.com/Kiwoui-TIM/intranet/issues/new?assignees=jakobbouchard&labels=enhancement&template=demande-de-fonctionnalit-.md&title=%5BFEATURE%5D">
+                <span data-feather="clipboard"></span>
+                Demande de fonctionnalité
+              </a>
+            </li>
+          </ul>
         </div>
       </nav>
 
