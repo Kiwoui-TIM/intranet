@@ -72,6 +72,20 @@ if (!$_SESSION["username"]) {
             </li>
           </ul>
 
+          <?php
+            include 'connect.php';
+            try {
+              $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+              $stmt = $connectedDB->prepare($query_sql);
+              $stmt->execute([
+                ':username' => $username
+              ]);
+              $account_type = $stmt->fetch();
+            } catch(PDOException $e) {
+              echo 'Error: ' . $e->getMessage();
+            }
+            if ($account_type == 0) {
+          ?>
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             Administration
           </h6>
@@ -83,6 +97,10 @@ if (!$_SESSION["username"]) {
               </a>
             </li>
           </ul>
+          <?php
+            }
+            $connectedDB = null;
+          ?>
         </div>
       </nav>
 
