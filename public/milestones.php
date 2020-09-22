@@ -177,6 +177,18 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </li>
           </ul>
 
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            Gestion de compte
+          </h6>
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" href="change-password.php">
+                <span data-feather="lock"></span>
+                Changer de mot de passe
+              </a>
+            </li>
+          </ul>
+
           <?php
             include 'connect.php';
             try {
