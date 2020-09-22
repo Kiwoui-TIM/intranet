@@ -185,6 +185,12 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="milestones.php">
+                <span data-feather="flag"></span>
+                Jalons
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="#">
                 <span data-feather="users"></span>
                 Clients

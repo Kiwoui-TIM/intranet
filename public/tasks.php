@@ -164,6 +164,12 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="milestones.php">
+                <span data-feather="flag"></span>
+                Jalons
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="#">
                 <span data-feather="users"></span>
                 Clients
