@@ -229,7 +229,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link" href="create-account.php">
+              <a class="nav-link active" href="create-account.php">
                 <span data-feather="user-plus"></span>
                 Créer un compte
               </a>
