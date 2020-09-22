@@ -18,7 +18,7 @@ if (!$_SESSION["username"]) {
 </head>
 <body>
   <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kiwoui</a>
+    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kiwoui (<?= $_SESSION["username"] ?>)</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -37,7 +37,7 @@ if (!$_SESSION["username"]) {
             <li class="nav-item">
               <a class="nav-link active" href="dashboard.php">
                 <span data-feather="home"></span>
-                Tableau de bord <span class="sr-only">(current)</span>
+                Tableau de bord
               </a>
             </li>
             <li class="nav-item">
@@ -65,9 +65,9 @@ if (!$_SESSION["username"]) {
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link" href="create-account.php">
+              <a class="nav-link" href="change-password.php">
                 <span data-feather="lock"></span>
-                Changer de mot passe
+                Changer de mot de passe
               </a>
             </li>
           </ul>
@@ -78,13 +78,13 @@ if (!$_SESSION["username"]) {
               $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
               $stmt = $connectedDB->prepare($query_sql);
               $stmt->execute([
-                ':username' => $username
+                ':username' => $_SESSION["username"]
               ]);
-              $account_type = $stmt->fetch();
+              $user = $stmt->fetch();
             } catch(PDOException $e) {
               echo 'Error: ' . $e->getMessage();
             }
-            if ($account_type == 0) {
+            if ($user['account_type'] == 0) {
           ?>
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             Administration
