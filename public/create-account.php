@@ -191,9 +191,9 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <span data-feather="users"></span>
-                Clients
+              <a class="nav-link active" href="#">
+                <span data-feather="briefcase"></span>
+                Projets
               </a>
             </li>
             <li class="nav-item">
