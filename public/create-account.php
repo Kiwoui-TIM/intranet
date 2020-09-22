@@ -7,13 +7,13 @@ try {
   $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
   $stmt = $connectedDB->prepare($query_sql);
   $stmt->execute([
-    ':username' => $username
+    ':username' => $_SESSION["username"]
   ]);
-  $account_type = $stmt->fetch();
+  $user = $stmt->fetch();
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($account_type != 0) {
+if ($user['account_type'] != 0) {
   header('location: dashboard.php');
   exit;
 }
@@ -216,13 +216,13 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
               $stmt = $connectedDB->prepare($query_sql);
               $stmt->execute([
-                ':username' => $username
+                ':username' => $_SESSION["username"]
               ]);
-              $account_type = $stmt->fetch();
+              $user = $stmt->fetch();
             } catch(PDOException $e) {
               echo 'Error: ' . $e->getMessage();
             }
-            if ($account_type == 0) {
+            if ($user['account_type'] == 0) {
           ?>
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             Administration

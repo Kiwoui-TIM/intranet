@@ -162,13 +162,13 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
               $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
               $stmt = $connectedDB->prepare($query_sql);
               $stmt->execute([
-                ':username' => $username
+                ':username' => $_SESSION["username"]
               ]);
-              $account_type = $stmt->fetch();
+              $user = $stmt->fetch();
             } catch(PDOException $e) {
               echo 'Error: ' . $e->getMessage();
             }
-            if ($account_type == 0) {
+            if ($user['account_type'] == 0) {
           ?>
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
             Administration
@@ -199,13 +199,29 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
               <select class="form-control" name="username" id="username" required>
                 <?php
                   include 'connect.php';
-                  $stmt = $connectedDB->prepare("SELECT * FROM Users ORDER BY id ASC");
-                  $stmt->execute();
-                  foreach($stmt as $row) {
+                  try {
+                    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+                    $stmt = $connectedDB->prepare($query_sql);
+                    $stmt->execute([
+                      ':username' => $_SESSION["username"]
+                    ]);
+                    $user = $stmt->fetch();
+                  } catch(PDOException $e) {
+                    echo 'Error: ' . $e->getMessage();
+                  }
+                  if ($user['account_type'] == 0) {
+                    $stmt = $connectedDB->prepare("SELECT * FROM Users ORDER BY id ASC");
+                    $stmt->execute();
+                    foreach($stmt as $row) {
                 ?>
                   <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?> ><?= htmlspecialchars($row['username']) ?></option>
                 <?php
-                  $connectedDB = null;
+                    $connectedDB = null;
+                    }
+                  } else {
+                ?>
+                  <option value="<?= htmlspecialchars($_SESSION['username']) ?>" selected><?= htmlspecialchars($_SESSION['username']) ?></option>
+                <?php
                   }
                 ?>
               </select>
