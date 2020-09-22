@@ -291,13 +291,13 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             <td><?= htmlspecialchars($row['3']) ?></td>
             <td>
               <form method="POST">
-                <button type="submit" name="milestone_completion">Uncomplete</button>
+                <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_milestone">Delete</button>
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
@@ -320,13 +320,13 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             <td><?= htmlspecialchars($row['3']) ?></td>
             <td>
               <form method="POST">
-                <button type="submit" name="milestone_completion">Complete</button>
+                <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">Complet</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_milestone">Delete</button>
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
