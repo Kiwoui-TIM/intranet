@@ -56,24 +56,13 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
     // Inclure la connexion à la base de données
     include 'connect.php';
 
-    try {
-      $query_sql = 'SELECT username FROM Users WHERE username=:username LIMIT 1';
-      $stmt = $connectedDB->prepare($query_sql);
-      $stmt->execute([
-        ':username' => $username
-      ]);
-      $user = $stmt->fetch();
-    } catch(PDOException $e) {
-      echo 'Error: ' . $e->getMessage();
-    }
-
     // S'il n'y a aucune erreur
     if (count($error) == 0) {
       try {
         // Encrypter le mot de passe
         $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
-        $insert_sql = 'INSERT INTO Users (username, hashed_password)
-                       VALUES (:username, :hashed_password)';
+        $update_sql = 'UPDATE `Users` SET `hashed_password` = :hashed_password
+                       WHERE `Users`.`username` = :username)';
         $stmt = $connectedDB->prepare($insert_sql);
         $stmt->execute([
           ':username' => $username,
@@ -82,13 +71,6 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
-
-      // Envoyer un courriel contenant les informations du compte
-      $to = 'Jakob.Bouchard@outlook.com';
-      $subject = '[KIWOUI INTRANET] Nouveau compte';
-      $txt = 'Le compte ' . $username . ' (' . $accountType . ') vient d\'être créé.';
-      $headers = 'From: intranet@jakobbouchard.dev';
-      mail($to,$subject,$txt,$headers);
 
       // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
@@ -107,7 +89,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créer un compte - Intranet</title>
+  <title>Changer de mot de passe - Intranet</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link rel="stylesheet" href="styles/dashboard.css">
 </head>
