@@ -282,7 +282,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
             <div class="form-group">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="show-password">
-                <label class="form-check-label" for="show-password">Voir les mots de passe</label>
+                <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
               </div>
             </div>
             <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>

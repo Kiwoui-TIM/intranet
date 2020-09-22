@@ -7,14 +7,13 @@ if (!$_SESSION["username"]) {
   include "logout.php";
 }
 
-// Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe et du nom d'utilisateur
-$usernameClass = 'text-muted';
+// Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe
 $passwordClass = 'text-muted';
 
-if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user'])) {
+if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_password'])) {
   // Définir les variables et les mettre vides
   $error = [];
-  $username = $password = $confirm_password = $account_type = $team = '';
+  $username = $password = $confirm_password = '';
 
   // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
   // puis retourner à la page qui a fait la requête.
@@ -28,23 +27,6 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
     $username = trim($_SESSION['postdata']['username']);
     $password = trim($_SESSION['postdata']['password']);
     $confirm_password = trim($_SESSION['postdata']['confirm-password']);
-    $account_type = trim($_SESSION['postdata']['account-type']);
-    $team = trim($_SESSION['postdata']['team']);
-
-    if (isset($username)) {
-      // Vérifie si le nom d'utilisateur a seulement des lettres et des chiffres
-      if (!preg_match("/^[a-zA-Z\d]*$/",$username)) {
-        $error['username'] = true;
-      // Vérifie si le nom d'utilisateur est moins de 255 caractères
-      } elseif (strlen($username > 255)) {
-        $error['username'] = true;
-      }
-    }
-
-    // Si le nom d'utilisateur a une erreur, changer la classe de l'aide à "text-danger"
-    if (isset($error['username'])) {
-      $usernameClass = 'text-danger';
-    }
 
     if (isset($password)) {
       // Vérifie si le mot de passe est au moins 8 caractères
@@ -85,26 +67,17 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       echo 'Error: ' . $e->getMessage();
     }
 
-    // Si l'utilisateur existe
-    if ($user) {
-      if (strtolower($user['username']) === strtolower($username)) {
-        $error['generic'] = 'Le nom d\'utilisateur existe déjà';
-      }
-    }
-
     // S'il n'y a aucune erreur
     if (count($error) == 0) {
       try {
         // Encrypter le mot de passe
         $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
-        $insert_sql = 'INSERT INTO Users (username, hashed_password, account_type, team)
-                       VALUES (:username, :hashed_password, :account_type, :team)';
+        $insert_sql = 'INSERT INTO Users (username, hashed_password)
+                       VALUES (:username, :hashed_password)';
         $stmt = $connectedDB->prepare($insert_sql);
         $stmt->execute([
           ':username' => $username,
-          ':hashed_password' => $hashed_password,
-          ':account_type' => $account_type,
-          ':team' => $team
+          ':hashed_password' => $hashed_password
         ]);
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
@@ -141,7 +114,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
 <body>
   <?php if ($creation_success) { ?>
   <div class="alert alert-success popup-alert mt-4" role="alert">
-    Compte créé avec succès !
+    Mot de passe changé avec succès !
   </div>
   <?php } ?>
 
@@ -222,8 +195,19 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
-              <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" aria-describedby="usernameHelp" required autofocus>
-              <small id="usernameHelp" class="form-text <?php echo $usernameClass;?>">Peut seulement contenir des lettres sans accents et des chiffres.</small>
+              <select class="form-control" name="username" id="username" required>
+                <?php
+                  include 'connect.php';
+                  $stmt = $connectedDB->prepare("SELECT * FROM Users ORDER BY id ASC");
+                  $stmt->execute();
+                  foreach($stmt as $row) {
+                ?>
+                  <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?> ><?= htmlspecialchars($row['username']) ?></option>
+                <?php
+                  $connectedDB = null;
+                  }
+                ?>
+              </select>
             </div>
             <div class="form-group">
               <label for="password">Mot de passe</label>
@@ -235,58 +219,14 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
               <small id="confirmPasswordHelp" class="form-text text-danger"><?php echo $error['confirmPassword'];?>&nbsp;</small>
             </div>
-            <div class="row">
-              <fieldset class="form-group col-sm-6">
-                <legend>Type de compte</legend>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="admin" value="0" required>
-                  <label class="form-check-label" for="admin">Administrateur</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="student" value="1" required>
-                  <label class="form-check-label" for="student">Étudiant</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="client" value="2" required>
-                  <label class="form-check-label" for="client">Client</label>
-                </div>
-              </fieldset>
-              <fieldset class="form-group col-sm-6">
-                <legend>Équipe</legend>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="no-team" value="0" required>
-                  <label class="form-check-label" for="no-team">Aucune équipe</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" value="1" required>
-                  <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="graphistes" value="2" required>
-                  <label class="form-check-label" for="graphistes">Graphistes</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3" required>
-                  <label class="form-check-label" for="programmeurs">Programmeurs</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4" required>
-                  <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5" required>
-                  <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
-                </div>
-              </fieldset>
-            </div>
             <div class="form-group">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="show-password">
-                <label class="form-check-label" for="show-password">Voir les mots de passe</label>
+                <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
               </div>
             </div>
             <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>
-            <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
+            <button type="submit" name="change_password" class="btn btn-lg btn-primary btn-block">Changer le mot de passe</button>
           </form>
         </div>
       </main>
