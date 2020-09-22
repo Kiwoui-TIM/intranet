@@ -268,7 +268,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
           <h2>Jalons</h2>
-          <table class="table table-striped">
+          <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
               <th>Nom</th>
               <th>Date d'échéance</th>
@@ -280,10 +280,31 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
         <?php
           $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
                         INNER JOIN Teams ON Milestones.team = Teams.id
-                        WHERE completed = 0 ORDER BY Milestones.id ASC';
+                        WHERE completed = 0 ORDER BY Milestones.due_date ASC';
           $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute();
           foreach($stmt as $row) {
+            if ($row['2'] < date('Y-m-d')) {
+        ?>
+          <tr class="table-danger">
+            <td><?= htmlspecialchars($row['1']) ?></td>
+            <td><?= htmlspecialchars($row['2']) ?></td>
+            <td><?= htmlspecialchars($row['3']) ?></td>
+            <td>
+              <form method="POST">
+                <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">Incomplet</button>
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
+              </form>
+            </td>
+            <td>
+              <form method="POST">
+                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
+                <input type="hidden" name="id" value="<?= $row['0'] ?>">
+              </form>
+            </td>
+          </tr>
+        <?php
+          } else {
         ?>
           <tr>
             <td><?= htmlspecialchars($row['1']) ?></td>
@@ -303,21 +324,22 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </td>
           </tr>
         <?php
+            }
           }
         ?>
 
-<?php
+        <?php
           $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
                         INNER JOIN Teams ON Milestones.team = Teams.id
-                        WHERE completed = 1 ORDER BY Milestones.id ASC';
+                        WHERE completed = 1 ORDER BY Milestones.due_date ASC';
           $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
-          <tr>
-            <td><?= htmlspecialchars($row['1']) ?></td>
-            <td><?= htmlspecialchars($row['2']) ?></td>
-            <td><?= htmlspecialchars($row['3']) ?></td>
+          <tr class="table-secondary text-muted">
+            <td><del><?= htmlspecialchars($row['1']) ?></del></td>
+            <td><del><?= htmlspecialchars($row['2']) ?></del></td>
+            <td><del><?= htmlspecialchars($row['3']) ?></del></td>
             <td>
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">Complet</button>
