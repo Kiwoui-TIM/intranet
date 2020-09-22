@@ -196,12 +196,6 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
                 Projets
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <span data-feather="file-text"></span>
-                Rapports
-              </a>
-            </li>
           </ul>
 
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
