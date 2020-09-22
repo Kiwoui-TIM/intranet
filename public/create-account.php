@@ -123,6 +123,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           ':account_type' => $account_type,
           ':team' => $team
         ]);
+        $creation_success = true;
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
@@ -130,7 +131,6 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
       unset($_SESSION['postdata'], $password, $confirm_password);
-      $creation_success = true;
     }
 
     unset($_SESSION['postdata'], $password, $confirm_password);

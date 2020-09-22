@@ -69,6 +69,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
           ':username' => $username,
           ':hashed_password' => $hashed_password
         ]);
+        $creation_success = true;
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
@@ -76,7 +77,6 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
       // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
       unset($_SESSION['postdata'], $password, $confirm_password);
-      $creation_success = true;
     }
 
     unset($_SESSION['postdata'], $password, $confirm_password);
