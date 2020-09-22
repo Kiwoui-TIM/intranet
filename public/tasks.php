@@ -81,7 +81,7 @@ if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task']))
   }
 }
 
-if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
+if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_completion'])) {
   // Définir les variables et les mettre vides
   $id = '';
 
@@ -210,12 +210,12 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
         <div class="container">
           <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <div class="form-group">
-              <label for="name">Nom de la tâche</label>
+              <label class="h6" for="name">Nom de la tâche</label>
               <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="milestone">Jalon</label>
+                <label class="h6" for="milestone">Jalon</label>
                 <select class="form-control" name="milestone" id="milestone" required>
                   <?php
                     include 'connect.php';
@@ -233,7 +233,7 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
                 </select>
               </div>
               <div class="form-group col-md-6">
-                <label for="due_date">Date d'échéance</label>
+                <label class="h6" for="due_date">Date d'échéance</label>
                 <input type="date" class="form-control" id="due_date" name="due_date" required>
               </div>
             </div>

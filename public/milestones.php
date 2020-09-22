@@ -24,7 +24,7 @@ if ($account_type == 2) {
 }
 $connectedDB = null;
 
-if (isset($_POST['add_task']) || isset($_SESSION['postdata']['add_task'])) {
+if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
   // Définir les variables et les mettre vides
   $name = $student_id = $milestone = $due_date = '';
 
@@ -56,7 +56,7 @@ if (isset($_POST['add_task']) || isset($_SESSION['postdata']['add_task'])) {
   }
 }
 
-if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task'])) {
+if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
   // Définir les variables et les mettre vides
   $id = '';
 
@@ -81,7 +81,7 @@ if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task']))
   }
 }
 
-if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
+if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
   // Définir les variables et les mettre vides
   $id = '';
 
@@ -129,7 +129,7 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liste des tâches - Intranet</title>
+  <title>Liste des jalons - Intranet</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link rel="stylesheet" href="styles/dashboard.css">
 </head>
@@ -205,39 +205,67 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Liste des tâches</h1>
+          <h1 class="h2">Liste des jalons</h1>
         </div>
         <div class="container">
           <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <div class="form-group">
-              <label for="name">Nom de la tâche</label>
+              <label class="h6" for="name">Nom du jalon</label>
               <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="milestone">Jalon</label>
-                <select class="form-control" name="milestone" id="milestone" required>
+                <label class="h6" for="project">Projet</label>
+                <select class="form-control" name="project" id="project" required>
                   <?php
                     include 'connect.php';
-                    $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
-                                  INNER JOIN Projects ON Milestones.project = Projects.id
-                                  ORDER BY Milestones.project, Milestones.id ASC';
+                    $sql_query = 'SELECT id, name FROM Projects
+                                  ORDER BY id ASC';
                     $stmt = $connectedDB->prepare($sql_query);
                     $stmt->execute();
                     foreach($stmt as $row) {
                   ?>
-                    <option value="<?= htmlspecialchars($row['0']) ?>">[<?= htmlspecialchars($row['2']) ?>] <?= htmlspecialchars($row['1']) ?></option>
+                    <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['name']) ?></option>
                   <?php
                     }
                   ?>
                 </select>
               </div>
               <div class="form-group col-md-6">
-                <label for="due_date">Date d'échéance</label>
+                <label class="h6" for="due_date">Date d'échéance</label>
                 <input type="date" class="form-control" id="due_date" name="due_date" required>
               </div>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
+            <fieldset class="form-group">
+              <legend class="h6">Équipe</legend>
+              <div class="form-row">
+                <div class="col-sm-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="team" id="graphistes" value="2" required>
+                    <label class="form-check-label" for="graphistes">Graphistes</label>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3" required>
+                    <label class="form-check-label" for="programmeurs">Programmeurs</label>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4" required>
+                    <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5" required>
+                    <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
           <h2>Current Todos</h2>
           <table class="table table-striped">
@@ -249,7 +277,7 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
             </thead>
             <tbody>
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE completed = 0 ORDER BY id DESC");
+          $stmt = $connectedDB->prepare("SELECT * FROM Milestones WHERE completed = 0 ORDER BY id DESC");
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
@@ -258,13 +286,13 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
             <td><?= htmlspecialchars($row['due_date']) ?></td>
             <td>
               <form method="POST">
-                <button type="submit" name="task_completion">Uncomplete</button>
+                <button type="submit" name="milestone_completion">Uncomplete</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_task">Delete</button>
+                <button type="submit" name="delete_milestone">Delete</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
@@ -274,7 +302,7 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
         ?>
 
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE completed = 1 ORDER BY id DESC");
+          $stmt = $connectedDB->prepare("SELECT * FROM Milestones WHERE completed = 1 ORDER BY id DESC");
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
@@ -283,13 +311,13 @@ if (isset($_POST['completed']) || isset($_SESSION['postdata']['completed'])) {
             <td><?= htmlspecialchars($row['due_date']) ?></td>
             <td>
               <form method="POST">
-                <button type="submit" name="task_completion">Complete</button>
+                <button type="submit" name="milestone_completion">Complete</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" name="delete_task">Delete</button>
+                <button type="submit" name="delete_milestone">Delete</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
