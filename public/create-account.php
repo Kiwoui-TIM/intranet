@@ -2,9 +2,26 @@
 session_start();
 ob_start();
 
+include 'connect.php';
+try {
+  $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+  $stmt = $connectedDB->prepare($query_sql);
+  $stmt->execute([
+    ':username' => $username
+  ]);
+  $account_type = $stmt->fetch();
+} catch(PDOException $e) {
+  echo 'Error: ' . $e->getMessage();
+}
+if ($account_type != 0) {
+  header('location: dashboard.php');
+  exit;
+}
+$connectedDB = null;
+
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
 if (!$_SESSION["username"]) {
-  include "logout.php";
+  include 'logout.php';
 }
 
 // Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe et du nom d'utilisateur
@@ -109,13 +126,6 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
-
-      // Envoyer un courriel contenant les informations du compte
-      $to = 'Jakob.Bouchard@outlook.com';
-      $subject = '[KIWOUI INTRANET] Nouveau compte';
-      $txt = 'Le compte ' . $username . ' (' . $accountType . ') vient d\'être créé.';
-      $headers = 'From: intranet@jakobbouchard.dev';
-      mail($to,$subject,$txt,$headers);
 
       // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
