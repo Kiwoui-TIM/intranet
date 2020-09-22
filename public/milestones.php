@@ -182,9 +182,9 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link" href="create-account.php">
+              <a class="nav-link" href="change-password.php">
                 <span data-feather="lock"></span>
-                Changer de mot passe
+                Changer de mot de passe
               </a>
             </li>
           </ul>
