@@ -61,9 +61,10 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
       try {
         // Encrypter le mot de passe
         $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
-        $update_sql = 'UPDATE `Users` SET `hashed_password` = :hashed_password
-                       WHERE `Users`.`username` = :username)';
-        $stmt = $connectedDB->prepare($insert_sql);
+        $update_sql = 'UPDATE Users
+                       SET hashed_password = :hashed_password
+                       WHERE username = :username';
+        $stmt = $connectedDB->prepare($update_sql);
         $stmt->execute([
           ':username' => $username,
           ':hashed_password' => $hashed_password
