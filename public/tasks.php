@@ -281,7 +281,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
               <tr class="d-flex">
                 <th class="col-6">Tâche</th>
                 <th class="col-2">Date d'échéance</th>
-                <th class="col-1">Temps passé</th>
+                <th class="col-1">Temps</th>
                 <th class="col-1 text-center">Pointage</th>
                 <th class="col-1 text-center">Complétion</th>
                 <th class="col-1 text-center">Supprimer</th>
