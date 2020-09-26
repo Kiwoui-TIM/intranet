@@ -310,11 +310,13 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
           <h2>Jalons</h2>
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
-              <th>Nom</th>
-              <th>Date d'échéance</th>
-              <th>Équipe</th>
-              <th>Complétion</th>
-              <th>Supprimer</th>
+              <tr class="d-flex">
+                <th class="col-6">Nom</th>
+                <th class="col-2">Date d'échéance</th>
+                <th class="col-2">Équipe</th>
+                <th class="col-1 text-center">Complétion</th>
+                <th class="col-1 text-center">Supprimer</th>
+              </tr>
             </thead>
             <tbody>
         <?php
@@ -326,17 +328,17 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
           foreach($stmt as $row) {
             if ($row['2'] < date('Y-m-d')) {
         ?>
-          <tr class="table-danger">
-            <td><?= htmlspecialchars($row['1']) ?></td>
-            <td><?= htmlspecialchars($row['2']) ?></td>
-            <td><?= htmlspecialchars($row['3']) ?></td>
-            <td>
+          <tr class="d-flex table-danger">
+            <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
+            <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
+            <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+            <td class="col-1 text-center">
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
-            <td>
+            <td class="col-1 text-center">
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
@@ -346,16 +348,16 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
         <?php
           } else {
         ?>
-          <tr>
-            <td><?= htmlspecialchars($row['1']) ?></td>
-            <td><?= htmlspecialchars($row['2']) ?></td>
-            <td><?= htmlspecialchars($row['3']) ?></td>
-            <td>
+          <tr class="d-flex">
+            <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
+            <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
+            <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+            <td class="col-1 text-center">
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
-            </td>
+            </td class="col-1 text-center">
             <td>
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
@@ -376,17 +378,17 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
           $stmt->execute();
           foreach($stmt as $row) {
         ?>
-          <tr class="table-secondary text-muted">
-            <td><del><?= htmlspecialchars($row['1']) ?></del></td>
-            <td><del><?= htmlspecialchars($row['2']) ?></del></td>
-            <td><del><?= htmlspecialchars($row['3']) ?></del></td>
-            <td>
+          <tr class="d-flex table-secondary text-muted">
+            <td class="col-6"><del><?= htmlspecialchars($row['1']) ?></del></td>
+            <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
+            <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
+            <td class="col-1 text-center">
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">Complet</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
-            <td>
+            <td class="col-1 text-center">
               <form method="POST">
                 <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
