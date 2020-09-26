@@ -7,6 +7,7 @@ if (!$_SESSION["username"]) {
   include 'logout.php';
 }
 
+// Vérifier le niveau d'accès
 include 'connect.php';
 try {
   $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
@@ -24,6 +25,7 @@ if ($user['account_type'] == 2) {
 }
 $connectedDB = null;
 
+// Ajouter les jalons
 if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
   // Définir les variables et les mettre vides
   $name = $project = $due_date = $team = '';
@@ -56,6 +58,7 @@ if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone
   }
 }
 
+// Supprimer les jalons
 if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
   // Définir les variables et les mettre vides
   $id = '';
@@ -81,6 +84,7 @@ if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_mil
   }
 }
 
+// Compléter les jalons
 if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
   // Définir les variables et les mettre vides
   $id = '';
@@ -334,7 +338,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
@@ -354,7 +358,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
@@ -384,7 +388,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_milestone">Supprimer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>

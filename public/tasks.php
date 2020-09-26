@@ -281,9 +281,9 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
               <th>Tâche</th>
               <th>Date d'échéance</th>
               <th>Temps passé</th>
+              <th>Pointage</th>
               <th>Complétion</th>
               <th>Supprimer</th>
-              <th>Pointage</th>
             </thead>
             <tbody>
         <?php
@@ -300,19 +300,19 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             <td><?= htmlspecialchars($row['time_spent']) ?></td>
             <td>
               <form method="POST">
+                <button type="submit" class="btn btn-sm btn-info" name="clock_task">Pointer</button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              </form>
+            </td>
+            <td>
+              <form method="POST">
                 <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td>
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="clock_task">Pointer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
@@ -326,19 +326,19 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             <td><?= htmlspecialchars($row['time_spent']) ?></td>
             <td>
               <form method="POST">
+                <button type="submit" class="btn btn-sm btn-info" name="clock_task">Pointer</button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              </form>
+            </td>
+            <td>
+              <form method="POST">
                 <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td>
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="clock_task">Pointer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
@@ -361,19 +361,19 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             <td><?= htmlspecialchars($row['time_spent']) ?></td>
             <td>
               <form method="POST">
+                <button type="submit" class="btn btn-sm btn-info" name="clock_task" disabled>Pointer</button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              </form>
+            </td>
+            <td>
+              <form method="POST">
                 <button type="submit" class="btn btn-sm btn-success" name="task_completion">Complet</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td>
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td>
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-secondary" name="clock_task" disabled>Pointer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
