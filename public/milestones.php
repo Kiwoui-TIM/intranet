@@ -101,14 +101,14 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
     include 'connect.php';
     $id = trim($_SESSION['postdata']['id']);
 
-    $sql_query = 'SELECT completed FROM Tasks WHERE id = :id';
+    $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':id' => $id
     ]);
-    $task = $stmt->fetch();
+    $milestone = $stmt->fetch();
 
-    if ($task['completed'] == 0) {
+    if ($milestone['completed'] == 0) {
       $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
