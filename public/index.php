@@ -35,7 +35,7 @@ if (!$_SESSION["username"]) {
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="dashboard.php">
+              <a class="nav-link active" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
