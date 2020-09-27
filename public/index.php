@@ -1,35 +1,139 @@
-<?php include 'validation.php'; ?>
+<?php
+session_start();
+ob_start();
+
+if (!$_SESSION["username"]) {
+  include "logout.php";
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Intranet</title>
+  <title>Tableau de bord - Intranet</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles/login.css">
-  <link rel="shortcut icon" href="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" type="image/png">
+  <link rel="stylesheet" href="styles/dashboard.css">
 </head>
-<body class="text-center d-flex align-items-center">
-  <?php if ($error['generic']) { ?>
-  <div class="alert alert-danger popup-alert mt-4" role="alert">
-    Mauvais utilisateur ou mot de passe !
+<body>
+  <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kiwoui (<?= $_SESSION["username"] ?>)</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="logout.php">Déconnexion</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="sidebar-sticky pt-3">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="index.php">
+                <span data-feather="home"></span>
+                Tableau de bord
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="tasks.php">
+                <span data-feather="check-square"></span>
+                Tâches
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="milestones.php">
+                <span data-feather="flag"></span>
+                Jalons
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="projects.php">
+                <span data-feather="briefcase"></span>
+                Projets
+              </a>
+            </li>
+          </ul>
+
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            Gestion de compte
+          </h6>
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" href="change-password.php">
+                <span data-feather="lock"></span>
+                Changer de mot de passe
+              </a>
+            </li>
+          </ul>
+
+          <?php
+            include 'connect.php';
+            try {
+              $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+              $stmt = $connectedDB->prepare($query_sql);
+              $stmt->execute([
+                ':username' => $_SESSION["username"]
+              ]);
+              $user = $stmt->fetch();
+            } catch(PDOException $e) {
+              echo 'Error: ' . $e->getMessage();
+            }
+            if ($user['account_type'] == 0) {
+          ?>
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            Administration
+          </h6>
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" href="create-account.php">
+                <span data-feather="user-plus"></span>
+                Créer un compte
+              </a>
+            </li>
+          </ul>
+          <?php
+            }
+            $connectedDB = null;
+          ?>
+
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            Support
+          </h6>
+          <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link" href="https://github.com/Kiwoui-TIM/intranet/issues/new?assignees=JustinVallee&labels=bug&template=rapport-de-bug.md&title=%5BBUG%5D">
+                <span data-feather="life-buoy"></span>
+                Rapport de bug
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://github.com/Kiwoui-TIM/intranet/issues/new?assignees=jakobbouchard&labels=enhancement&template=demande-de-fonctionnalit-.md&title=%5BFEATURE%5D">
+                <span data-feather="clipboard"></span>
+                Demande de fonctionnalité
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Tableau de bord</h1>
+        </div>
+
+      </main>
+    </div>
   </div>
-  <?php } ?>
-
-  <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-    <img class="mb-4" src="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" alt="Logo de Kiwoui" width="72" height="72">
-    <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
-    <label class ="sr-only" for="username">Utilisateur</label>
-    <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
-    <label class ="sr-only" for="password">Mot de passe</label>
-    <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
-    <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
-  </form>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script src="script/dashboard.js"></script>
 </body>
 </html>

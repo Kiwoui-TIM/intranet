@@ -22,7 +22,7 @@ if (isset($_POST['login_user']) || isset($_SESSION["postdata"]["login_user"])) {
     include 'connect.php';
 
     try {
-      $query_sql = "SELECT username, hashed_password FROM Users WHERE username=:username LIMIT 1";
+      $query_sql = "SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1";
       $stmt = $connectedDB->prepare($query_sql);
       $stmt->execute([':username' => $username]);
       $user = $stmt->fetch();
@@ -32,8 +32,10 @@ if (isset($_POST['login_user']) || isset($_SESSION["postdata"]["login_user"])) {
 
     if (password_verify($password, $user["hashed_password"])) {
       session_regenerate_id(true);
+      $_SESSION['id'] = $user['id'];
+      $_SESSION['team'] = $user['team'];
       $_SESSION['username'] = $username;
-      header('location: dashboard.php');
+      header('location: index.php');
       exit;
     } else {
       $error["generic"] = "Mauvais utilisateur ou mot de passe";
