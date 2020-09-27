@@ -268,7 +268,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
-              <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" aria-describedby="usernameHelp" required autofocus>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
               <small id="usernameHelp" class="form-text <?php echo $usernameClass;?>">Peut seulement contenir des lettres sans accents et des chiffres.</small>
             </div>
             <div class="form-group">
