@@ -137,7 +137,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>

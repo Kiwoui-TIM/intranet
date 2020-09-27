@@ -223,7 +223,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>

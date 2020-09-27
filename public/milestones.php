@@ -174,7 +174,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>

@@ -191,7 +191,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>
