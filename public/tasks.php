@@ -81,6 +81,59 @@ if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task']))
   }
 }
 
+if (isset($_POST['clock_task']) || isset($_SESSION['postdata']['clock_task'])) {
+  // Définir les variables et les mettre vides
+  $id = '';
+
+  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+  // puis retourner à la page qui a fait la requête.
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $_SESSION['postdata'] = $_POST;
+    $_POST = array();
+    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+    exit;
+    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
+  } elseif (array_key_exists('postdata', $_SESSION)) {
+    include 'connect.php';
+    $id = trim($_SESSION['postdata']['id']);
+
+    $sql_query = 'SELECT time_spent, clock FROM Tasks WHERE id = :id';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':id' => $id
+    ]);
+    $task = $stmt->fetch();
+
+    if ($task['clock']) {
+      $cur_timestamp = time();
+      $prev_timestamp = $task['clock'];
+      $sql_query = 'UPDATE Tasks SET clock = NULL WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id
+      ]);
+
+      $time_spent = ($cur_timestamp - $prev_timestamp) / 3600 + $task['time_spent'];
+      $sql_query = 'UPDATE Tasks SET time_spent = :time_spent WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id,
+        ':time_spent' => $time_spent
+      ]);
+    } else {
+      $cur_timestamp = time();
+      $sql_query = 'UPDATE Tasks SET clock = :timestamp WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id,
+        ':timestamp' => $cur_timestamp
+      ]);
+    }
+    unset($_SESSION['postdata']);
+    $connectedDB = null;
+  }
+}
+
 if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_completion'])) {
   // Définir les variables et les mettre vides
   $id = '';
