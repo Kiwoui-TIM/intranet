@@ -14,7 +14,7 @@ try {
   echo 'Error: ' . $e->getMessage();
 }
 if ($user['account_type'] != 0) {
-  header('location: dashboard.php');
+  header('location: index.php');
   exit;
 }
 $connectedDB = null;
@@ -173,7 +173,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
+              <a class="nav-link" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>

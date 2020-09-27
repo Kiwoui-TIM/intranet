@@ -35,7 +35,7 @@ if (isset($_POST['login_user']) || isset($_SESSION["postdata"]["login_user"])) {
       $_SESSION['id'] = $user['id'];
       $_SESSION['team'] = $user['team'];
       $_SESSION['username'] = $username;
-      header('location: dashboard.php');
+      header('location: index.php');
       exit;
     } else {
       $error["generic"] = "Mauvais utilisateur ou mot de passe";
