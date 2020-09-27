@@ -310,9 +310,12 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
                     include 'connect.php';
                     $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
                                   INNER JOIN Projects ON Milestones.project = Projects.id
+                                  WHERE Milestones.team = :team
                                   ORDER BY Milestones.project, Milestones.id ASC';
                     $stmt = $connectedDB->prepare($sql_query);
-                    $stmt->execute();
+                    $stmt->execute([
+                      ':team' => $_SESSION['team']
+                    ]);
                     foreach($stmt as $row) {
                   ?>
                     <option value="<?= htmlspecialchars($row['0']) ?>">[<?= htmlspecialchars($row['2']) ?>] <?= htmlspecialchars($row['1']) ?></option>
