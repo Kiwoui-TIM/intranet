@@ -19,7 +19,7 @@ try {
   echo 'Error: ' . $e->getMessage();
 }
 if ($user['account_type'] == 2) {
-  header('location: dashboard.php');
+  header('location: index.php');
   exit;
 }
 $connectedDB = null;
@@ -76,6 +76,59 @@ if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task']))
     $stmt->execute([
       ':id' => $id
     ]);
+    unset($_SESSION['postdata']);
+    $connectedDB = null;
+  }
+}
+
+if (isset($_POST['clock_task']) || isset($_SESSION['postdata']['clock_task'])) {
+  // Définir les variables et les mettre vides
+  $id = '';
+
+  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+  // puis retourner à la page qui a fait la requête.
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $_SESSION['postdata'] = $_POST;
+    $_POST = array();
+    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+    exit;
+    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
+  } elseif (array_key_exists('postdata', $_SESSION)) {
+    include 'connect.php';
+    $id = trim($_SESSION['postdata']['id']);
+
+    $sql_query = 'SELECT time_spent, clock FROM Tasks WHERE id = :id';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':id' => $id
+    ]);
+    $task = $stmt->fetch();
+
+    if ($task['clock']) {
+      $cur_timestamp = time();
+      $prev_timestamp = $task['clock'];
+      $sql_query = 'UPDATE Tasks SET clock = NULL WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id
+      ]);
+
+      $time_spent = ($cur_timestamp - $prev_timestamp) / 3600 + $task['time_spent'];
+      $sql_query = 'UPDATE Tasks SET time_spent = :time_spent WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id,
+        ':time_spent' => $time_spent
+      ]);
+    } else {
+      $cur_timestamp = time();
+      $sql_query = 'UPDATE Tasks SET clock = :timestamp WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id,
+        ':timestamp' => $cur_timestamp
+      ]);
+    }
     unset($_SESSION['postdata']);
     $connectedDB = null;
   }
@@ -152,7 +205,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
+              <a class="nav-link" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
@@ -170,7 +223,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>
@@ -257,9 +310,12 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
                     include 'connect.php';
                     $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
                                   INNER JOIN Projects ON Milestones.project = Projects.id
+                                  WHERE Milestones.team = :team
                                   ORDER BY Milestones.project, Milestones.id ASC';
                     $stmt = $connectedDB->prepare($sql_query);
-                    $stmt->execute();
+                    $stmt->execute([
+                      ':team' => $_SESSION['team']
+                    ]);
                     foreach($stmt as $row) {
                   ?>
                     <option value="<?= htmlspecialchars($row['0']) ?>">[<?= htmlspecialchars($row['2']) ?>] <?= htmlspecialchars($row['1']) ?></option>
@@ -275,7 +331,18 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
           </form>
-          <h2>Tâches</h2>
+          <?php
+            $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+                          INNER JOIN Projects ON Milestones.project = Projects.id
+                          WHERE Milestones.team = :team
+                          ORDER BY Milestones.project, Milestones.id ASC';
+            $stmt = $connectedDB->prepare($sql_query);
+            $stmt->execute([
+              ':team' => $_SESSION['team']
+            ]);
+            foreach($stmt as $milestone_row) {
+          ?>
+          <h3>[<?= htmlspecialchars($milestone_row['2']) ?>] <?= htmlspecialchars($milestone_row['1']) ?></h3>
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
               <tr class="d-flex">
@@ -289,97 +356,122 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             </thead>
             <tbody>
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student) ORDER BY due_date ASC");
-          $stmt->execute([
-            ':student' => $_SESSION['id']
-          ]);
-          foreach($stmt as $row) {
-            if ($row['due_date'] < date('Y-m-d')) {
+            $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
+            $stmt->execute([
+              ':student' => $_SESSION['id'],
+              ':milestone' => $milestone_row['id']
+            ]);
+            foreach($stmt as $row) {
+              if ($row['due_date'] < date('Y-m-d')) {
         ?>
-          <tr class="d-flex table-danger">
-            <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
-            <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-info" name="clock_task">Pointer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex table-danger">
+                <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-info" name="clock_task">
+                      <span data-feather="clock"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-danger" name="task_completion">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+              </tr>
         <?php
-            } else {
+              } else {
         ?>
-          <tr class="d-flex">
-            <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
-            <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-info" name="clock_task">Pointer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-danger" name="task_completion">Incomplet</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex">
+                <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-info" name="clock_task">
+                      <span data-feather="clock"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-danger" name="task_completion">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+              </tr>
         <?php
+              }
             }
-          }
         ?>
 
         <?php
-          $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student) ORDER BY due_date ASC");
-          $stmt->execute([
-            ':student' => $_SESSION['id']
-          ]);
-          foreach($stmt as $row) {
+            $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
+            $stmt->execute([
+              ':student' => $_SESSION['id'],
+              ':milestone' => $milestone_row['id']
+            ]);
+            foreach($stmt as $row) {
         ?>
-          <tr class="d-flex table-secondary text-muted">
-            <td class="col-6"><del><?= htmlspecialchars($row['name']) ?></del></td>
-            <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
-            <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-info" name="clock_task" disabled>Pointer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-success" name="task_completion">Complet</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">Supprimer</button>
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex table-secondary text-muted">
+                <td class="col-6"><del><?= htmlspecialchars($row['name']) ?></del></td>
+                <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-info" name="clock_task" disabled>
+                      <span data-feather="clock"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-success" name="task_completion">
+                      <span data-feather="check"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                  </form>
+                </td>
+              </tr>
+        <?php
+            }
+        ?>
+            </tbody>
+          </table>
         <?php
           }
           $connectedDB = null;

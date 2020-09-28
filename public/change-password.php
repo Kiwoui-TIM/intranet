@@ -119,7 +119,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
+              <a class="nav-link" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
@@ -137,7 +137,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>

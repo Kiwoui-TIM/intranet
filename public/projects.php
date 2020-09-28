@@ -19,8 +19,8 @@ try {
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($user['account_type'] == 2) {
-  header('location: dashboard.php');
+if ($user['account_type'] != 0) {
+  header('location: index.php');
   exit;
 }
 $connectedDB = null;
@@ -152,7 +152,7 @@ if (isset($_POST['project_completion']) || isset($_SESSION['postdata']['project_
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
+              <a class="nav-link" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
@@ -295,13 +295,17 @@ if (isset($_POST['project_completion']) || isset($_SESSION['postdata']['project_
             <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
             <td class="col-1 text-center">
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-danger" name="project_completion">Incomplet</button>
+                <button type="submit" class="btn btn-sm btn-danger" name="project_completion">
+                  <span data-feather="x"></span>
+                </button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
-            </td class="col-1 text-center">
-            <td>
+            </td>
+            <td class="col-1 text-center">
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">Supprimer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">
+                  <span data-feather="trash-2"></span>
+                </button>
                 <input type="hidden" name="id" value="<?= $row['0'] ?>">
               </form>
             </td>
@@ -323,13 +327,17 @@ if (isset($_POST['project_completion']) || isset($_SESSION['postdata']['project_
             <td class="col-2"><del><?= htmlspecialchars($row['username']) ?></del></td>
             <td class="col-1 text-center">
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-success"  name="project_completion">Complet</button>
+                <button type="submit" class="btn btn-sm btn-success"  name="project_completion">
+                  <span data-feather="check"></span>
+                </button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>
             <td class="col-1 text-center">
               <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">Supprimer</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">
+                  <span data-feather="trash-2"></span>
+                </button>
                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
               </form>
             </td>

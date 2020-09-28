@@ -14,7 +14,7 @@ try {
   echo 'Error: ' . $e->getMessage();
 }
 if ($user['account_type'] != 0) {
-  header('location: dashboard.php');
+  header('location: index.php');
   exit;
 }
 $connectedDB = null;
@@ -173,7 +173,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
+              <a class="nav-link" href="index.php">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
@@ -191,7 +191,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>
@@ -268,7 +268,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
           <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
-              <input type="text" class="form-control" id="username" name="username" value="<?php echo $username;?>" aria-describedby="usernameHelp" required autofocus>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
               <small id="usernameHelp" class="form-text <?php echo $usernameClass;?>">Peut seulement contenir des lettres sans accents et des chiffres.</small>
             </div>
             <div class="form-group">
