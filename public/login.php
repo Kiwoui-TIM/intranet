@@ -56,11 +56,11 @@ if (isset($_POST['login_user']) || isset($_SESSION["postdata"]["login_user"])) {
   <link rel="shortcut icon" href="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" type="image/png">
 </head>
 <body class="text-center d-flex align-items-center">
-  <?php if ($error['generic']) { ?>
+<?php if ($error['generic']) { ?>
   <div class="alert alert-danger popup-alert mt-4" role="alert">
     Mauvais utilisateur ou mot de passe !
   </div>
-  <?php } ?>
+<?php } ?>
 
   <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
     <img class="mb-4" src="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" alt="Logo de Kiwoui" width="72" height="72">
