@@ -3,7 +3,7 @@ session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
 if (!$_SESSION["username"]) {
-  include 'logout.php';
+  include( 'logout.php' );
 }
 require( 'config.php' );
 $page_title = 'Tableau de bord';
