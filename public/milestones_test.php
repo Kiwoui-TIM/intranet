@@ -294,7 +294,6 @@ include( VIEW_NAVIGATION );
 <?php
       }
     }
-
     $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
                   INNER JOIN Teams ON Milestones.team = Teams.id
                   WHERE (completed = 1 AND project = :project) ORDER BY Milestones.due_date ASC';
