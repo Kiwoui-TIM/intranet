@@ -2,7 +2,7 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include( 'logout.php' );
 }
 // Vérifier le niveau d'accès
@@ -18,7 +18,7 @@ try {
   echo 'Error: ' . $e->getMessage();
 }
 if ($user['account_type'] == 2) {
-  header('location: dashboard.php');
+  header('location: index.php');
   exit;
 }
 $connectedDB = null;
@@ -154,7 +154,7 @@ include( VIEW_NAVIGATION );
           <h1 class="h2"><?= $page_title ?></h1>
         </div>
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
             <div class="form-group">
               <label class="h6" for="name">Nom du jalon</label>
               <input type="text" class="form-control" id="name" name="name" required>
@@ -180,7 +180,7 @@ include( VIEW_NAVIGATION );
               </div>
               <div class="form-group col-md-6">
                 <label class="h6" for="due_date">Date d'échéance</label>
-                <input type="date" class="form-control" id="due_date" name="due_date" required>
+                <input class="form-control" type="date" id="due_date" name="due_date" required>
               </div>
             </div>
             <fieldset class="form-group">
@@ -251,16 +251,16 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
@@ -275,16 +275,16 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
@@ -308,16 +308,16 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
                 <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-success" type="submit" name="milestone_completion">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">

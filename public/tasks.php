@@ -2,7 +2,7 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include 'logout.php';
 }
 // Vérifier le niveau d'accès
@@ -42,7 +42,7 @@ if (isset($_POST['add_task']) || isset($_SESSION['postdata']['add_task'])) {
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $name = trim($_SESSION['postdata']['name']);
     $milestone = trim($_SESSION['postdata']['milestone']);
     $due_date = trim($_SESSION['postdata']['due_date']);
@@ -74,7 +74,7 @@ if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task']))
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
     $sql_query = 'DELETE FROM Tasks WHERE id = :id';
     $stmt = $connectedDB->prepare($sql_query);
@@ -99,7 +99,7 @@ if (isset($_POST['clock_task']) || isset($_SESSION['postdata']['clock_task'])) {
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
 
     $sql_query = 'SELECT time_spent, clock FROM Tasks WHERE id = :id';
@@ -152,7 +152,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
 
     $sql_query = 'SELECT completed FROM Tasks WHERE id = :id';
@@ -205,7 +205,7 @@ include( VIEW_NAVIGATION );
           <h1 class="h2"><?= $page_title ?></h1>
         </div>
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
             <div class="form-group">
               <label class="h6" for="name">Nom de la tâche</label>
               <input type="text" class="form-control" id="name" name="name" required>
@@ -235,7 +235,7 @@ include( VIEW_NAVIGATION );
               </div>
               <div class="form-group col-md-6">
                 <label class="h6" for="due_date">Date d'échéance</label>
-                <input type="date" class="form-control" id="due_date" name="due_date" required>
+                <input class="form-control" type="date" id="due_date" name="due_date" required>
               </div>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
@@ -278,24 +278,24 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-info" name="clock_task">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-info" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-danger" name="task_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit" name="task_completion">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
@@ -310,24 +310,24 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-info" name="clock_task">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-info" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-danger" name="task_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit" name="task_completion">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
@@ -349,24 +349,24 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-info" name="clock_task" disabled>
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-info" type="submit" name="clock_task" disabled>
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-success" name="task_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-success" type="submit" name="task_completion">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_task">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">

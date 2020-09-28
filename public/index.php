@@ -2,7 +2,7 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include( 'logout.php' );
 }
 require( 'config.php' );

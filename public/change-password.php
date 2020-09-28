@@ -2,7 +2,7 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include( 'logout.php' );
 }
 require( 'config.php' );
@@ -56,7 +56,7 @@ if (isset($_POST['change_password']) || isset($_SESSION['postdata']['change_pass
     }
 
     // Inclure la connexion à la base de données
-    include 'connect.php';
+    include( 'connect.php' );
 
     // S'il n'y a aucune erreur
     if (count($error) == 0) {
@@ -115,25 +115,25 @@ include( VIEW_NAVIGATION );
           <h1 class="h2"><?= $page_title ?></h1>
         </div>
         <div class="container">
-          <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
+          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
               <select class="form-control" name="username" id="username" required>
                 <option value="" disabled>Sélectionner un utilisateur...</option>
 <?php
-  include 'connect.php';
+  include( 'connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
-      ':username' => $_SESSION["username"]
+      ':username' => $_SESSION['username']
     ]);
     $user = $stmt->fetch();
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
   if ($user['account_type'] == 0) {
-    $stmt = $connectedDB->prepare("SELECT * FROM Users ORDER BY id ASC");
+    $stmt = $connectedDB->prepare('SELECT * FROM Users ORDER BY id ASC');
     $stmt->execute();
     foreach($stmt as $row) {
 ?>
@@ -151,13 +151,13 @@ include( VIEW_NAVIGATION );
             </div>
             <div class="form-group">
               <label for="password">Mot de passe</label>
-              <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" required>
-              <small id="passwordHelp" class="form-text <?php echo $passwordClass;?>">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
+              <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
+              <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
             </div>
             <div class="form-group">
               <label for="confirm-password">Confirmer le mot de passe</label>
-              <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
-              <small id="confirmPasswordHelp" class="form-text text-danger"><?php echo $error['confirmPassword'];?>&nbsp;</small>
+              <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
+              <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
             </div>
             <div class="form-group">
               <div class="form-check">
@@ -165,8 +165,8 @@ include( VIEW_NAVIGATION );
                 <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
               </div>
             </div>
-            <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>
-            <button type="submit" name="change_password" class="btn btn-lg btn-primary btn-block">Changer le mot de passe</button>
+            <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" name="change_password">Changer le mot de passe</button>
           </form>
         </div>
       </main>
@@ -183,11 +183,11 @@ include( VIEW_FOOTER );
     function toggleViewPassword(e) {
       const checkbox = e.target;
       if (checkbox.checked) {
-        passwordField.setAttribute("type", "text");
-        confirmPasswordField.setAttribute("type", "text");
+        passwordField.setAttribute('type', 'text');
+        confirmPasswordField.setAttribute('type', 'text');
       } else {
-        passwordField.setAttribute("type", "password");
-        confirmPasswordField.setAttribute("type", "password");
+        passwordField.setAttribute('type', 'password');
+        confirmPasswordField.setAttribute('type', 'password');
       }
     }
   </script>

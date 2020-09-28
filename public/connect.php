@@ -8,6 +8,6 @@ try {
   // set the PDO error mode to exception
   $connectedDB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
+  echo 'Error: ' . $e->getMessage();
 }
 ?>

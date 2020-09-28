@@ -10,14 +10,15 @@
               </a>
             </li>
 <?php
-  include 'connect.php';
+  include( 'connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
-      ':username' => $_SESSION["username"]
+      ':username' => $_SESSION['username']
     ]);
     $user = $stmt->fetch();
+    $connectedDB = null;
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
@@ -29,6 +30,9 @@
                 Tâches
               </a>
             </li>
+<?php
+    if ($user['account_type'] == 0) {
+?>
             <li class="nav-item">
               <a class="nav-link <?= $milestones ?>" href="milestones.php">
                 <span data-feather="flag"></span>
@@ -42,8 +46,8 @@
               </a>
             </li>
 <?php
+    }
   }
-  $connectedDB = null;
 ?>
           </ul>
 
@@ -60,17 +64,6 @@
           </ul>
 
 <?php
-  include 'connect.php';
-  try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
-    $stmt->execute([
-      ':username' => $_SESSION["username"]
-    ]);
-    $user = $stmt->fetch();
-  } catch(PDOException $e) {
-    echo 'Error: ' . $e->getMessage();
-  }
   if ($user['account_type'] == 0) {
 ?>
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -86,7 +79,6 @@
           </ul>
 <?php
   }
-  $connectedDB = null;
 ?>
 
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">

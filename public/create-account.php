@@ -2,11 +2,11 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include( 'logout.php' );
 }
 // Vérifier le niveau d'accès
-include 'connect.php';
+include( 'connect.php' );
 try {
   $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
   $stmt = $connectedDB->prepare($query_sql);
@@ -91,7 +91,7 @@ if (isset($_POST['create_user']) || isset($_SESSION['postdata']['create_user']))
     }
 
     // Inclure la connexion à la base de données
-    include 'connect.php';
+    include( 'connect.php' );
 
     try {
       $query_sql = 'SELECT username FROM Users WHERE username=:username LIMIT 1';
@@ -169,62 +169,62 @@ include( VIEW_NAVIGATION );
           <h1 class="h2"><?= $page_title ?></h1>
         </div>
         <div class="container">
-          <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post">
+          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
             <div class="form-group">
               <label for="username">Nom d'utilisateur</label>
-              <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
-              <small id="usernameHelp" class="form-text <?php echo $usernameClass;?>">Peut seulement contenir des lettres sans accents et des chiffres.</small>
+              <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
+              <small class="form-text <?= $usernameClass ?>" id="usernameHelp">Peut seulement contenir des lettres sans accents et des chiffres.</small>
             </div>
             <div class="form-group">
               <label for="password">Mot de passe</label>
-              <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" required>
-              <small id="passwordHelp" class="form-text <?php echo $passwordClass;?>">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
+              <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
+              <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
             </div>
             <div class="form-group">
               <label for="confirm-password">Confirmer le mot de passe</label>
-              <input type="password" class="form-control" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
-              <small id="confirmPasswordHelp" class="form-text text-danger"><?php echo $error['confirmPassword'];?>&nbsp;</small>
+              <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
+              <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
             </div>
             <div class="row">
               <fieldset class="form-group col-sm-6">
                 <legend>Type de compte</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="admin" value="0" required>
+                  <input class="form-check-input" type="radio" id="admin" name="account-type" value="0" required>
                   <label class="form-check-label" for="admin">Administrateur</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="student" value="1" required>
+                  <input class="form-check-input" type="radio" id="student" name="account-type" value="1" required>
                   <label class="form-check-label" for="student">Étudiant</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="account-type" id="client" value="2" required>
+                  <input class="form-check-input" type="radio" id="client" name="account-type" value="2" required>
                   <label class="form-check-label" for="client">Client</label>
                 </div>
               </fieldset>
               <fieldset class="form-group col-sm-6">
                 <legend>Équipe</legend>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="no-team" value="0" required>
+                  <input class="form-check-input" type="radio" id="no-team" name="team" value="0" required>
                   <label class="form-check-label" for="no-team">Aucune équipe</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="gestionnaires" value="1" required>
+                  <input class="form-check-input" type="radio" id="gestionnaires" name="team" value="1" required>
                   <label class="form-check-label" for="gestionnaires">Gestionnaires</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="graphistes" value="2" required>
+                  <input class="form-check-input" type="radio" id="graphistes" name="team" value="2" required>
                   <label class="form-check-label" for="graphistes">Graphistes</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3" required>
+                  <input class="form-check-input" type="radio" id="programmeurs"  name="team"value="3" required>
                   <label class="form-check-label" for="programmeurs">Programmeurs</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4" required>
+                  <input class="form-check-input" type="radio" id="integrateurs-web" name="team" value="4" required>
                   <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5" required>
+                  <input class="form-check-input" type="radio" id="integrateurs-video" name="team" value="5" required>
                   <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
                 </div>
               </fieldset>
@@ -235,8 +235,8 @@ include( VIEW_NAVIGATION );
                 <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
               </div>
             </div>
-            <small class="text-danger"><?php echo $error['generic'];?>&nbsp;</small>
-            <button type="submit" name="create_user" class="btn btn-lg btn-primary btn-block">Créer le compte</button>
+            <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" name="create_user">Créer le compte</button>
           </form>
         </div>
       </main>
@@ -253,11 +253,11 @@ include( VIEW_FOOTER );
     function toggleViewPassword(e) {
       const checkbox = e.target;
       if (checkbox.checked) {
-        passwordField.setAttribute("type", "text");
-        confirmPasswordField.setAttribute("type", "text");
+        passwordField.setAttribute('type', 'text');
+        confirmPasswordField.setAttribute('type', 'text');
       } else {
-        passwordField.setAttribute("type", "password");
-        confirmPasswordField.setAttribute("type", "password");
+        passwordField.setAttribute('type', 'password');
+        confirmPasswordField.setAttribute('type', 'password');
       }
     }
   </script>

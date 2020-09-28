@@ -2,16 +2,16 @@
 session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION["username"]) {
+if (!$_SESSION['username']) {
   include( 'logout.php' );
 }
 // Vérifier le niveau d'accès
-include 'connect.php';
+include( 'connect.php' );
 try {
   $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
   $stmt = $connectedDB->prepare($query_sql);
   $stmt->execute([
-    ':username' => $_SESSION["username"]
+    ':username' => $_SESSION['username']
   ]);
   $user = $stmt->fetch();
 } catch(PDOException $e) {
@@ -21,6 +21,7 @@ if ($user['account_type'] != 0) {
   header('location: index.php');
   exit;
 }
+$connectedDB = null;
 require( 'config.php' );
 $page_title = 'Liste des projets';
 $projects = 'active';
@@ -41,7 +42,7 @@ if (isset($_POST['add_project']) || isset($_SESSION['postdata']['add_project']))
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $name = trim($_SESSION['postdata']['name']);
     $client = trim($_SESSION['postdata']['client']);
     $sql_query = 'INSERT INTO Projects (name, client)
@@ -70,7 +71,7 @@ if (isset($_POST['delete_project']) || isset($_SESSION['postdata']['delete_proje
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
     $sql_query = 'DELETE FROM Projects WHERE id = :id';
     $stmt = $connectedDB->prepare($sql_query);
@@ -96,7 +97,7 @@ if (isset($_POST['project_completion']) || isset($_SESSION['postdata']['project_
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
 
     $sql_query = 'SELECT completed FROM Projects WHERE id = :id';
@@ -149,7 +150,7 @@ include( VIEW_NAVIGATION );
           <h1 class="h2"><?= $page_title ?></h1>
         </div>
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
             <div class="form-row">
               <div class="form-group col-md-9">
                 <label class="h6" for="name">Nom du projet</label>
@@ -160,7 +161,7 @@ include( VIEW_NAVIGATION );
                 <select class="form-control" name="client" id="client" required>
                   <option value="" disabled selected>Sélectionner un client...</option>
 <?php
-  include 'connect.php';
+  include( 'connect.php' );
   $sql_query = 'SELECT id, username FROM Users
                 WHERE account_type = 2
                 ORDER BY id ASC';
@@ -200,16 +201,16 @@ include( VIEW_NAVIGATION );
                 <td class="col-8"><?= htmlspecialchars($row['1']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-danger" name="project_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-danger" type="submit" name="project_completion">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_project">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['0'] ?>">
@@ -229,16 +230,16 @@ include( VIEW_NAVIGATION );
                 <td class="col-8"><del><?= htmlspecialchars($row['name']) ?></del></td>
                 <td class="col-2"><del><?= htmlspecialchars($row['username']) ?></del></td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-success"  name="project_completion">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-success" type="submit" name="project_completion">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
                   </form>
                 </td>
                 <td class="col-1 text-center">
-                  <form method="POST">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_project">
+                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_project">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
