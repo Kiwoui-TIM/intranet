@@ -5,9 +5,26 @@ ob_start();
 if (!$_SESSION["username"]) {
   include 'logout.php';
 }
+// Vérifier le niveau d'accès
+include 'connect.php';
+try {
+  $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+  $stmt = $connectedDB->prepare($query_sql);
+  $stmt->execute([
+    ':username' => $_SESSION["username"]
+  ]);
+  $user = $stmt->fetch();
+} catch(PDOException $e) {
+  echo 'Error: ' . $e->getMessage();
+}
+if ($user['account_type'] == 2) {
+  header('location: dashboard.php');
+  exit;
+}
+$connectedDB = null;
 require( 'config.php' );
-$page_title = 'Tableau de bord';
-$home = 'active';
+$page_title = 'Liste des jalons';
+$milestones = 'active';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
