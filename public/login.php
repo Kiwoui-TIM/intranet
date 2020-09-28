@@ -1,4 +1,49 @@
-<?php include 'validation.php'; ?>
+<?php
+if (!isset($_SESSION)) {
+  session_start();
+}
+ob_start();
+
+// LOGIN USER
+if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
+  // define variables and set to empty values
+  $error = [];
+  $username = $password = '';
+
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $_SESSION['postdata'] = $_POST;
+    $_POST = array();
+    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+    exit;
+  } elseif (array_key_exists('postdata', $_SESSION)) {
+    $username = trim($_SESSION['postdata']['username']);
+    $password = trim($_SESSION['postdata']['password']);
+
+    include( 'connect.php' );
+
+    try {
+      $query_sql = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';
+      $stmt = $connectedDB->prepare($query_sql);
+      $stmt->execute([':username' => $username]);
+      $user = $stmt->fetch();
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
+    if (password_verify($password, $user['hashed_password'])) {
+      session_regenerate_id(true);
+      $_SESSION['id'] = $user['id'];
+      $_SESSION['team'] = $user['team'];
+      $_SESSION['username'] = $username;
+      header('location: index.php');
+      exit;
+    } else {
+      $error['generic'] = 'Mauvais utilisateur ou mot de passe';
+    }
+    unset($_SESSION['postdata'], $password);
+  }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,13 +56,13 @@
   <link rel="shortcut icon" href="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" type="image/png">
 </head>
 <body class="text-center d-flex align-items-center">
-  <?php if ($error['generic']) { ?>
+<?php if ($error['generic']) { ?>
   <div class="alert alert-danger popup-alert mt-4" role="alert">
     Mauvais utilisateur ou mot de passe !
   </div>
-  <?php } ?>
+<?php } ?>
 
-  <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+  <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
     <img class="mb-4" src="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" alt="Logo de Kiwoui" width="72" height="72">
     <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
