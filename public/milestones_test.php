@@ -3,10 +3,10 @@ session_start();
 ob_start();
 // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
 if (!$_SESSION["username"]) {
-  include 'logout.php';
+  include( 'logout.php' );
 }
 // Vérifier le niveau d'accès
-include 'connect.php';
+include( 'connect.php' );
 try {
   $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
   $stmt = $connectedDB->prepare($query_sql);
@@ -42,7 +42,7 @@ if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $name = trim($_SESSION['postdata']['name']);
     $project = trim($_SESSION['postdata']['project']);
     $due_date = trim($_SESSION['postdata']['due_date']);
@@ -75,7 +75,7 @@ if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_mil
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
     $sql_query = 'DELETE FROM Milestones WHERE id = :id';
     $stmt = $connectedDB->prepare($sql_query);
@@ -101,7 +101,7 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
     exit;
     // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
   } elseif (array_key_exists('postdata', $_SESSION)) {
-    include 'connect.php';
+    include( 'connect.php' );
     $id = trim($_SESSION['postdata']['id']);
 
     $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
@@ -165,7 +165,7 @@ include( VIEW_NAVIGATION );
                 <select class="form-control" name="project" id="project" required>
                   <option value="" disabled selected>Sélectionner un projet...</option>
 <?php
-  include 'connect.php';
+  include( 'connect.php' );
   $sql_query = 'SELECT id, name FROM Projects
                 ORDER BY id ASC';
   $stmt = $connectedDB->prepare($sql_query);
