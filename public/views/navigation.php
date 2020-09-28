@@ -4,7 +4,7 @@
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link <?= $home ?>" href="dashboard.php">
+              <a class="nav-link <?= $home ?>" href="./">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
