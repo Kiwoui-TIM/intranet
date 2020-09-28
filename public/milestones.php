@@ -307,7 +307,16 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </fieldset>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
-          <h2>Jalons</h2>
+          <?php
+            $sql_query = 'SELECT id, name FROM Projects
+                          ORDER BY id ASC';
+            $stmt = $connectedDB->prepare($sql_query);
+            $stmt->execute([
+              ':team' => $_SESSION['team']
+            ]);
+            foreach($stmt as $project_row) {
+          ?>
+          <h2><?= htmlspecialchars($project_row['name'])?></h2>
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
               <tr class="d-flex">
@@ -320,93 +329,102 @@ if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milest
             </thead>
             <tbody>
         <?php
-          $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                        INNER JOIN Teams ON Milestones.team = Teams.id
-                        WHERE completed = 0 ORDER BY Milestones.due_date ASC';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute();
-          foreach($stmt as $row) {
-            if ($row['2'] < date('Y-m-d')) {
+            $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
+                          INNER JOIN Teams ON Milestones.team = Teams.id
+                          WHERE (completed = 0 AND project = :project) ORDER BY Milestones.due_date ASC';
+            $stmt = $connectedDB->prepare($sql_query);
+            $stmt->execute([
+              ':project' => $project_row['id']
+            ]);
+            foreach($stmt as $row) {
+              if ($row['2'] < date('Y-m-d')) {
         ?>
-          <tr class="d-flex table-danger">
-            <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
-                  <span data-feather="x"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
-                  <span data-feather="trash-2"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex table-danger">
+                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+              </tr>
         <?php
-          } else {
+            } else {
         ?>
-          <tr class="d-flex">
-            <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-            <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
-                  <span data-feather="x"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
-                  <span data-feather="trash-2"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex">
+                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-danger" name="milestone_completion">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+              </tr>
         <?php
+              }
             }
-          }
         ?>
 
         <?php
-          $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                        INNER JOIN Teams ON Milestones.team = Teams.id
-                        WHERE completed = 1 ORDER BY Milestones.due_date ASC';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute();
-          foreach($stmt as $row) {
+            $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
+                          INNER JOIN Teams ON Milestones.team = Teams.id
+                          WHERE (completed = 1 AND project = :project) ORDER BY Milestones.due_date ASC';
+            $stmt = $connectedDB->prepare($sql_query);
+            $stmt->execute([
+              ':project' => $project_row['id']
+            ]);
+            foreach($stmt as $row) {
         ?>
-          <tr class="d-flex table-secondary text-muted">
-            <td class="col-6"><del><?= htmlspecialchars($row['1']) ?></del></td>
-            <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
-            <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">
-                  <span data-feather="check"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-            <td class="col-1 text-center">
-              <form method="POST">
-                <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
-                  <span data-feather="trash-2"></span>
-                </button>
-                <input type="hidden" name="id" value="<?= $row['0'] ?>">
-              </form>
-            </td>
-          </tr>
+              <tr class="d-flex table-secondary text-muted">
+                <td class="col-6"><del><?= htmlspecialchars($row['1']) ?></del></td>
+                <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
+                <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-success"  name="milestone_completion">
+                      <span data-feather="check"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+                <td class="col-1 text-center">
+                  <form method="POST">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" name="delete_milestone">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                  </form>
+                </td>
+              </tr>
+        <?php
+            }
+        ?>
+            </tbody>
+          </table>
         <?php
           }
           $connectedDB = null;

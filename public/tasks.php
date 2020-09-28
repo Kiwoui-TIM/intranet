@@ -340,9 +340,9 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             $stmt->execute([
               ':team' => $_SESSION['team']
             ]);
-            foreach($stmt as $row) {
+            foreach($stmt as $milestone_row) {
           ?>
-          <h3>[<?= htmlspecialchars($row['2']) ?>] <?= htmlspecialchars($row['1']) ?></h3>
+          <h3>[<?= htmlspecialchars($milestone_row['2']) ?>] <?= htmlspecialchars($milestone_row['1']) ?></h3>
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
               <tr class="d-flex">
@@ -359,7 +359,7 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
             $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
             $stmt->execute([
               ':student' => $_SESSION['id'],
-              ':milestone' => $row['id']
+              ':milestone' => $milestone_row['id']
             ]);
             foreach($stmt as $row) {
               if ($row['due_date'] < date('Y-m-d')) {
@@ -431,9 +431,10 @@ if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_comple
         ?>
 
         <?php
-            $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student) ORDER BY due_date ASC");
+            $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
             $stmt->execute([
-              ':student' => $_SESSION['id']
+              ':student' => $_SESSION['id'],
+              ':milestone' => $milestone_row['id']
             ]);
             foreach($stmt as $row) {
         ?>
