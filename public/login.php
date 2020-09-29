@@ -71,7 +71,7 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
 <?php } ?>
 
   <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
-    <img src="images/logo_kiwi_square.svg" alt="Logo de Kiwoui" width="200" height="200">
+    <object data="images/kiwi_square.svg" type="image/svg+xml" width="200" height="200"></object>
     <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
     <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
