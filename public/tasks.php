@@ -17,7 +17,7 @@ try {
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($user['account_type'] == 2) {
+if ($user['account_type'] == 3) {
   header('location: index.php');
   exit;
 }
