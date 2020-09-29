@@ -313,9 +313,9 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
+                <td class="col-1 text-center <?php if ($row['clock']) {echo 'table-warning';} ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
@@ -345,9 +345,9 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
+                <td class="col-1 text-center <?php if ($row['clock']) {echo 'table-warning';} ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
@@ -384,9 +384,9 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><del><?= htmlspecialchars($row['name']) ?></del></td>
                 <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
+                <td class="col-1 text-center <?php if ($row['clock']) {echo 'table-warning';} ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task" disabled>
+                    <button class="btn btn-sm btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task" disabled>
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
