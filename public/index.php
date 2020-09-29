@@ -19,6 +19,17 @@ include( VIEW_META );
 <!-- END INCLUDE META -->
 </head>
 <body>
+<?php
+if (!$_SESSION['already_seen']) {
+?>
+  <div class="position-absolute d-flex align-items-center justify-content-center" id="spinner-container">
+    <div id="spinner" class="spinner-border text-secondary" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+<?php
+}
+?>
 <!-- START INCLUDE HEADER -->
 <?php
 include( VIEW_HEADER );
@@ -69,138 +80,73 @@ include( VIEW_NAVIGATION );
       ':team' => $_SESSION['team']
     ]);
   }
-  foreach($stmt as $row) {
+  foreach($stmt as $project_row) {
+    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
+                  WHERE project = :project
+                  ORDER BY due_date ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':project' => $project_row['id']
+    ]);
+    $completed = $total = 0;
+    foreach($stmt as $row) {
+      if ($row['completed']) {
+        $completed++;
+      }
+      $total++;
+    }
+    $percentage = $completed / $total * 100;
 ?>
-          <h2><?= $row['name'] ?></h2>
-          <div class="progress mt-3 mb-4" style="height: 20px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>Integer</td>
-                  <td>nec</td>
-                  <td>odio</td>
-                  <td>Praesent</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>libero</td>
-                  <td>Sed</td>
-                  <td>cursus</td>
-                  <td>ante</td>
-                </tr>
-                <tr>
-                  <td>1,004</td>
-                  <td>dapibus</td>
-                  <td>diam</td>
-                  <td>Sed</td>
-                  <td>nisi</td>
-                </tr>
-                <tr>
-                  <td>1,005</td>
-                  <td>Nulla</td>
-                  <td>quis</td>
-                  <td>sem</td>
-                  <td>at</td>
-                </tr>
-                <tr>
-                  <td>1,006</td>
-                  <td>nibh</td>
-                  <td>elementum</td>
-                  <td>imperdiet</td>
-                  <td>Duis</td>
-                </tr>
-                <tr>
-                  <td>1,007</td>
-                  <td>sagittis</td>
-                  <td>ipsum</td>
-                  <td>Praesent</td>
-                  <td>mauris</td>
-                </tr>
-                <tr>
-                  <td>1,008</td>
-                  <td>Fusce</td>
-                  <td>nec</td>
-                  <td>tellus</td>
-                  <td>sed</td>
-                </tr>
-                <tr>
-                  <td>1,009</td>
-                  <td>augue</td>
-                  <td>semper</td>
-                  <td>porta</td>
-                  <td>Mauris</td>
-                </tr>
-                <tr>
-                  <td>1,010</td>
-                  <td>massa</td>
-                  <td>Vestibulum</td>
-                  <td>lacinia</td>
-                  <td>arcu</td>
-                </tr>
-                <tr>
-                  <td>1,011</td>
-                  <td>eget</td>
-                  <td>nulla</td>
-                  <td>Class</td>
-                  <td>aptent</td>
-                </tr>
-                <tr>
-                  <td>1,012</td>
-                  <td>taciti</td>
-                  <td>sociosqu</td>
-                  <td>ad</td>
-                  <td>litora</td>
-                </tr>
-                <tr>
-                  <td>1,013</td>
-                  <td>torquent</td>
-                  <td>per</td>
-                  <td>conubia</td>
-                  <td>nostra</td>
-                </tr>
-                <tr>
-                  <td>1,014</td>
-                  <td>per</td>
-                  <td>inceptos</td>
-                  <td>himenaeos</td>
-                  <td>Curabitur</td>
-                </tr>
-                <tr>
-                  <td>1,015</td>
-                  <td>sodales</td>
-                  <td>ligula</td>
-                  <td>in</td>
-                  <td>libero</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card mb-4">
+            <div class="card-header">
+              <h2><?= $project_row['name'] ?></h2>
+            </div>
+            <div class="card-body">
+              <div class="progress mb-4" style="height: 20px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
+<?php
+    if ($percentage == 100) {
+?>
+                  <strong>Complété</strong>
+<?php
+    } else {
+?>
+                  <strong><?= round($percentage) ?>%</strong>
+<?php
+    }
+?>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-dark">
+                    <tr class="d-flex">
+                      <th class="col-10">Jalon</th>
+                      <th class="col-2">Date d'échéance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+<?php
+    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
+                  WHERE project = :project
+                  ORDER BY due_date ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':project' => $project_row['id']
+    ]);
+    foreach($stmt as $row) {
+?>
+                    <tr class="d-flex <?php if ($row['completed']) {echo 'table-success';} else {echo 'table-danger';} ?>">
+                      <td class="col-10"><?= htmlspecialchars($row['name']) ?></td>
+                      <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
+                    </tr>
+<?php
+    }
+?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 <?php
   }
@@ -212,5 +158,20 @@ include( VIEW_NAVIGATION );
 include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
+<?php
+if (!$_SESSION['already_seen']) {
+?>
+<script>
+  setTimeout(function () {
+    document.getElementById('spinner-container').style.opacity='0';
+    setTimeout(function () {
+      document.getElementById('spinner-container').remove();
+    }, 750);
+  }, 1250);
+</script>
+<?php
+}
+$_SESSION['already_seen'] = true;
+?>
 </body>
 </html>
