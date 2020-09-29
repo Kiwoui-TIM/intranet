@@ -230,13 +230,14 @@ include( VIEW_NAVIGATION );
   if ($user['account_type'] == 0) {
     $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
                   INNER JOIN Projects ON Milestones.project = Projects.id
+                  WHERE Milestones.completed = 0
                   ORDER BY Milestones.project, Milestones.id ASC';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute();
   } else {
     $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
                   INNER JOIN Projects ON Milestones.project = Projects.id
-                  WHERE Milestones.team = :team
+                  WHERE Milestones.team = :team AND Milestones.completed = 0
                   ORDER BY Milestones.project, Milestones.id ASC';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
