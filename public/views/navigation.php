@@ -71,6 +71,12 @@
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
+              <a class="nav-link <?= $all_tasks ?>" href="all-tasks.php">
+                <span data-feather="list"></span>
+                Toutes les tâches
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link <?= $create_account ?>" href="create-account.php">
                 <span data-feather="user-plus"></span>
                 Créer un compte
