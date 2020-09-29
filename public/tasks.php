@@ -17,7 +17,7 @@ try {
 } catch(PDOException $e) {
   echo 'Error: ' . $e->getMessage();
 }
-if ($user['account_type'] == 2) {
+if ($user['account_type'] == 3) {
   header('location: index.php');
   exit;
 }
@@ -216,15 +216,33 @@ include( VIEW_NAVIGATION );
                 <select class="form-control" name="milestone" id="milestone" required>
                   <option value="" disabled selected>Sélectionner un jalon...</option>
 <?php
-  include 'connect.php';
-  $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
-                INNER JOIN Projects ON Milestones.project = Projects.id
-                WHERE Milestones.team = :team
-                ORDER BY Milestones.project, Milestones.id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute([
-    ':team' => $_SESSION['team']
-  ]);
+  include( 'connect.php' );
+  try {
+    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($query_sql);
+    $stmt->execute([
+      ':username' => $_SESSION["username"]
+    ]);
+    $user = $stmt->fetch();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+  if ($user['account_type'] == 0) {
+    $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+                  INNER JOIN Projects ON Milestones.project = Projects.id
+                  ORDER BY Milestones.project, Milestones.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } else {
+    $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+                  INNER JOIN Projects ON Milestones.project = Projects.id
+                  WHERE Milestones.team = :team
+                  ORDER BY Milestones.project, Milestones.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':team' => $_SESSION['team']
+    ]);
+  }
   foreach($stmt as $row) {
 ?>
                     <option value="<?= htmlspecialchars($row['0']) ?>">[<?= htmlspecialchars($row['2']) ?>] <?= htmlspecialchars($row['1']) ?></option>
@@ -241,14 +259,32 @@ include( VIEW_NAVIGATION );
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
           </form>
 <?php
-  $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
-                INNER JOIN Projects ON Milestones.project = Projects.id
-                WHERE Milestones.team = :team
-                ORDER BY Milestones.project, Milestones.id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute([
-    ':team' => $_SESSION['team']
-  ]);
+  try {
+    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($query_sql);
+    $stmt->execute([
+      ':username' => $_SESSION["username"]
+    ]);
+    $user = $stmt->fetch();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+  if ($user['account_type'] == 0) {
+    $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+                  INNER JOIN Projects ON Milestones.project = Projects.id
+                  ORDER BY Milestones.project, Milestones.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } else {
+    $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+                  INNER JOIN Projects ON Milestones.project = Projects.id
+                  WHERE Milestones.team = :team
+                  ORDER BY Milestones.project, Milestones.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':team' => $_SESSION['team']
+    ]);
+  }
   foreach($stmt as $milestone_row) {
 ?>
           <h3>[<?= htmlspecialchars($milestone_row['2']) ?>] <?= htmlspecialchars($milestone_row['1']) ?></h3>

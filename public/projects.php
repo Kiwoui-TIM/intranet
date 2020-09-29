@@ -163,7 +163,7 @@ include( VIEW_NAVIGATION );
 <?php
   include( 'connect.php' );
   $sql_query = 'SELECT id, username FROM Users
-                WHERE account_type = 2
+                WHERE account_type = 3
                 ORDER BY id ASC';
   $stmt = $connectedDB->prepare($sql_query);
   $stmt->execute();

@@ -22,7 +22,7 @@
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
-  if ($user['account_type'] != 2) {
+  if ($user['account_type'] != 3) {
 ?>
             <li class="nav-item">
               <a class="nav-link <?= $tasks ?>" href="tasks.php">
@@ -31,7 +31,7 @@
               </a>
             </li>
 <?php
-    if ($user['account_type'] == 0) {
+    if ($user['account_type'] <= 1) {
 ?>
             <li class="nav-item">
               <a class="nav-link <?= $milestones ?>" href="milestones.php">
@@ -39,6 +39,9 @@
                 Jalons
               </a>
             </li>
+<?php
+      if ($user['account_type'] == 0) {
+?>
             <li class="nav-item">
               <a class="nav-link <?= $projects ?>" href="projects.php">
                 <span data-feather="briefcase"></span>
@@ -46,6 +49,7 @@
               </a>
             </li>
 <?php
+      }
     }
   }
 ?>
@@ -70,6 +74,12 @@
             Administration
           </h6>
           <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+              <a class="nav-link <?= $all_tasks ?>" href="all-tasks.php">
+                <span data-feather="list"></span>
+                Toutes les tâches
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link <?= $create_account ?>" href="create-account.php">
                 <span data-feather="user-plus"></span>
