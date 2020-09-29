@@ -53,7 +53,15 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
   <title>Connexion - Intranet</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link rel="stylesheet" href="styles/login.css">
-  <link rel="shortcut icon" href="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" type="image/png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#52de63">
+  <meta name="apple-mobile-web-app-title" content="Kiwoui Intranet">
+  <meta name="application-name" content="Kiwoui Intranet">
+  <meta name="msapplication-TileColor" content="#52de63">
+  <meta name="theme-color" content="#52de63">
 </head>
 <body class="text-center d-flex align-items-center">
 <?php if ($error['generic']) { ?>
@@ -63,7 +71,7 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
 <?php } ?>
 
   <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
-    <img class="mb-4" src="https://via.placeholder.com/72.png/007bff/fff?text=Kiwoui" alt="Logo de Kiwoui" width="72" height="72">
+    <img src="images/logo_kiwi_square.svg" alt="Logo de Kiwoui" width="200" height="200">
     <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
     <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
