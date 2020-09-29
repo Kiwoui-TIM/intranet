@@ -193,11 +193,15 @@ include( VIEW_NAVIGATION );
                   <label class="form-check-label" for="admin">Administrateur</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" id="student" name="account-type" value="1" required>
+                  <input class="form-check-input" type="radio" id="team-lead" name="account-type" value="1" required>
+                  <label class="form-check-label" for="team-lead">Chef d'équipe</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" id="student" name="account-type" value="2" required>
                   <label class="form-check-label" for="student">Étudiant</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" id="client" name="account-type" value="2" required>
+                  <input class="form-check-input" type="radio" id="client" name="account-type" value="3" required>
                   <label class="form-check-label" for="client">Client</label>
                 </div>
               </fieldset>

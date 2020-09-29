@@ -22,7 +22,7 @@
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
-  if ($user['account_type'] != 2) {
+  if ($user['account_type'] != 3) {
 ?>
             <li class="nav-item">
               <a class="nav-link <?= $tasks ?>" href="tasks.php">
