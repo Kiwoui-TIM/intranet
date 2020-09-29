@@ -277,7 +277,7 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center">
+                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
@@ -309,7 +309,7 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center">
+                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
@@ -348,7 +348,7 @@ include( VIEW_NAVIGATION );
                 <td class="col-6"><del><?= htmlspecialchars($row['name']) ?></del></td>
                 <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
                 <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
-                <td class="col-1 text-center">
+                <td class="col-1 text-center <?php if ($row['clock']) { ?>table-warning<?php } ?>">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-info <?php if ($row['clock']) { ?>btn-warning<?php } ?>" type="submit" name="clock_task" disabled>
                       <span data-feather="clock"></span>
