@@ -31,7 +31,7 @@
               </a>
             </li>
 <?php
-    if ($user['account_type'] == 0) {
+    if ($user['account_type'] <= 1) {
 ?>
             <li class="nav-item">
               <a class="nav-link <?= $milestones ?>" href="milestones.php">
@@ -39,6 +39,9 @@
                 Jalons
               </a>
             </li>
+<?php
+      if ($user['account_type'] == 0) {
+?>
             <li class="nav-item">
               <a class="nav-link <?= $projects ?>" href="projects.php">
                 <span data-feather="briefcase"></span>
@@ -46,6 +49,7 @@
               </a>
             </li>
 <?php
+      }
     }
   }
 ?>
