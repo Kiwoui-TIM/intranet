@@ -53,3 +53,7 @@ body {
   color: #fff;
 }
 
+.btn-outline-primary:active {
+  color: #fff;
+}
+
