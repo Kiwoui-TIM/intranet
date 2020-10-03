@@ -50,10 +50,10 @@ body {
 }
 
 .btn-outline-primary:hover {
-  color: #fff;
+  color: #fff !important;
 }
 
 .btn-outline-primary:active {
-  color: #fff;
+  color: #fff !important;
 }
 
