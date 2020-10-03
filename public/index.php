@@ -103,7 +103,7 @@ include( VIEW_NAVIGATION );
             </div>
             <div class="card-body">
               <div class="progress mb-4" style="height: 20px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
 <?php
     if ($percentage == 100) {
 ?>

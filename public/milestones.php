@@ -212,7 +212,7 @@ include( VIEW_NAVIGATION );
                 </div>
               </div>
             </fieldset>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
+            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
 <?php
   $sql_query = 'SELECT id, name FROM Projects

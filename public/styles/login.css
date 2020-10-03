@@ -44,3 +44,12 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.btn-outline-primary {
+  border-width: 2px !important;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+}
+

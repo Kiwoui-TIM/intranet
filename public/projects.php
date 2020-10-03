@@ -176,7 +176,7 @@ include( VIEW_NAVIGATION );
                 </select>
               </div>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_project">Créer un projet</button>
+            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_project">Créer un projet</button>
           </form>
           <h2>Projets</h2>
           <table class="table table-bordered table-hover table-sm">

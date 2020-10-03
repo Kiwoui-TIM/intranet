@@ -51,7 +51,7 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion - Intranet</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
   <link rel="stylesheet" href="styles/login.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -77,7 +77,7 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
     <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
     <label class ="sr-only" for="password">Mot de passe</label>
     <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
-    <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
+    <button class="btn btn-lg btn-outline-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
   </form>
 
