@@ -78,7 +78,7 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
     <label class ="sr-only" for="password">Mot de passe</label>
     <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
     <button class="btn btn-lg btn-outline-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
+    <p class="mt-5 mb-3 text-muted">Copyright &copy; 2020 Kiwoui &reg;</p>
   </form>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
