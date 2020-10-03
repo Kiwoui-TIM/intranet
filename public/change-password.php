@@ -166,7 +166,7 @@ include( VIEW_NAVIGATION );
               </div>
             </div>
             <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="change_password">Changer le mot de passe</button>
+            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="change_password">Changer le mot de passe</button>
           </form>
         </div>
       </main>

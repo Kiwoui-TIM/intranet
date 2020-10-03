@@ -257,7 +257,7 @@ include( VIEW_NAVIGATION );
                 <input class="form-control" type="date" id="due_date" name="due_date" required>
               </div>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
+            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
           </form>
 <?php
   try {

@@ -240,7 +240,7 @@ include( VIEW_NAVIGATION );
               </div>
             </div>
             <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" name="create_user">Créer le compte</button>
+            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="create_user">Créer le compte</button>
           </form>
         </div>
       </main>

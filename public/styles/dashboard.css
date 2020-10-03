@@ -64,7 +64,7 @@ body {
 }
 
 .sidebar .nav-link.active {
-  color: #007bff;
+  color: #52de63;
   font-weight: 600;
 }
 
@@ -76,6 +76,14 @@ body {
 .sidebar-heading {
   font-size: .75rem;
   text-transform: uppercase;
+}
+
+.btn-outline-primary {
+  border-width: 2px !important;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
 }
 
 /*
