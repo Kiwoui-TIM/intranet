@@ -64,15 +64,27 @@ include( VIEW_NAVIGATION );
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
               <tr class="d-flex">
-                <th class="col-8">Nom</th>
-                <th class="col-2">Date d'échéance</th>
-                <th class="col-2">Temps</th>
+                <th class="col-3">Nom</th>
+                <th class="col-3">Jalon</th>
+                <th class="col-3">Projet</th>
+                <th class="col-1">Temps</th>
+                <th class="col-2">Échéance</th>
               </tr>
             </thead>
             <tbody>
 <?php
-    $sql_query = 'SELECT * FROM Tasks
-                  WHERE (completed = 0 AND student = :student) ORDER BY id ASC';
+    $sql_query = 'SELECT
+                    Tasks.name AS task_name,
+                    Tasks.due_date,
+                    Tasks.time_spent,
+                    Milestones.name AS milestone_name,
+                    Milestones.project AS milestone_project,
+                    Projects.name AS project_name
+                  FROM Tasks
+                    LEFT JOIN Milestones ON Tasks.milestone = Milestones.id
+                    LEFT JOIN Projects ON Milestones.project = Projects.id
+                  WHERE (Tasks.completed = 0 AND Tasks.student = :student)
+                  ORDER BY Tasks.id ASC';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':student' => $student_row['id']
@@ -81,23 +93,37 @@ include( VIEW_NAVIGATION );
       if ($row['due_date'] < date('Y-m-d')) {
 ?>
               <tr class="d-flex table-danger">
-                <td class="col-8"><?= htmlspecialchars($row['name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['task_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['milestone_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['project_name']) ?></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['time_spent']) ?>h</td>
               </tr>
 <?php
       } else {
 ?>
               <tr class="d-flex">
-                <td class="col-8"><?= htmlspecialchars($row['name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['task_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['milestone_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['project_name']) ?></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['time_spent']) ?>h</td>
               </tr>
 <?php
       }
     }
-    $sql_query = 'SELECT * FROM Tasks
-                  WHERE (completed = 1 AND student = :student) ORDER BY id ASC';
+    $sql_query = 'SELECT
+                    Tasks.name AS task_name,
+                    Tasks.due_date,
+                    Tasks.time_spent,
+                    Milestones.name AS milestone_name,
+                    Milestones.project AS milestone_project,
+                    Projects.name AS project_name
+                  FROM Tasks
+                    LEFT JOIN Milestones ON Tasks.milestone = Milestones.id
+                    LEFT JOIN Projects ON Milestones.project = Projects.id
+                  WHERE (Tasks.completed = 1 AND Tasks.student = :student)
+                  ORDER BY Tasks.id ASC';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':student' => $student_row['id']
@@ -105,9 +131,11 @@ include( VIEW_NAVIGATION );
     foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
-                <td class="col-8"><del><?= htmlspecialchars($row['name']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['due_date']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['time_spent']) ?>h</del></td>
+                <td class="col-3"><?= htmlspecialchars($row['task_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['milestone_name']) ?></td>
+                <td class="col-3"><?= htmlspecialchars($row['project_name']) ?></td>
+                <td class="col-1"><?= htmlspecialchars($row['time_spent']) ?>h</td>
+                <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
               </tr>
 <?php
     }
