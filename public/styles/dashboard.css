@@ -1,5 +1,5 @@
 body {
-  font-size: .875rem;
+  font-size: .9rem;
 }
 
 .feather {
@@ -88,6 +88,11 @@ body {
 
 .btn-outline-primary:active {
   color: #fff !important;
+}
+
+.btn-square {
+  width: 34px;
+  height: 34px;
 }
 
 /*
