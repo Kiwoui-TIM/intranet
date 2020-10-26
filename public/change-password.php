@@ -119,7 +119,7 @@ include( VIEW_NAVIGATION );
                   <label for="username">Nom d'utilisateur</label>
                   <select class="form-control" name="username" id="username" aria-describedby="usernameHelp" required>
                     <option value="" disabled>Sélectionner un utilisateur...</option>
-    <?php
+<?php
   include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type
@@ -133,17 +133,19 @@ include( VIEW_NAVIGATION );
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
+
   if ($user['account_type'] == 0) {
     $query_sql = 'SELECT username
                   FROM Users
                   ORDER BY id ASC';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute();
+
     foreach($stmt as $row) {
 ?>
                     <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?>><?= htmlspecialchars($row['username']) ?></option>
 <?php
-    $connectedDB = null;
+      $connectedDB = null;
     }
   } else {
 ?>
