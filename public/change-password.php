@@ -122,10 +122,10 @@ include( VIEW_NAVIGATION );
 <?php
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type
+    $sql_query = 'SELECT account_type
                   FROM Users
                   WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
     ]);
@@ -135,11 +135,15 @@ include( VIEW_NAVIGATION );
   }
 
   if ($user['account_type'] == 0) {
-    $query_sql = 'SELECT username
-                  FROM Users
-                  ORDER BY id ASC';
-    $stmt = $connectedDB->prepare($query_sql);
-    $stmt->execute();
+    try {
+      $sql_query = 'SELECT username
+                    FROM Users
+                    ORDER BY id ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute();
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
 
     foreach($stmt as $row) {
 ?>

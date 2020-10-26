@@ -8,10 +8,10 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type
+    $sql_query = 'SELECT account_type
                   FROM Users
                   WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
     ]);
@@ -52,19 +52,28 @@ include( VIEW_NAVIGATION );
         <div class="container">
 <?php
   include( 'utils/connect.php' );
-  $sql_query = 'SELECT id, username FROM Users
-                WHERE account_type != 3
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+
+  try {
+    $sql_query = 'SELECT id, username FROM Users
+                  WHERE account_type != 3
+                  ORDER BY id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
 
   foreach($stmt as $student_row) {
-    $sql_query = 'SELECT id FROM Tasks
-                  WHERE student = :student';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':student' => $student_row['id']
-    ]);
+    try {
+      $sql_query = 'SELECT id FROM Tasks
+                    WHERE student = :student';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':student' => $student_row['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
 
     if(!empty($stmt->fetch())) {
 ?>

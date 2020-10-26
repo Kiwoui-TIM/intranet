@@ -8,8 +8,8 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
     ]);
@@ -45,13 +45,19 @@
       include( 'utils/connect.php' );
       $name = trim($_SESSION['postdata']['name']);
       $client = trim($_SESSION['postdata']['client']);
-      $sql_query = 'INSERT INTO Projects (name, client)
-                    VALUES (:name, :client)';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':name' => $name,
-        ':client' => $client
-      ]);
+
+      try {
+        $sql_query = 'INSERT INTO Projects (name, client)
+                      VALUES (:name, :client)';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':name' => $name,
+          ':client' => $client
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       unset($_SESSION['postdata']);
       $connectedDB = null;
     }
@@ -73,11 +79,17 @@
     } elseif (array_key_exists('postdata', $_SESSION)) {
       include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
-      $sql_query = 'DELETE FROM Projects WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
+
+      try {
+        $sql_query = 'DELETE FROM Projects WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       unset($_SESSION['postdata']);
       $connectedDB = null;
     }
@@ -100,26 +112,40 @@
       include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
 
-      $sql_query = 'SELECT completed FROM Projects WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
+      try {
+        $sql_query = 'SELECT completed FROM Projects WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       $project = $stmt->fetch();
 
       if ($project['completed'] == 0) {
-        $sql_query = 'UPDATE Projects SET completed = \'1\' WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
+        try {
+          $sql_query = 'UPDATE Projects SET completed = \'1\' WHERE id = :id';
+          $stmt = $connectedDB->prepare($sql_query);
+          $stmt->execute([
+            ':id' => $id
+          ]);
+        } catch(PDOException $e) {
+          echo 'Error: ' . $e->getMessage();
+        }
       } else {
-        $sql_query = 'UPDATE Projects SET completed = \'0\' WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
+        try {
+          $sql_query = 'UPDATE Projects SET completed = \'0\' WHERE id = :id';
+          $stmt = $connectedDB->prepare($sql_query);
+          $stmt->execute([
+            ':id' => $id
+          ]);
+        } catch(PDOException $e) {
+          echo 'Error: ' . $e->getMessage();
+        }
       }
+
       $connectedDB = null;
       unset($_SESSION['postdata']);
     }
@@ -159,11 +185,17 @@ include( VIEW_NAVIGATION );
                   <option value="" disabled selected>Sélectionner un client...</option>
 <?php
   include( 'utils/connect.php' );
-  $sql_query = 'SELECT id, username FROM Users
-                WHERE account_type = 3
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+
+  try {
+    $sql_query = 'SELECT id, username FROM Users
+                  WHERE account_type = 3
+                  ORDER BY id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
   foreach($stmt as $row) {
 ?>
                     <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['username']) ?></option>
@@ -187,11 +219,16 @@ include( VIEW_NAVIGATION );
             </thead>
             <tbody>
 <?php
-  $sql_query = 'SELECT Projects.id, Projects.name, Users.username FROM Projects
-                INNER JOIN Users ON Projects.client = Users.id
-                WHERE completed = 0 ORDER BY Projects.id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+  try {
+    $sql_query = 'SELECT Projects.id, Projects.name, Users.username FROM Projects
+                  INNER JOIN Users ON Projects.client = Users.id
+                  WHERE completed = 0 ORDER BY Projects.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
   foreach($stmt as $row) {
 ?>
               <tr class="d-flex">
@@ -216,11 +253,17 @@ include( VIEW_NAVIGATION );
               </tr>
 <?php
   }
-  $sql_query = 'SELECT Projects.id, Projects.name, Users.username FROM Projects
-                INNER JOIN Users ON Projects.client = Users.id
-                WHERE completed = 1 ORDER BY Projects.id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+
+  try {
+    $sql_query = 'SELECT Projects.id, Projects.name, Users.username FROM Projects
+                  INNER JOIN Users ON Projects.client = Users.id
+                  WHERE completed = 1 ORDER BY Projects.id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
   foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
@@ -245,6 +288,7 @@ include( VIEW_NAVIGATION );
               </tr>
 <?php
   }
+
   $connectedDB = null;
 ?>
             </tbody>

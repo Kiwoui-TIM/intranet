@@ -8,8 +8,8 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION["username"]
     ]);
@@ -47,15 +47,21 @@
       $project = trim($_SESSION['postdata']['project']);
       $due_date = trim($_SESSION['postdata']['due_date']);
       $team = trim($_SESSION['postdata']['team']);
-      $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
-                    VALUES (:name, :project, :team, :due_date)';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':name' => $name,
-        ':project' => $project,
-        ':team' => $team,
-        ':due_date' => $due_date
-      ]);
+
+      try {
+        $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
+                      VALUES (:name, :project, :team, :due_date)';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':name' => $name,
+          ':project' => $project,
+          ':team' => $team,
+          ':due_date' => $due_date
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       unset($_SESSION['postdata']);
       $connectedDB = null;
     }
@@ -77,11 +83,17 @@
     } elseif (array_key_exists('postdata', $_SESSION)) {
       include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
-      $sql_query = 'DELETE FROM Milestones WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
+
+      try {
+        $sql_query = 'DELETE FROM Milestones WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       unset($_SESSION['postdata']);
       $connectedDB = null;
     }
@@ -104,26 +116,40 @@
       include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
 
-      $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
+      try {
+        $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       $milestone = $stmt->fetch();
 
       if ($milestone['completed'] == 0) {
-        $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
+        try {
+          $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
+          $stmt = $connectedDB->prepare($sql_query);
+          $stmt->execute([
+            ':id' => $id
+          ]);
+        } catch(PDOException $e) {
+          echo 'Error: ' . $e->getMessage();
+        }
       } else {
-        $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
+        try {
+          $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
+          $stmt = $connectedDB->prepare($sql_query);
+          $stmt->execute([
+            ':id' => $id
+          ]);
+        } catch(PDOException $e) {
+          echo 'Error: ' . $e->getMessage();
+        }
       }
+
       $connectedDB = null;
       unset($_SESSION['postdata']);
     }
@@ -163,10 +189,16 @@ include( VIEW_NAVIGATION );
                   <option value="" disabled selected>Sélectionner un projet...</option>
 <?php
   include( 'utils/connect.php' );
-  $sql_query = 'SELECT id, name FROM Projects
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+
+  try {
+    $sql_query = 'SELECT id, name FROM Projects
+                  ORDER BY id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
   foreach($stmt as $row) {
 ?>
                   <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['name']) ?></option>
@@ -212,18 +244,27 @@ include( VIEW_NAVIGATION );
             <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
           </form>
 <?php
-  $sql_query = 'SELECT id, name FROM Projects
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
+  try {
+    $sql_query = 'SELECT id, name FROM Projects
+                  ORDER BY id ASC';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
 
   foreach($stmt as $project_row) {
-    $sql_query = 'SELECT id FROM Milestones
-                  WHERE project = :project';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
+    try {
+      $sql_query = 'SELECT id FROM Milestones
+                    WHERE project = :project';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project_row['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
     if(!empty($stmt->fetch())) {
 ?>
           <h2><?= htmlspecialchars($project_row['name'])?></h2>
@@ -239,18 +280,23 @@ include( VIEW_NAVIGATION );
             </thead>
             <tbody>
 <?php
-      $sql_query = 'SELECT Milestones.id AS milestone_id,
-                          Milestones.name AS milestone_name,
-                          Milestones.due_date AS milestone_due_date,
-                          Teams.name AS team_name
-                    FROM Milestones
-                    INNER JOIN Teams ON Milestones.team = Teams.id
-                    WHERE (completed = 0 AND project = :project)
-                    ORDER BY Milestones.due_date ASC';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':project' => $project_row['id']
-      ]);
+      try {
+        $sql_query = 'SELECT Milestones.id AS milestone_id,
+                            Milestones.name AS milestone_name,
+                            Milestones.due_date AS milestone_due_date,
+                            Teams.name AS team_name
+                      FROM Milestones
+                      INNER JOIN Teams ON Milestones.team = Teams.id
+                      WHERE (completed = 0 AND project = :project)
+                      ORDER BY Milestones.due_date ASC';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':project' => $project_row['id']
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       foreach($stmt as $row) {
         if ($row['2'] < date('Y-m-d')) {
 ?>
@@ -302,18 +348,24 @@ include( VIEW_NAVIGATION );
 <?php
         }
       }
-      $sql_query = 'SELECT Milestones.id AS milestone_id,
-                          Milestones.name AS milestone_name,
-                          Milestones.due_date AS milestone_due_date,
-                          Teams.name AS team_name
-                    FROM Milestones
-                    INNER JOIN Teams ON Milestones.team = Teams.id
-                    WHERE (completed = 1 AND project = :project)
-                    ORDER BY Milestones.due_date ASC';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':project' => $project_row['id']
-      ]);
+
+      try {
+        $sql_query = 'SELECT Milestones.id AS milestone_id,
+                            Milestones.name AS milestone_name,
+                            Milestones.due_date AS milestone_due_date,
+                            Teams.name AS team_name
+                      FROM Milestones
+                      INNER JOIN Teams ON Milestones.team = Teams.id
+                      WHERE (completed = 1 AND project = :project)
+                      ORDER BY Milestones.due_date ASC';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':project' => $project_row['id']
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
       foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
@@ -345,6 +397,7 @@ include( VIEW_NAVIGATION );
 <?php
     }
   }
+
   $connectedDB = null;
 ?>
         </div>

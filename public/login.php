@@ -22,8 +22,8 @@
       include( 'utils/connect.php' );
 
       try {
-        $query_sql = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';
-        $stmt = $connectedDB->prepare($query_sql);
+        $sql_query = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';
+        $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([':username' => $username]);
         $user = $stmt->fetch();
       } catch(PDOException $e) {

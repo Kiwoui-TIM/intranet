@@ -44,9 +44,10 @@ include( VIEW_NAVIGATION );
         <div class="container">
 <?php
   include( 'utils/connect.php' );
+
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION["username"]
     ]);
@@ -54,44 +55,67 @@ include( VIEW_NAVIGATION );
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
+
   if ($user['account_type'] == 3) {
-    $sql_query = 'SELECT id, name FROM Projects
-                  WHERE client = :client';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':client' => $_SESSION['id']
-    ]);
+    try {
+      $sql_query = 'SELECT id, name FROM Projects
+                    WHERE client = :client';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':client' => $_SESSION['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
   } elseif ($user['account_type'] == 0) {
-    $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                  INNER JOIN Milestones ON Projects.id = Milestones.project
-                  ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute();
+    try {
+      $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
+                    INNER JOIN Milestones ON Projects.id = Milestones.project
+                    ORDER BY Projects.id ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute();
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
   } else {
-    $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                  INNER JOIN Milestones ON Projects.id = Milestones.project
-                  WHERE Milestones.team = :team
-                  ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':team' => $_SESSION['team']
-    ]);
+    try {
+      $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
+                    INNER JOIN Milestones ON Projects.id = Milestones.project
+                    WHERE Milestones.team = :team
+                    ORDER BY Projects.id ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':team' => $_SESSION['team']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
   }
+
   foreach($stmt as $project_row) {
-    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                  WHERE project = :project
-                  ORDER BY due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
+    try {
+      $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
+                    WHERE project = :project
+                    ORDER BY due_date ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project_row['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
     $completed = $total = 0;
+
     foreach($stmt as $row) {
       if ($row['completed']) {
         $completed++;
       }
       $total++;
     }
+
     $percentage = $completed / $total * 100;
 ?>
           <div class="card my-4 border-0 shadow">
@@ -124,13 +148,18 @@ include( VIEW_NAVIGATION );
                   </thead>
                   <tbody>
 <?php
-    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                  WHERE project = :project
-                  ORDER BY due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
+    try {
+      $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
+                    WHERE project = :project
+                    ORDER BY due_date ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project_row['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
     foreach($stmt as $row) {
 ?>
                     <tr class="d-flex <?php if ($row['completed']) {echo 'table-success';} else {echo 'table-danger';} ?>">
@@ -149,6 +178,8 @@ include( VIEW_NAVIGATION );
           </div>
 <?php
   }
+
+  $connectedDB = null;
 ?>
         </div>
       </main>

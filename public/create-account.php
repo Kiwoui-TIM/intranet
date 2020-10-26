@@ -8,10 +8,10 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type
+    $sql_query = 'SELECT account_type
                   FROM Users
                   WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION["username"]
     ]);
@@ -96,10 +96,10 @@
       include( 'utils/connect.php' );
 
       try {
-        $query_sql = 'SELECT username
+        $sql_query = 'SELECT username
                       FROM Users
                       WHERE username=:username LIMIT 1';
-        $stmt = $connectedDB->prepare($query_sql);
+        $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([
           ':username' => $username
         ]);
