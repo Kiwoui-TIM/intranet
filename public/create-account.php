@@ -8,7 +8,9 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $query_sql = 'SELECT account_type
+                  FROM Users
+                  WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
       ':username' => $_SESSION["username"]
@@ -94,7 +96,9 @@
       include( 'utils/connect.php' );
 
       try {
-        $query_sql = 'SELECT username FROM Users WHERE username=:username LIMIT 1';
+        $query_sql = 'SELECT username
+                      FROM Users
+                      WHERE username=:username LIMIT 1';
         $stmt = $connectedDB->prepare($query_sql);
         $stmt->execute([
           ':username' => $username
@@ -117,7 +121,7 @@
           // Encrypter le mot de passe
           $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
           $insert_sql = 'INSERT INTO Users (username, hashed_password, account_type, team)
-                        VALUES (:username, :hashed_password, :account_type, :team)';
+                         VALUES (:username, :hashed_password, :account_type, :team)';
           $stmt = $connectedDB->prepare($insert_sql);
           $stmt->execute([
             ':username' => $username,
