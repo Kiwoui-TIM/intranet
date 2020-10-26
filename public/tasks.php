@@ -189,7 +189,7 @@ include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body>
+<body class="bg-light">
 <!-- START INCLUDE HEADER -->
 <?php
 include( VIEW_HEADER );

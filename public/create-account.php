@@ -148,7 +148,7 @@ include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body>
+<body class="bg-light">
 <?php if ($creation_success) { ?>
   <div class="alert alert-success popup-alert mt-4" role="alert">
     Compte créé avec succès !
