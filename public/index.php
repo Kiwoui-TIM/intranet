@@ -18,7 +18,7 @@ include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body>
+<body class="bg-light">
 <?php
 if (!$_SESSION['already_seen']) {
 ?>
@@ -41,9 +41,9 @@ include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2"><?= $page_title ?></h1>
-        </div>
+        </div> -->
         <div class="container-fluid">
 <?php
   include( 'connect.php' );
@@ -97,12 +97,12 @@ include( VIEW_NAVIGATION );
     }
     $percentage = $completed / $total * 100;
 ?>
-          <div class="card mb-4">
-            <div class="card-header">
+          <div class="card my-4 border-0 shadow">
+            <div class="card-header bg-white">
               <h2><?= $project_row['name'] ?></h2>
             </div>
             <div class="card-body">
-              <div class="progress mb-4" style="height: 20px;">
+              <div class="progress mb-4 shadow-sm" style="height: 20px;">
                 <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
 <?php
     if ($percentage == 100) {
