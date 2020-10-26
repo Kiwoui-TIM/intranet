@@ -3,10 +3,10 @@
   ob_start();
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include 'logout.php';
+    include 'utils/logout.php';
   }
   // Vérifier le niveau d'accès
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
@@ -22,7 +22,7 @@
     exit;
   }
   $connectedDB = null;
-  require( 'config.php' );
+  require( 'utils/config.php' );
   $page_title = 'Liste des tâches';
   $tasks = 'active';
 
@@ -42,7 +42,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $name = trim($_SESSION['postdata']['name']);
       $milestone = trim($_SESSION['postdata']['milestone']);
       $due_date = trim($_SESSION['postdata']['due_date']);
@@ -74,7 +74,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
       $sql_query = 'DELETE FROM Tasks WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
@@ -99,7 +99,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
 
       $sql_query = 'SELECT time_spent, clock FROM Tasks WHERE id = :id';
@@ -152,7 +152,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
 
       $sql_query = 'SELECT completed FROM Tasks WHERE id = :id';
@@ -215,7 +215,7 @@ include( VIEW_NAVIGATION );
                     <select class="form-control" name="milestone" id="milestone" required>
                       <option value="" disabled selected>Sélectionner un jalon...</option>
 <?php
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);

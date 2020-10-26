@@ -3,10 +3,10 @@
   ob_start();
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'logout.php' );
+    include( 'utils/logout.php' );
   }
   // Vérifier le niveau d'accès
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
@@ -22,7 +22,7 @@
     exit;
   }
   $connectedDB = null;
-  require( 'config.php' );
+  require( 'utils/config.php' );
   $page_title = 'Créer un compte';
   $create_account = 'active';
 
@@ -91,7 +91,7 @@
       }
 
       // Inclure la connexion à la base de données
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
 
       try {
         $query_sql = 'SELECT username FROM Users WHERE username=:username LIMIT 1';

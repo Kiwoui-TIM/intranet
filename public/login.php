@@ -19,7 +19,7 @@
       $username = trim($_SESSION['postdata']['username']);
       $password = trim($_SESSION['postdata']['password']);
 
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
 
       try {
         $query_sql = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';

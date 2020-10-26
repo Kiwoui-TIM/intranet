@@ -3,9 +3,9 @@
   ob_start();
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'logout.php' );
+    include( 'utils/logout.php' );
   }
-  require( 'config.php' );
+  require( 'utils/config.php' );
   $page_title = 'Tableau de bord';
   $home = 'active';
 ?>
@@ -46,7 +46,7 @@ include( VIEW_NAVIGATION );
         </div> -->
         <div class="container">
 <?php
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);

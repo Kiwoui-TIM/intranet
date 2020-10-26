@@ -3,10 +3,10 @@
   ob_start();
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'logout.php' );
+    include( 'utils/logout.php' );
   }
   // Vérifier le niveau d'accès
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
@@ -22,7 +22,7 @@
     exit;
   }
   $connectedDB = null;
-  require( 'config.php' );
+  require( 'utils/config.php' );
   $page_title = 'Liste des projets';
   $projects = 'active';
 
@@ -42,7 +42,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $name = trim($_SESSION['postdata']['name']);
       $client = trim($_SESSION['postdata']['client']);
       $sql_query = 'INSERT INTO Projects (name, client)
@@ -71,7 +71,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
       $sql_query = 'DELETE FROM Projects WHERE id = :id';
       $stmt = $connectedDB->prepare($sql_query);
@@ -97,7 +97,7 @@
       exit;
       // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
     } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
       $id = trim($_SESSION['postdata']['id']);
 
       $sql_query = 'SELECT completed FROM Projects WHERE id = :id';
@@ -161,7 +161,7 @@ include( VIEW_NAVIGATION );
                 <select class="form-control" name="client" id="client" required>
                   <option value="" disabled selected>Sélectionner un client...</option>
 <?php
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   $sql_query = 'SELECT id, username FROM Users
                 WHERE account_type = 3
                 ORDER BY id ASC';

@@ -10,7 +10,7 @@
               </a>
             </li>
 <?php
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);

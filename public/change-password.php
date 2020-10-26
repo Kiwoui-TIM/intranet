@@ -3,9 +3,9 @@
   ob_start();
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'logout.php' );
+    include( 'utils/logout.php' );
   }
-  require( 'config.php' );
+  require( 'utils/config.php' );
   $page_title = 'Changer de mot de passe';
   $change_password = 'active';
 
@@ -56,7 +56,7 @@
       }
 
       // Inclure la connexion à la base de données
-      include( 'connect.php' );
+      include( 'utils/connect.php' );
 
       // S'il n'y a aucune erreur
       if (count($error) == 0) {
@@ -121,7 +121,7 @@ include( VIEW_NAVIGATION );
               <select class="form-control" name="username" id="username" required>
                 <option value="" disabled>Sélectionner un utilisateur...</option>
 <?php
-  include( 'connect.php' );
+  include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
