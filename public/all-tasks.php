@@ -8,7 +8,9 @@
   // Vérifier le niveau d'accès
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $query_sql = 'SELECT account_type
+                  FROM Users
+                  WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
       ':username' => $_SESSION['username']
@@ -55,6 +57,7 @@ include( VIEW_NAVIGATION );
                 ORDER BY id ASC';
   $stmt = $connectedDB->prepare($sql_query);
   $stmt->execute();
+
   foreach($stmt as $student_row) {
     $sql_query = 'SELECT id FROM Tasks
                   WHERE student = :student';
@@ -62,6 +65,7 @@ include( VIEW_NAVIGATION );
     $stmt->execute([
       ':student' => $student_row['id']
     ]);
+
     if(!empty($stmt->fetch())) {
 ?>
           <h2><?= $student_row['username'] ?></h2>
@@ -93,6 +97,7 @@ include( VIEW_NAVIGATION );
       $stmt->execute([
         ':student' => $student_row['id']
       ]);
+
       foreach($stmt as $row) {
         if ($row['due_date'] < date('Y-m-d')) {
 ?>
@@ -132,6 +137,7 @@ include( VIEW_NAVIGATION );
     $stmt->execute([
       ':student' => $student_row['id']
     ]);
+
     foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
