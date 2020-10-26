@@ -177,16 +177,18 @@ include( VIEW_NAVIGATION );
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-            <div class="form-group">
-              <label class="h6" for="name">Nom du jalon</label>
-              <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label class="h6" for="project">Projet</label>
-                <select class="form-control" name="project" id="project" required>
-                  <option value="" disabled selected>Sélectionner un projet...</option>
+          <div class="card my-4 border-0 shadow">
+            <div class="card-body">
+              <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <div class="form-group">
+                  <label class="h6" for="name">Nom du jalon</label>
+                  <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label class="h6" for="project">Projet</label>
+                    <select class="form-control" name="project" id="project" required>
+                      <option value="" disabled selected>Sélectionner un projet...</option>
 <?php
   include( 'utils/connect.php' );
 
@@ -201,48 +203,50 @@ include( VIEW_NAVIGATION );
 
   foreach($stmt as $row) {
 ?>
-                  <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['name']) ?></option>
+                      <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['name']) ?></option>
 <?php
   }
 ?>
-                </select>
-              </div>
-              <div class="form-group col-md-6">
-                <label class="h6" for="due_date">Date d'échéance</label>
-                <input class="form-control" type="date" id="due_date" name="due_date" required>
-              </div>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="h6" for="due_date">Date d'échéance</label>
+                    <input class="form-control" type="date" id="due_date" name="due_date" required>
+                  </div>
+                </div>
+                <fieldset class="form-group">
+                  <legend class="h6">Équipe</legend>
+                  <div class="form-row">
+                    <div class="col-sm-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="team" id="graphistes" value="2">
+                        <label class="form-check-label" for="graphistes">Graphistes</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3">
+                        <label class="form-check-label" for="programmeurs">Programmeurs</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4">
+                        <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5">
+                        <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
+              </form>
             </div>
-            <fieldset class="form-group">
-              <legend class="h6">Équipe</legend>
-              <div class="form-row">
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="graphistes" value="2">
-                    <label class="form-check-label" for="graphistes">Graphistes</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3">
-                    <label class="form-check-label" for="programmeurs">Programmeurs</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4">
-                    <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5">
-                    <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
-          </form>
+          </div>
 <?php
   try {
     $sql_query = 'SELECT id, name FROM Projects

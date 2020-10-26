@@ -173,16 +173,18 @@ include( VIEW_NAVIGATION );
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-            <div class="form-row">
-              <div class="form-group col-md-9">
-                <label class="h6" for="name">Nom du projet</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-              </div>
-              <div class="form-group col-md-3">
-                <label class="h6" for="client">Client</label>
-                <select class="form-control" name="client" id="client" required>
-                  <option value="" disabled selected>Sélectionner un client...</option>
+          <div class="card my-4 border-0 shadow">
+            <div class="card-body">
+              <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <div class="form-row">
+                  <div class="form-group col-md-7">
+                    <label class="h6" for="name">Nom du projet</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label class="h6" for="client">Client</label>
+                    <select class="form-control" name="client" id="client" required>
+                      <option value="" disabled selected>Sélectionner un client...</option>
 <?php
   include( 'utils/connect.php' );
 
@@ -198,15 +200,20 @@ include( VIEW_NAVIGATION );
 
   foreach($stmt as $row) {
 ?>
-                    <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['username']) ?></option>
+                        <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['username']) ?></option>
 <?php
   }
 ?>
-                </select>
-              </div>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2 mt-auto">
+                    <button class="btn btn btn-outline-primary btn-block" type="submit" name="add_project">Créer un projet</button>
+                  </div>
+                </div>
+              </form>
             </div>
-            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_project">Créer un projet</button>
-          </form>
+          </div>
+
           <h2>Projets</h2>
           <table class="table table-bordered table-hover table-sm">
             <thead class="thead-dark">
