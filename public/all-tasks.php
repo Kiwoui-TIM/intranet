@@ -59,6 +59,13 @@ include( VIEW_NAVIGATION );
   $stmt = $connectedDB->prepare($sql_query);
   $stmt->execute();
   foreach($stmt as $student_row) {
+    $sql_query = 'SELECT id FROM Tasks
+                  WHERE student = :student';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':student' => $student_row['id']
+    ]);
+    if(!empty($stmt->fetch())) {
 ?>
           <h2><?= $student_row['username'] ?></h2>
           <table class="table table-bordered table-hover table-sm">
@@ -73,24 +80,24 @@ include( VIEW_NAVIGATION );
             </thead>
             <tbody>
 <?php
-    $sql_query = 'SELECT
-                    Tasks.name AS task_name,
-                    Tasks.due_date,
-                    Tasks.time_spent,
-                    Milestones.name AS milestone_name,
-                    Milestones.project AS milestone_project,
-                    Projects.name AS project_name
-                  FROM Tasks
-                    LEFT JOIN Milestones ON Tasks.milestone = Milestones.id
-                    LEFT JOIN Projects ON Milestones.project = Projects.id
-                  WHERE (Tasks.completed = 0 AND Tasks.student = :student)
-                  ORDER BY Tasks.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':student' => $student_row['id']
-    ]);
-    foreach($stmt as $row) {
-      if ($row['due_date'] < date('Y-m-d')) {
+      $sql_query = 'SELECT
+                      Tasks.name AS task_name,
+                      Tasks.due_date,
+                      Tasks.time_spent,
+                      Milestones.name AS milestone_name,
+                      Milestones.project AS milestone_project,
+                      Projects.name AS project_name
+                    FROM Tasks
+                      LEFT JOIN Milestones ON Tasks.milestone = Milestones.id
+                      LEFT JOIN Projects ON Milestones.project = Projects.id
+                    WHERE (Tasks.completed = 0 AND Tasks.student = :student)
+                    ORDER BY Tasks.id ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':student' => $student_row['id']
+      ]);
+      foreach($stmt as $row) {
+        if ($row['due_date'] < date('Y-m-d')) {
 ?>
               <tr class="d-flex table-danger">
                 <td class="col-3"><?= htmlspecialchars($row['task_name']) ?></td>
@@ -100,7 +107,7 @@ include( VIEW_NAVIGATION );
                 <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
               </tr>
 <?php
-      } else {
+        } else {
 ?>
               <tr class="d-flex">
                 <td class="col-3"><?= htmlspecialchars($row['task_name']) ?></td>
@@ -143,6 +150,7 @@ include( VIEW_NAVIGATION );
             </tbody>
           </table>
 <?php
+    }
   }
   $connectedDB = null;
 ?>

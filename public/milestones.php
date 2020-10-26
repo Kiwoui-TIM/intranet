@@ -218,10 +218,16 @@ include( VIEW_NAVIGATION );
   $sql_query = 'SELECT id, name FROM Projects
                 ORDER BY id ASC';
   $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute([
-    ':team' => $_SESSION['team']
-  ]);
+  $stmt->execute();
+
   foreach($stmt as $project_row) {
+    $sql_query = 'SELECT id FROM Milestones
+                  WHERE project = :project';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':project' => $project_row['id']
+    ]);
+    if(!empty($stmt->fetch())) {
 ?>
           <h2><?= htmlspecialchars($project_row['name'])?></h2>
           <table class="table table-bordered table-hover table-sm">
@@ -236,20 +242,25 @@ include( VIEW_NAVIGATION );
             </thead>
             <tbody>
 <?php
-    $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                  INNER JOIN Teams ON Milestones.team = Teams.id
-                  WHERE (completed = 0 AND project = :project) ORDER BY Milestones.due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
-    foreach($stmt as $row) {
-      if ($row['2'] < date('Y-m-d')) {
+      $sql_query = 'SELECT Milestones.id AS milestone_id,
+                          Milestones.name AS milestone_name,
+                          Milestones.due_date AS milestone_due_date,
+                          Teams.name AS team_name
+                    FROM Milestones
+                    INNER JOIN Teams ON Milestones.team = Teams.id
+                    WHERE (completed = 0 AND project = :project)
+                    ORDER BY Milestones.due_date ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project_row['id']
+      ]);
+      foreach($stmt as $row) {
+        if ($row['2'] < date('Y-m-d')) {
 ?>
               <tr class="d-flex table-danger">
-                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+                <td class="col-6"><?= htmlspecialchars($row['milestone_name']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['milestone_due_date']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['team_name']) ?></td>
                 <td class="col-1 text-center">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
@@ -268,12 +279,12 @@ include( VIEW_NAVIGATION );
                 </td>
               </tr>
 <?php
-    } else {
+      } else {
 ?>
               <tr class="d-flex">
-                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
+                <td class="col-6"><?= htmlspecialchars($row['milestone_name']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['milestone_due_date']) ?></td>
+                <td class="col-2"><?= htmlspecialchars($row['team_name']) ?></td>
                 <td class="col-1 text-center">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
@@ -292,21 +303,26 @@ include( VIEW_NAVIGATION );
                 </td>
               </tr>
 <?php
+        }
       }
-    }
-    $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                  INNER JOIN Teams ON Milestones.team = Teams.id
-                  WHERE (completed = 1 AND project = :project) ORDER BY Milestones.due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
-    foreach($stmt as $row) {
+      $sql_query = 'SELECT Milestones.id AS milestone_id,
+                          Milestones.name AS milestone_name,
+                          Milestones.due_date AS milestone_due_date,
+                          Teams.name AS team_name
+                    FROM Milestones
+                    INNER JOIN Teams ON Milestones.team = Teams.id
+                    WHERE (completed = 1 AND project = :project)
+                    ORDER BY Milestones.due_date ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project_row['id']
+      ]);
+      foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
-                <td class="col-6"><del><?= htmlspecialchars($row['1']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
+                <td class="col-6"><del><?= htmlspecialchars($row['milestone_name']) ?></del></td>
+                <td class="col-2"><del><?= htmlspecialchars($row['milestone_due_date']) ?></del></td>
+                <td class="col-2"><del><?= htmlspecialchars($row['team_name']) ?></del></td>
                 <td class="col-1 text-center">
                   <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-success" type="submit" name="milestone_completion">
@@ -320,16 +336,17 @@ include( VIEW_NAVIGATION );
                     <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
                       <span data-feather="trash-2"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                    <input type="hidden" name="id" value="<?= $row['milestone_id'] ?>">
                   </form>
                 </td>
               </tr>
 <?php
-    }
+      }
 ?>
             </tbody>
           </table>
 <?php
+    }
   }
   $connectedDB = null;
 ?>

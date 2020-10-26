@@ -280,7 +280,7 @@ include( VIEW_NAVIGATION );
   } else {
     $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
                   INNER JOIN Projects ON Milestones.project = Projects.id
-                  WHERE Milestones.team = :team AND Milestones.completed = 0
+                  WHERE (Milestones.team = :team AND Milestones.completed = 0)
                   ORDER BY Milestones.project, Milestones.id ASC';
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
@@ -288,6 +288,13 @@ include( VIEW_NAVIGATION );
     ]);
   }
   foreach($stmt as $milestone_row) {
+    $sql_query = 'SELECT id FROM Tasks
+                  WHERE milestone = :milestone';
+    $stmt = $connectedDB->prepare($sql_query);
+    $stmt->execute([
+      ':milestone' => $milestone_row['0']
+    ]);
+    if(!empty($stmt->fetch())) {
 ?>
           <h3>[<?= htmlspecialchars($milestone_row['2']) ?>] <?= htmlspecialchars($milestone_row['1']) ?></h3>
           <table class="table table-bordered table-hover table-sm">
@@ -303,13 +310,13 @@ include( VIEW_NAVIGATION );
             </thead>
             <tbody>
 <?php
-    $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
-    $stmt->execute([
-      ':student' => $_SESSION['id'],
-      ':milestone' => $milestone_row['id']
-    ]);
-    foreach($stmt as $row) {
-      if ($row['due_date'] < date('Y-m-d')) {
+      $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 0 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
+      $stmt->execute([
+        ':student' => $_SESSION['id'],
+        ':milestone' => $milestone_row['id']
+      ]);
+      foreach($stmt as $row) {
+        if ($row['due_date'] < date('Y-m-d')) {
 ?>
               <tr class="d-flex table-danger">
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
@@ -341,7 +348,7 @@ include( VIEW_NAVIGATION );
                 </td>
               </tr>
 <?php
-      } else {
+        } else {
 ?>
               <tr class="d-flex">
                 <td class="col-6"><?= htmlspecialchars($row['name']) ?></td>
@@ -373,14 +380,14 @@ include( VIEW_NAVIGATION );
                 </td>
               </tr>
 <?php
+        }
       }
-    }
-    $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
-    $stmt->execute([
-      ':student' => $_SESSION['id'],
-      ':milestone' => $milestone_row['id']
-    ]);
-    foreach($stmt as $row) {
+      $stmt = $connectedDB->prepare("SELECT * FROM Tasks WHERE (completed = 1 AND student = :student AND milestone = :milestone) ORDER BY due_date ASC");
+      $stmt->execute([
+        ':student' => $_SESSION['id'],
+        ':milestone' => $milestone_row['id']
+      ]);
+      foreach($stmt as $row) {
 ?>
               <tr class="d-flex table-secondary text-muted">
                 <td class="col-6"><del><?= htmlspecialchars($row['name']) ?></del></td>
@@ -412,14 +419,69 @@ include( VIEW_NAVIGATION );
                 </td>
               </tr>
 <?php
-    }
+      }
 ?>
             </tbody>
           </table>
 <?php
+    }
   }
   $connectedDB = null;
 ?>
+
+<div class="my-3 p-3 bg-white rounded shadow">
+    <h6 class="border-bottom border-gray pb-2 mb-0">Jalon wow</h6>
+    <div class="media text-muted pt-3">
+      <form class="mr-2" action="" method="POST">
+        <button class="btn btn-sm btn-success" type="submit" name="test">
+          <span data-feather="check"></span>
+        </button>
+        <input type="hidden" name="id" value="test">
+      </form>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark"><?= htmlspecialchars($row['name']) ?></strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block"><?= htmlspecialchars($row['due_date']) ?></span>
+      </div>
+    </div>
+    <div class="media text-muted pt-3">
+      <form class="mr-2" action="" method="POST">
+        <button class="btn btn-sm btn-success" type="submit" name="test">
+          <span data-feather="check"></span>
+        </button>
+        <input type="hidden" name="id" value="test">
+      </form>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark"><?= htmlspecialchars($row['name']) ?></strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block"><?= htmlspecialchars($row['due_date']) ?></span>
+      </div>
+    </div>
+    <div class="media text-muted pt-3">
+      <form class="mr-2" action="" method="POST">
+        <button class="btn btn-sm btn-success" type="submit" name="test">
+          <span data-feather="check"></span>
+        </button>
+        <input type="hidden" name="id" value="test">
+      </form>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="text-gray-dark"><?= htmlspecialchars($row['name']) ?></strong>
+          <a href="#">Follow</a>
+        </div>
+        <span class="d-block"><?= htmlspecialchars($row['due_date']) ?></span>
+      </div>
+    </div>
+    <small class="d-block text-right mt-3">
+      <a href="#">All suggestions</a>
+    </small>
+  </div>
+
+
         </div>
       </main>
 <!-- START INCLUDE FOOTER -->
