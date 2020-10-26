@@ -1,133 +1,133 @@
 <?php
-session_start();
-ob_start();
-// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION['username']) {
-  include( 'logout.php' );
-}
-// Vérifier le niveau d'accès
-include( 'connect.php' );
-try {
-  $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-  $stmt = $connectedDB->prepare($query_sql);
-  $stmt->execute([
-    ':username' => $_SESSION["username"]
-  ]);
-  $user = $stmt->fetch();
-} catch(PDOException $e) {
-  echo 'Error: ' . $e->getMessage();
-}
-if ($user['account_type'] > 1) {
-  header('location: index.php');
-  exit;
-}
-$connectedDB = null;
-require( 'config.php' );
-$page_title = 'Liste des jalons';
-$milestones = 'active';
-
-// Actions des formulaires/boutons dans le tableau
-
-// Ajouter les jalons
-if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
-  // Définir les variables et les mettre vides
-  $name = $project = $due_date = $team = '';
-
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $name = trim($_SESSION['postdata']['name']);
-    $project = trim($_SESSION['postdata']['project']);
-    $due_date = trim($_SESSION['postdata']['due_date']);
-    $team = trim($_SESSION['postdata']['team']);
-    $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
-                   VALUES (:name, :project, :team, :due_date)';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':name' => $name,
-      ':project' => $project,
-      ':team' => $team,
-      ':due_date' => $due_date
-    ]);
-    unset($_SESSION['postdata']);
-    $connectedDB = null;
+  session_start();
+  ob_start();
+  // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
+  if (!$_SESSION['username']) {
+    include( 'logout.php' );
   }
-}
-
-// Supprimer les jalons
-if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
-  // Définir les variables et les mettre vides
-  $id = '';
-
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $id = trim($_SESSION['postdata']['id']);
-    $sql_query = 'DELETE FROM Milestones WHERE id = :id';
-    $stmt = $connectedDB->prepare($sql_query);
+  // Vérifier le niveau d'accès
+  include( 'connect.php' );
+  try {
+    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
-      ':id' => $id
+      ':username' => $_SESSION["username"]
     ]);
-    unset($_SESSION['postdata']);
-    $connectedDB = null;
+    $user = $stmt->fetch();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
   }
-}
-
-// Compléter les jalons
-if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
-  // Définir les variables et les mettre vides
-  $id = '';
-
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+  if ($user['account_type'] > 1) {
+    header('location: index.php');
     exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $id = trim($_SESSION['postdata']['id']);
+  }
+  $connectedDB = null;
+  require( 'config.php' );
+  $page_title = 'Liste des jalons';
+  $milestones = 'active';
 
-    $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':id' => $id
-    ]);
-    $milestone = $stmt->fetch();
+  // Actions des formulaires/boutons dans le tableau
 
-    if ($milestone['completed'] == 0) {
-      $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
+  // Ajouter les jalons
+  if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
+    // Définir les variables et les mettre vides
+    $name = $project = $due_date = $team = '';
+
+    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+    // puis retourner à la page qui a fait la requête.
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      $_SESSION['postdata'] = $_POST;
+      $_POST = array();
+      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+      exit;
+      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
+    } elseif (array_key_exists('postdata', $_SESSION)) {
+      include( 'connect.php' );
+      $name = trim($_SESSION['postdata']['name']);
+      $project = trim($_SESSION['postdata']['project']);
+      $due_date = trim($_SESSION['postdata']['due_date']);
+      $team = trim($_SESSION['postdata']['team']);
+      $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
+                    VALUES (:name, :project, :team, :due_date)';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
-        ':id' => $id
+        ':name' => $name,
+        ':project' => $project,
+        ':team' => $team,
+        ':due_date' => $due_date
       ]);
-    } else {
-      $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
+      unset($_SESSION['postdata']);
+      $connectedDB = null;
     }
-    $connectedDB = null;
-    unset($_SESSION['postdata']);
   }
-}
+
+  // Supprimer les jalons
+  if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
+    // Définir les variables et les mettre vides
+    $id = '';
+
+    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+    // puis retourner à la page qui a fait la requête.
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      $_SESSION['postdata'] = $_POST;
+      $_POST = array();
+      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+      exit;
+      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
+    } elseif (array_key_exists('postdata', $_SESSION)) {
+      include( 'connect.php' );
+      $id = trim($_SESSION['postdata']['id']);
+      $sql_query = 'DELETE FROM Milestones WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id
+      ]);
+      unset($_SESSION['postdata']);
+      $connectedDB = null;
+    }
+  }
+
+  // Compléter les jalons
+  if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
+    // Définir les variables et les mettre vides
+    $id = '';
+
+    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
+    // puis retourner à la page qui a fait la requête.
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      $_SESSION['postdata'] = $_POST;
+      $_POST = array();
+      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
+      exit;
+      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
+    } elseif (array_key_exists('postdata', $_SESSION)) {
+      include( 'connect.php' );
+      $id = trim($_SESSION['postdata']['id']);
+
+      $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':id' => $id
+      ]);
+      $milestone = $stmt->fetch();
+
+      if ($milestone['completed'] == 0) {
+        $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      } else {
+        $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
+        $stmt = $connectedDB->prepare($sql_query);
+        $stmt->execute([
+          ':id' => $id
+        ]);
+      }
+      $connectedDB = null;
+      unset($_SESSION['postdata']);
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="fr">

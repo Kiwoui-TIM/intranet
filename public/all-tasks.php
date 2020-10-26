@@ -1,30 +1,30 @@
 <?php
-session_start();
-ob_start();
-// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION['username']) {
-  include( 'logout.php' );
-}
-// Vérifier le niveau d'accès
-include( 'connect.php' );
-try {
-  $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-  $stmt = $connectedDB->prepare($query_sql);
-  $stmt->execute([
-    ':username' => $_SESSION['username']
-  ]);
-  $user = $stmt->fetch();
-} catch(PDOException $e) {
-  echo 'Error: ' . $e->getMessage();
-}
-if ($user['account_type'] != 0) {
-  header('location: index.php');
-  exit;
-}
-$connectedDB = null;
-require( 'config.php' );
-$page_title = 'Liste de toutes les tâches';
-$all_tasks = 'active';
+  session_start();
+  ob_start();
+  // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
+  if (!$_SESSION['username']) {
+    include( 'logout.php' );
+  }
+  // Vérifier le niveau d'accès
+  include( 'connect.php' );
+  try {
+    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $stmt = $connectedDB->prepare($query_sql);
+    $stmt->execute([
+      ':username' => $_SESSION['username']
+    ]);
+    $user = $stmt->fetch();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+  if ($user['account_type'] != 0) {
+    header('location: index.php');
+    exit;
+  }
+  $connectedDB = null;
+  require( 'config.php' );
+  $page_title = 'Liste de toutes les tâches';
+  $all_tasks = 'active';
 ?>
 <!DOCTYPE html>
 <html lang="fr">

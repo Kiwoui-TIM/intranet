@@ -1,13 +1,13 @@
 <?php
-session_start();
-ob_start();
-// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION['username']) {
-  include( 'logout.php' );
-}
-require( 'config.php' );
-$page_title = 'Tableau de bord';
-$home = 'active';
+  session_start();
+  ob_start();
+  // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
+  if (!$_SESSION['username']) {
+    include( 'logout.php' );
+  }
+  require( 'config.php' );
+  $page_title = 'Tableau de bord';
+  $home = 'active';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -44,7 +44,7 @@ include( VIEW_NAVIGATION );
         <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2"><?= $page_title ?></h1>
         </div> -->
-        <div class="container-fluid">
+        <div class="container">
 <?php
   include( 'connect.php' );
   try {
@@ -102,7 +102,7 @@ include( VIEW_NAVIGATION );
               <h2><?= $project_row['name'] ?></h2>
             </div>
             <div class="card-body">
-              <div class="progress mb-4 shadow-sm" style="height: 20px;">
+              <div class="progress mx-2 mb-4 shadow-sm" style="height: 20px;">
                 <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
 <?php
     if ($percentage == 100) {
@@ -140,9 +140,11 @@ include( VIEW_NAVIGATION );
                       <td class="col-10"><?= htmlspecialchars($row['name']) ?></td>
                       <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                     </tr>
+
 <?php
     }
 ?>
+
                   </tbody>
                 </table>
               </div>
