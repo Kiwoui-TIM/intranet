@@ -71,7 +71,7 @@
             ':username' => $username,
             ':hashed_password' => $hashed_password
           ]);
-          $creation_success = true;
+          $change_success = true;
         } catch(PDOException $e) {
           echo 'Error: ' . $e->getMessage();
         }
@@ -95,7 +95,7 @@ include( VIEW_META );
 <!-- END INCLUDE META -->
 </head>
 <body class="bg-light">
-<?php if ($creation_success) { ?>
+<?php if ($change_success) { ?>
   <div class="alert alert-success popup-alert mt-4" role="alert">
     Mot de passe changé avec succès !
   </div>
