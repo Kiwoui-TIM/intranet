@@ -112,12 +112,14 @@ include( VIEW_NAVIGATION );
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-            <div class="form-group">
-              <label for="username">Nom d'utilisateur</label>
-              <select class="form-control" name="username" id="username" required>
-                <option value="" disabled>Sélectionner un utilisateur...</option>
-<?php
+          <div class="card my-4 border-0 shadow">
+            <div class="card-body">
+              <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                <div class="form-group">
+                  <label for="username">Nom d'utilisateur</label>
+                  <select class="form-control" name="username" id="username" aria-describedby="usernameHelp" required>
+                    <option value="" disabled>Sélectionner un utilisateur...</option>
+    <?php
   include( 'utils/connect.php' );
   try {
     $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
@@ -134,39 +136,42 @@ include( VIEW_NAVIGATION );
     $stmt->execute();
     foreach($stmt as $row) {
 ?>
-                <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?>><?= htmlspecialchars($row['username']) ?></option>
+                    <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?>><?= htmlspecialchars($row['username']) ?></option>
 <?php
     $connectedDB = null;
     }
   } else {
 ?>
-                <option value="<?= htmlspecialchars($_SESSION['username']) ?>" selected><?= htmlspecialchars($_SESSION['username']) ?></option>
+                    <option value="<?= htmlspecialchars($_SESSION['username']) ?>" selected><?= htmlspecialchars($_SESSION['username']) ?></option>
 <?php
   }
 ?>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="password">Mot de passe</label>
-              <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
-              <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
-            </div>
-            <div class="form-group">
-              <label for="confirm-password">Confirmer le mot de passe</label>
-              <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
-              <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
-            </div>
-            <div class="form-group">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="show-password">
-                <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
+                    </select>
+                    <small class="form-text text-muted" id="usernameHelp">Si vous n'êtes pas administrateur, vous ne verrez que vous.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
+                    <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label for="confirm-password">Confirmer le mot de passe</label>
+                    <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
+                    <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
+                  </div>
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="show-password">
+                      <label class="form-check-label" for="show-password">Afficher les mots de passe</label>
+                    </div>
+                  </div>
+                  <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
+                  <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="change_password">Changer le mot de passe</button>
+                </form>
               </div>
             </div>
-            <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
-            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="change_password">Changer le mot de passe</button>
-          </form>
-        </div>
-      </main>
+          </div>
+        </main>
 <!-- START INCLUDE FOOTER -->
 <?php
 include( VIEW_FOOTER );
