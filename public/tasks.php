@@ -363,7 +363,7 @@ include( VIEW_NAVIGATION );
   }
 
   foreach($stmt as $milestone_row) {
-    try {
+    try {
       $sql_query = 'SELECT id FROM Tasks
                     WHERE milestone = :milestone';
       $stmt = $connectedDB->prepare($sql_query);
