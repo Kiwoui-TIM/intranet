@@ -64,8 +64,8 @@
           // Encrypter le mot de passe
           $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
           $update_sql = 'UPDATE Users
-                        SET hashed_password = :hashed_password
-                        WHERE username = :username';
+                         SET hashed_password = :hashed_password
+                         WHERE username = :username';
           $stmt = $connectedDB->prepare($update_sql);
           $stmt->execute([
             ':username' => $username,
@@ -122,7 +122,9 @@ include( VIEW_NAVIGATION );
     <?php
   include( 'utils/connect.php' );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $query_sql = 'SELECT account_type
+                  FROM Users
+                  WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute([
       ':username' => $_SESSION['username']
@@ -132,7 +134,10 @@ include( VIEW_NAVIGATION );
     echo 'Error: ' . $e->getMessage();
   }
   if ($user['account_type'] == 0) {
-    $stmt = $connectedDB->prepare('SELECT * FROM Users ORDER BY id ASC');
+    $query_sql = 'SELECT username
+                  FROM Users
+                  ORDER BY id ASC';
+    $stmt = $connectedDB->prepare($query_sql);
     $stmt->execute();
     foreach($stmt as $row) {
 ?>
