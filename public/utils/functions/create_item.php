@@ -104,10 +104,11 @@
           } catch(PDOException $e) {
             echo 'Error: ' . $e->getMessage();
           }
-          
+
           break;
       }
 
+      // Déconnecter la base de données, détruire les variables
       unset($_SESSION['postdata']);
       $connectedDB = null;
     }

@@ -60,11 +60,12 @@
           ':completion' => $completion,
           ':id' => $id
         ]);
-        
+
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Déconnecter la base de données, détruire les variables
       $connectedDB = null;
       unset($_SESSION['postdata']);
     }
