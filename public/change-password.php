@@ -116,7 +116,7 @@ include( VIEW_NAVIGATION );
             <div class="card-body">
               <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                 <div class="form-group">
-                  <label for="username">Nom d'utilisateur</label>
+                  <label class="h6" for="username">Nom d'utilisateur</label>
                   <select class="form-control" name="username" id="username" aria-describedby="usernameHelp" required>
                     <option value="" disabled>Sélectionner un utilisateur...</option>
 <?php
@@ -161,12 +161,12 @@ include( VIEW_NAVIGATION );
                     <small class="form-text text-muted" id="usernameHelp">Si vous n'êtes pas administrateur, vous ne verrez que vous.</small>
                   </div>
                   <div class="form-group">
-                    <label for="password">Mot de passe</label>
+                    <label class="h6" for="password">Mot de passe</label>
                     <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
                     <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
                   </div>
                   <div class="form-group mb-0">
-                    <label for="confirm-password">Confirmer le mot de passe</label>
+                    <label class="h6" for="confirm-password">Confirmer le mot de passe</label>
                     <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
                     <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
                   </div>

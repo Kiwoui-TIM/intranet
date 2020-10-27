@@ -176,17 +176,17 @@ include( VIEW_NAVIGATION );
                 <div class="row">
                   <div class="col-md-8">
                     <div class="form-group">
-                      <label for="username">Nom d'utilisateur</label>
+                      <label class="h6" for="username">Nom d'utilisateur</label>
                       <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
                       <small class="form-text <?= $usernameClass ?>" id="usernameHelp">Peut seulement contenir des lettres sans accents et des chiffres.</small>
                     </div>
                     <div class="form-group">
-                      <label for="password">Mot de passe</label>
+                      <label class="h6" for="password">Mot de passe</label>
                       <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
                       <small class="form-text <?= $passwordClass ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
                     </div>
                     <div class="form-group mb-0">
-                      <label for="confirm-password">Confirmer le mot de passe</label>
+                      <label class="h6" for="confirm-password">Confirmer le mot de passe</label>
                       <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
                       <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
                     </div>
@@ -199,7 +199,7 @@ include( VIEW_NAVIGATION );
                   </div>
                   <div class="col-md-4">
                     <fieldset class="form-group">
-                      <legend>Type de compte</legend>
+                      <legend class="h6">Type de compte</legend>
                       <div class="form-check">
                         <input class="form-check-input" type="radio" id="admin" name="account-type" value="0" required>
                         <label class="form-check-label" for="admin">Administrateur</label>
@@ -218,7 +218,7 @@ include( VIEW_NAVIGATION );
                       </div>
                     </fieldset>
                     <fieldset class="form-group">
-                      <legend>Équipe</legend>
+                      <legend class="h6">Équipe</legend>
                       <div class="form-check">
                         <input class="form-check-input" type="radio" id="no-team" name="team" value="0" required>
                         <label class="form-check-label" for="no-team">Aucune équipe</label>
