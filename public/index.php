@@ -123,7 +123,7 @@ include( VIEW_NAVIGATION );
               <h2><?= $project_row['name'] ?></h2>
             </div>
             <div class="card-body">
-              <div class="progress mx-2 mb-4 shadow-sm" style="height: 20px;">
+              <div class="progress mx-2 mb-4 shadow-sm" style="height: 25px;">
                 <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
 <?php
     if ($percentage == 100) {
@@ -138,8 +138,8 @@ include( VIEW_NAVIGATION );
 ?>
                 </div>
               </div>
-              <div class="table-responsive">
-                <table class="table">
+              <div class="m-2 overflow-auto rounded shadow-sm">
+                <table class="mb-0 table">
                   <thead class="thead-dark">
                     <tr class="d-flex">
                       <th class="col-10">Jalon</th>
