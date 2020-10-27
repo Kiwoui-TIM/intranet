@@ -17,80 +17,9 @@
   // Actions des formulaires/boutons dans le tableau
   include( FUNCTION_CREATE );
   include( FUNCTION_DELETE );
+  include( FUNCTION_CLOCK );
   include( FUNCTION_COMPLETE );
 
-  if (isset($_POST['clock_task']) || isset($_SESSION['postdata']['clock_task'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'utils/connect.php' );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-      $sql_query = 'SELECT time_spent, clock FROM Tasks WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      $task = $stmt->fetch();
-
-      if ($task['clock']) {
-        $cur_timestamp = time();
-        $prev_timestamp = $task['clock'];
-
-        try {
-          $sql_query = 'UPDATE Tasks SET clock = NULL WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-
-        $time_spent = ($cur_timestamp - $prev_timestamp) / 3600 + $task['time_spent'];
-
-        try {
-          $sql_query = 'UPDATE Tasks SET time_spent = :time_spent WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id,
-            ':time_spent' => $time_spent
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      } else {
-        $cur_timestamp = time();
-
-        try {
-          $sql_query = 'UPDATE Tasks SET clock = :timestamp WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id,
-            ':timestamp' => $cur_timestamp
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      }
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -281,7 +210,7 @@
                     <span class="d-block text-danger"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -316,7 +245,7 @@
                     <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -368,7 +297,7 @@
                     <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task" disabled>
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks" disabled>
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
