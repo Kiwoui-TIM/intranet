@@ -47,72 +47,95 @@
 <?php
   include( UTIL_CONNECT );
 
+  // Vérifier le type de compte
   try {
-    $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
+    $sql_query = "SELECT account_type
+                  FROM   Users
+                  WHERE  username = :username
+                  LIMIT  1";
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION["username"]
     ]);
     $user = $stmt->fetch();
+
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Compte client
   if ($user['account_type'] == 3) {
     try {
-      $sql_query = 'SELECT id, name FROM Projects
-                    WHERE client = :client';
+      $sql_query = "SELECT id,
+                           name
+                    FROM   Projects
+                    WHERE  client = :client";
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
         ':client' => $_SESSION['id']
       ]);
+
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
+  // Compte admin
   } elseif ($user['account_type'] == 0) {
     try {
-      $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                    INNER JOIN Milestones ON Projects.id = Milestones.project
-                    ORDER BY Projects.id ASC';
+      $sql_query = "SELECT Projects.id,
+                           Projects.name
+                    FROM   Projects
+                    ORDER  BY Projects.id ASC";
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute();
+
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
+  // Compte étudiant
   } else {
     try {
-      $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                    INNER JOIN Milestones ON Projects.id = Milestones.project
-                    WHERE Milestones.team = :team
-                    ORDER BY Projects.id ASC';
+      $sql_query = "SELECT DISTINCT Projects.id,
+                                    Projects.name
+                    FROM   Projects
+                           INNER JOIN Milestones
+                                   ON Projects.id = Milestones.project
+                    WHERE  Milestones.team = :team
+                    ORDER  BY Projects.id ASC";
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
         ':team' => $_SESSION['team']
       ]);
+
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
   }
 
-  foreach($stmt as $project_row) {
+  // Afficher les projets associés
+  foreach($stmt as $project) {
     try {
-      $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                    WHERE project = :project
-                    ORDER BY due_date ASC';
+      $sql_query = "SELECT id,
+                           name,
+                           due_date,
+                           completed
+                    FROM   Milestones
+                    WHERE  project = :project
+                    ORDER  BY due_date ASC";
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
-        ':project' => $project_row['id']
+        ':project' => $project['id']
       ]);
+
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
     $completed = $total = 0;
 
-    foreach($stmt as $row) {
-      if ($row['completed']) {
+    foreach($stmt as $milestone) {
+      if ($milestone['completed']) {
         $completed++;
       }
       $total++;
@@ -122,7 +145,7 @@
 ?>
           <div class="card my-4 border-0 shadow">
             <div class="card-header bg-white">
-              <h2><?= $project_row['name'] ?></h2>
+              <h2><?= $project['name'] ?></h2>
             </div>
             <div class="card-body">
               <div class="progress mx-2 mb-4 shadow-sm" style="height: 25px;">
@@ -148,17 +171,17 @@
                     ORDER BY due_date ASC';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
-        ':project' => $project_row['id']
+        ':project' => $project['id']
       ]);
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
-    foreach($stmt as $row) {
+    foreach($stmt as $milestone) {
 ?>
-                    <tr class="d-flex <?=$row['completed'] ? 'table-success' : 'table-danger' ?>">
-                      <td class="col-10"><?= htmlspecialchars($row['name']) ?></td>
-                      <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
+                    <tr class="d-flex <?=$milestone['completed'] ? 'table-success' : 'table-danger' ?>">
+                      <td class="col-10"><?= htmlspecialchars($milestone['name']) ?></td>
+                      <td class="col-2"><?= htmlspecialchars($milestone['due_date']) ?></td>
                     </tr>
 
 <?php
