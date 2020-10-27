@@ -10,133 +10,14 @@
   if (!$_SESSION['username']) {
     include( UTIL_LOGOUT );
   }
+
   // Vérifier le niveau d'accès
   include( ACCESS_ADMIN_ONLY );
 
   // Actions des formulaires/boutons dans le tableau
-
-  // Ajouter les projets
-  if (isset($_POST['add_project']) || isset($_SESSION['postdata']['add_project'])) {
-    // Définir les variables et les mettre vides
-    $name = $client = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $name = trim($_SESSION['postdata']['name']);
-      $client = trim($_SESSION['postdata']['client']);
-
-      try {
-        $sql_query = 'INSERT INTO Projects (name, client)
-                      VALUES (:name, :client)';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':name' => $name,
-          ':client' => $client
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
-
-  // Supprimer les projets
-  if (isset($_POST['delete_project']) || isset($_SESSION['postdata']['delete_project'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'DELETE FROM Projects WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
-
-  // Compléter les projets
-  if (isset($_POST['project_completion']) || isset($_SESSION['postdata']['project_completion'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'SELECT completed FROM Projects WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      $project = $stmt->fetch();
-
-      if ($project['completed'] == 0) {
-        try {
-          $sql_query = 'UPDATE Projects SET completed = \'1\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      } else {
-        try {
-          $sql_query = 'UPDATE Projects SET completed = \'0\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      }
-
-      $connectedDB = null;
-      unset($_SESSION['postdata']);
-    }
-  }
+  include( FUNCTION_CREATE );
+  include( FUNCTION_DELETE );
+  include( FUNCTION_COMPLETE );
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -189,7 +70,7 @@
 ?>
                   </select>
                   <div class="input-group-append">
-                  	<button class="btn btn-outline-primary" type="submit" name="add_project">Créer un projet</button>
+                  	<button class="btn btn-outline-primary" type="submit" name="create_item" value="Projects">Créer un projet</button>
                   </div>
                 </div>
               </form>
@@ -206,6 +87,7 @@
   try {
     $sql_query = 'SELECT Projects.id,
                          Projects.name,
+                         Projects.completed,
                          Users.username AS client
                   FROM Projects
                   INNER JOIN Users ON Projects.client = Users.id
@@ -220,7 +102,7 @@
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="project_completion">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Projects">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
@@ -238,7 +120,7 @@
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_project">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Projects">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
@@ -250,6 +132,7 @@
   try {
     $sql_query = 'SELECT Projects.id,
                          Projects.name,
+                         Projects.completed,
                          Users.username AS client
                   FROM Projects
                   INNER JOIN Users ON Projects.client = Users.id
@@ -264,7 +147,7 @@
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-success" type="submit" name="project_completion">
+                    <button class="btn btn-sm btn-square btn-success" type="submit" name="complete_item" value="Projects">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
@@ -282,7 +165,7 @@
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_project">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Projects">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">

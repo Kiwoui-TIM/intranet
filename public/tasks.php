@@ -15,76 +15,9 @@
   include( ACCESS_NO_CLIENT );
 
   // Actions des formulaires/boutons dans le tableau
-
-  // Ajouter une tâche
-  if (isset($_POST['add_task']) || isset($_SESSION['postdata']['add_task'])) {
-    // Définir les variables et les mettre vides
-    $name = $milestone = $due_date = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'utils/connect.php' );
-      $name = trim($_SESSION['postdata']['name']);
-      $milestone = trim($_SESSION['postdata']['milestone']);
-      $due_date = trim($_SESSION['postdata']['due_date']);
-
-      try {
-        $sql_query = 'INSERT INTO Tasks (name, student, milestone, creation_date, due_date)
-                      VALUES (:name, :student, :milestone, :creation_date, :due_date)';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':name' => $name,
-          ':student' => $_SESSION['id'],
-          ':milestone' => $milestone,
-          ':creation_date' => date('Y-m-d'),
-          ':due_date' => $due_date
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
-
-  if (isset($_POST['delete_task']) || isset($_SESSION['postdata']['delete_task'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'utils/connect.php' );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'DELETE FROM Tasks WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
+  include( FUNCTION_CREATE );
+  include( FUNCTION_DELETE );
+  include( FUNCTION_COMPLETE );
 
   if (isset($_POST['clock_task']) || isset($_SESSION['postdata']['clock_task'])) {
     // Définir les variables et les mettre vides
@@ -156,60 +89,6 @@
       }
       unset($_SESSION['postdata']);
       $connectedDB = null;
-    }
-  }
-
-  if (isset($_POST['task_completion']) || isset($_SESSION['postdata']['task_completion'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( 'utils/connect.php' );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'SELECT completed FROM Tasks WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      $task = $stmt->fetch();
-
-      if ($task['completed'] == 0) {
-        try {
-          $sql_query = 'UPDATE Tasks SET completed = \'1\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      } else {
-        try {
-          $sql_query = 'UPDATE Tasks SET completed = \'0\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      }
-      $connectedDB = null;
-      unset($_SESSION['postdata']);
     }
   }
 ?>
@@ -298,7 +177,7 @@
                   </select>
                   <input class="form-control" type="date" id="due_date" name="due_date" required>
                   <div class="input-group-append">
-                    <button class="btn btn-outline-primary" type="submit" name="add_task">Créer une tâche</button>
+                    <button class="btn btn-outline-primary" type="submit" name="create_item" value="Tasks">Créer une tâche</button>
                   </div>
                 </div>
               </form>
@@ -390,7 +269,7 @@
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="task_completion">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Tasks">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -414,7 +293,7 @@
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -425,7 +304,7 @@
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="task_completion">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Tasks">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -449,7 +328,7 @@
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -477,7 +356,7 @@
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-success" type="submit" name="task_completion">
+                    <button class="btn btn-sm btn-square btn-success" type="submit" name="complete_item" value="Tasks">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -501,7 +380,7 @@
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">

@@ -15,133 +15,9 @@
   include( ACCESS_NO_STUDENT );
 
   // Actions des formulaires/boutons dans le tableau
-
-  // Ajouter les jalons
-  if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
-    // Définir les variables et les mettre vides
-    $name = $project = $due_date = $team = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $name = trim($_SESSION['postdata']['name']);
-      $project = trim($_SESSION['postdata']['project']);
-      $due_date = trim($_SESSION['postdata']['due_date']);
-      $team = trim($_SESSION['postdata']['team']);
-
-      try {
-        $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
-                      VALUES (:name, :project, :team, :due_date)';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':name' => $name,
-          ':project' => $project,
-          ':team' => $team,
-          ':due_date' => $due_date
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
-
-  // Supprimer les jalons
-  if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'DELETE FROM Milestones WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      unset($_SESSION['postdata']);
-      $connectedDB = null;
-    }
-  }
-
-  // Compléter les jalons
-  if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
-    // Définir les variables et les mettre vides
-    $id = '';
-
-    // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-    // puis retourner à la page qui a fait la requête.
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $_SESSION['postdata'] = $_POST;
-      $_POST = array();
-      header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-      exit;
-      // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-    } elseif (array_key_exists('postdata', $_SESSION)) {
-      include( UTIL_CONNECT );
-      $id = trim($_SESSION['postdata']['id']);
-
-      try {
-        $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
-          ':id' => $id
-        ]);
-      } catch(PDOException $e) {
-        echo 'Error: ' . $e->getMessage();
-      }
-
-      $milestone = $stmt->fetch();
-
-      if ($milestone['completed'] == 0) {
-        try {
-          $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      } else {
-        try {
-          $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
-          $stmt = $connectedDB->prepare($sql_query);
-          $stmt->execute([
-            ':id' => $id
-          ]);
-        } catch(PDOException $e) {
-          echo 'Error: ' . $e->getMessage();
-        }
-      }
-
-      $connectedDB = null;
-      unset($_SESSION['postdata']);
-    }
-  }
+  include( FUNCTION_CREATE );
+  include( FUNCTION_DELETE );
+  include( FUNCTION_COMPLETE );
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -200,7 +76,7 @@
                   </select>
                   <input class="form-control" type="date" id="due_date" name="due_date" required>
                   <div class="input-group-append">
-                    <button class="btn btn-outline-primary" type="submit" name="add_milestone">Créer un jalon</button>
+                    <button class="btn btn-outline-primary" type="submit" name="create_item" value="Milestones">Créer un jalon</button>
                   </div>
                 </div>
               </form>
@@ -262,7 +138,7 @@
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="milestone_completion">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Milestones">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
@@ -280,7 +156,7 @@
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_milestone">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
@@ -291,7 +167,7 @@
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="milestone_completion">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Milestones">
                       <span data-feather="x"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
@@ -309,7 +185,7 @@
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_milestone">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
@@ -340,7 +216,7 @@
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-success" type="submit" name="milestone_completion">
+                    <button class="btn btn-sm btn-square btn-success" type="submit" name="complete_item" value="Milestones">
                       <span data-feather="check"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
@@ -358,7 +234,7 @@
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_milestone">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
