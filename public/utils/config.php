@@ -7,7 +7,7 @@
 
   define('DIR_UTILS',         'utils/');
   define('UTIL_CONNECT',      DIR_UTILS . 'connect.php');
-  define('UTIL_LOGOUT',       DIR_UTILS . 'logout.php');
+  define('UTIL_LOGOUT',       'logout.php');
 
   define('DIR_ACCESS',        'access/');
   define('ACCESS_ADMIN_ONLY', DIR_UTILS . DIR_ACCESS . 'admin.php');
