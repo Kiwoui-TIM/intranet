@@ -20,7 +20,7 @@
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body class="bg-light">
+<body>
 <?php
   if (!$_SESSION['already_seen']) {
 ?>

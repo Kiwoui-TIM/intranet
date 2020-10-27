@@ -26,7 +26,7 @@
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body class="bg-light">
+<body>
 <?php if ($creation_success) { ?>
   <div class="alert alert-success popup-alert mt-4" role="alert">
     Compte créé avec succès !

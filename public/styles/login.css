@@ -3,10 +3,6 @@ body {
   min-height: 100vh;
 }
 
-body {
-  background-color: #f5f5f5;
-}
-
 .popup-alert {
   position: fixed;
   width: 20%;

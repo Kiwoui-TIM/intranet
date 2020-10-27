@@ -23,7 +23,7 @@
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body class="bg-light">
+<body>
 <?php if ($change_success) { ?>
   <div class="alert alert-success popup-alert mt-4" role="alert">
     Mot de passe changé avec succès !

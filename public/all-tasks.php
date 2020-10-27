@@ -22,7 +22,7 @@
 ?>
 <!-- END INCLUDE META -->
 </head>
-<body class="bg-light">
+<body>
 <!-- START INCLUDE HEADER -->
 <?php
   include( VIEW_HEADER );
