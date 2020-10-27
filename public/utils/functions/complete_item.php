@@ -60,6 +60,7 @@
           ':completion' => $completion,
           ':id' => $id
         ]);
+        
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }

@@ -44,9 +44,11 @@
               ':creation_date' => date('Y-m-d'),
               ':due_date' => $due_date
             ]);
+
           } catch(PDOException $e) {
             echo 'Error: ' . $e->getMessage();
           }
+
           break;
 
         // Créer un jalon
@@ -74,9 +76,11 @@
               ':team' => $team,
               ':due_date' => $due_date
             ]);
+
           } catch(PDOException $e) {
             echo 'Error: ' . $e->getMessage();
           }
+
           break;
 
         // Créer un projet
@@ -96,9 +100,11 @@
               ':name' => $name,
               ':client' => $client
             ]);
+
           } catch(PDOException $e) {
             echo 'Error: ' . $e->getMessage();
           }
+          
           break;
       }
 
