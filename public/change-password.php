@@ -76,7 +76,7 @@
 
     foreach($stmt as $row) {
 ?>
-                    <option value="<?= htmlspecialchars($row['username']) ?>" <?php if ($row['username'] == $_SESSION['username']) echo 'selected' ?>><?= htmlspecialchars($row['username']) ?></option>
+                    <option value="<?= htmlspecialchars($row['username']) ?>" <?= $row['username'] == $_SESSION['username'] ? 'selected' : null ?>><?= htmlspecialchars($row['username']) ?></option>
 <?php
       $connectedDB = null;
     }

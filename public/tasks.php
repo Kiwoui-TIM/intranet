@@ -210,7 +210,7 @@
                     <span class="d-block text-danger"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks">
+                    <button class="btn btn-sm btn-square <?= $task['clock'] ? 'btn-warning' : 'btn-info' ?>" type="submit" name="clock_item" value="Tasks">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -245,7 +245,7 @@
                     <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks">
+                    <button class="btn btn-sm btn-square <?= $task['clock'] ? 'btn-warning' : 'btn-info' ?>" type="submit" name="clock_item" value="Tasks">
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
@@ -297,7 +297,7 @@
                     <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_item" value="Tasks" disabled>
+                    <button class="btn btn-sm btn-square <?= $task['clock'] ? 'btn-warning' : 'btn-info' ?>" type="submit" name="clock_item" value="Tasks" disabled>
                       <span data-feather="clock"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">

@@ -126,18 +126,10 @@
             </div>
             <div class="card-body">
               <div class="progress mx-2 mb-4 shadow-sm" style="height: 25px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
-<?php
-    if ($percentage == 100) {
-?>
-                  <strong>Complété</strong>
-<?php
-    } else {
-?>
-                  <strong><?= round($percentage) ?>%</strong>
-<?php
-    }
-?>
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $percentage == 100 ? 'bg-success' : 'bg-info' ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
+                  <strong>
+                    <?= $percentage == 100 ? 'Complété' : round($percentage) ?>%
+                  </strong>
                 </div>
               </div>
               <div class="m-2 overflow-auto rounded shadow-sm">
@@ -164,7 +156,7 @@
 
     foreach($stmt as $row) {
 ?>
-                    <tr class="d-flex <?php if ($row['completed']) {echo 'table-success';} else {echo 'table-danger';} ?>">
+                    <tr class="d-flex <?=$row['completed'] ? 'table-success' : 'table-danger' ?>">
                       <td class="col-10"><?= htmlspecialchars($row['name']) ?></td>
                       <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
                     </tr>
