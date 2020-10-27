@@ -19,6 +19,9 @@
   define('FUNCTION_DELETE',   DIR_UTILS . DIR_FUNCTIONS . 'delete_item.php');
   define('FUNCTION_CLOCK',    DIR_UTILS . DIR_FUNCTIONS . 'clock_item.php');
   define('FUNCTION_COMPLETE', DIR_UTILS . DIR_FUNCTIONS . 'complete_item.php');
+  define('FUNCTION_NEW_ACC',  DIR_UTILS . DIR_FUNCTIONS . 'create_account.php');
+  define('FUNCTION_NEW_PWD',  DIR_UTILS . DIR_FUNCTIONS . 'change_password.php');
+  define('FUNCTION_LOGIN',    DIR_UTILS . DIR_FUNCTIONS . 'login.php');
 
   define('HOME_TITLE',        'Tableau de bord');
   define('TASKS_TITLE',       'Liste des tâches');
