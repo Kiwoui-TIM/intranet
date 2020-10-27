@@ -250,15 +250,10 @@ include( VIEW_NAVIGATION );
           <div class="card my-4 border-0 shadow">
             <div class="card-body">
               <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-                <div class="form-group">
-                  <label class="h6" for="name">Nom de la tâche</label>
-                  <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label class="h6" for="milestone">Jalon</label>
-                    <select class="form-control" name="milestone" id="milestone" required>
-                      <option value="" disabled selected>Sélectionner un jalon...</option>
+                <div class="input-group input-group-lg">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Nom de la tâche" required>
+                    <select class="custom-select" name="milestone" id="milestone" required>
+                      <option value="" disabled selected>Choisir un jalon...</option>
 <?php
   include( 'utils/connect.php' );
 
@@ -275,9 +270,9 @@ include( VIEW_NAVIGATION );
 
   if ($user['account_type'] == 0) {
     try {
-      $sql_query = 'SELECT Milestones.id AS milestone_id,
-                          Milestones.name AS milestone_name,
-                          Projects.name AS project_name
+      $sql_query = 'SELECT Milestones.id,
+                          Milestones.name,
+                          Projects.name AS project
                     FROM Milestones
                     INNER JOIN Projects ON Milestones.project = Projects.id
                     WHERE Milestones.completed = 0
@@ -290,9 +285,9 @@ include( VIEW_NAVIGATION );
 
   } else {
     try {
-      $sql_query = 'SELECT Milestones.id AS milestone_id,
-                          Milestones.name AS milestone_name,
-                          Projects.name AS project_name
+      $sql_query = 'SELECT Milestones.id,
+                           Milestones.name,
+                           Projects.name AS project
                     FROM Milestones
                     INNER JOIN Projects ON Milestones.project = Projects.id
                     WHERE Milestones.team = :team AND Milestones.completed = 0
@@ -306,20 +301,18 @@ include( VIEW_NAVIGATION );
     }
   }
 
-  foreach($stmt as $row) {
+  foreach($stmt as $milestone) {
 ?>
-                      <option value="<?= htmlspecialchars($row['milestone_id']) ?>">[<?= htmlspecialchars($row['project_name']) ?>] <?= htmlspecialchars($row['milestone_name']) ?></option>
+                    <option value="<?= htmlspecialchars($milestone['id']) ?>">[<?= htmlspecialchars($milestone['project']) ?>] <?= htmlspecialchars($milestone['name']) ?></option>
 <?php
   }
 ?>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-6">
-                    <label class="h6" for="due_date">Date d'échéance</label>
-                    <input class="form-control" type="date" id="due_date" name="due_date" required>
+                  </select>
+                  <input class="form-control" type="date" id="due_date" name="due_date" required>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="submit" name="add_task">Créer une tâche</button>
                   </div>
                 </div>
-                <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_task">Ajouter une tâche</button>
               </form>
             </div>
           </div>
@@ -337,7 +330,10 @@ include( VIEW_NAVIGATION );
 
   if ($user['account_type'] == 0) {
     try {
-      $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+      $sql_query = 'SELECT Milestones.id,
+                           Milestones.name,
+                           Projects.name AS project
+                    FROM Milestones
                     INNER JOIN Projects ON Milestones.project = Projects.id
                     WHERE Milestones.completed = 0
                     ORDER BY Milestones.project, Milestones.id ASC';
@@ -349,7 +345,10 @@ include( VIEW_NAVIGATION );
 
   } else {
     try {
-      $sql_query = 'SELECT Milestones.id, Milestones.name, Projects.name FROM Milestones
+      $sql_query = 'SELECT Milestones.id,
+                           Milestones.name,
+                           Projects.name AS project
+                    FROM Milestones
                     INNER JOIN Projects ON Milestones.project = Projects.id
                     WHERE (Milestones.team = :team AND Milestones.completed = 0)
                     ORDER BY Milestones.project, Milestones.id ASC';
@@ -362,13 +361,13 @@ include( VIEW_NAVIGATION );
     }
   }
 
-  foreach($stmt as $milestone_row) {
+  foreach($stmt as $milestone) {
     try {
       $sql_query = 'SELECT id FROM Tasks
                     WHERE milestone = :milestone';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
-        ':milestone' => $milestone_row['0']
+        ':milestone' => $milestone['0']
       ]);
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
@@ -378,11 +377,11 @@ include( VIEW_NAVIGATION );
 ?>
           <div class="card my-4 border-0 shadow">
             <div class="card-header bg-white">
-              <h3 class="h4"><?= htmlspecialchars($milestone_row['2']) ?></h3>
+              <h3 class="h4"><?= htmlspecialchars($milestone['project']) ?></h3>
             </div>
             <div class="card-body">
               <div class="m-2 p-3 bg-light rounded shadow-sm">
-                <h4 class="h5 border-bottom border-gray pb-2 mb-0"><?= htmlspecialchars($milestone_row['1']) ?></h4>
+                <h4 class="h5 border-bottom border-gray pb-2 mb-0"><?= htmlspecialchars($milestone['name']) ?></h4>
 <?php
       try {
         $sql_query = 'SELECT *
@@ -392,45 +391,45 @@ include( VIEW_NAVIGATION );
         $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([
           ':student' => $_SESSION['id'],
-          ':milestone' => $milestone_row['id']
+          ':milestone' => $milestone['id']
         ]);
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
 
-      foreach($stmt as $row) {
-        if ($row['due_date'] < date('Y-m-d')) {
+      foreach($stmt as $task) {
+        if ($task['due_date'] < date('Y-m-d')) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-danger" type="submit" name="task_completion">
                       <span data-feather="x"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <div class="media-body pb-3 mb-0 small lh-125">
                     <div class="d-flex justify-content-between align-items-center w-100">
-                      <strong class="text-danger"><?= htmlspecialchars($row['name']) ?></strong>
+                      <strong class="text-danger"><?= htmlspecialchars($task['name']) ?></strong>
                     </div>
-                    <span class="d-block text-danger"><strong><?= htmlspecialchars($row['time_spent']) ?>h</strong> - <?= htmlspecialchars($row['due_date']) ?></span>
+                    <span class="d-block text-danger"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="edit_task">
+                    <button class="btn btn-sm btn-square btn-info" type="submit" name="edit_task">
                       <span data-feather="edit"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                 </div>
 <?php
@@ -441,31 +440,31 @@ include( VIEW_NAVIGATION );
                     <button class="btn btn-sm btn-square btn-danger" type="submit" name="task_completion">
                       <span data-feather="x"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <div class="media-body pb-3 mb-0 small lh-125">
                     <div class="d-flex justify-content-between align-items-center w-100">
-                      <strong><?= htmlspecialchars($row['name']) ?></strong>
+                      <strong><?= htmlspecialchars($task['name']) ?></strong>
                     </div>
-                    <span class="d-block"><strong><?= htmlspecialchars($row['time_spent']) ?>h</strong> - <?= htmlspecialchars($row['due_date']) ?></span>
+                    <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="edit_task">
+                    <button class="btn btn-sm btn-square btn-info" type="submit" name="edit_task">
                       <span data-feather="edit"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
                       <span data-feather="clock"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                 </div>
 <?php
@@ -480,44 +479,44 @@ include( VIEW_NAVIGATION );
         $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([
           ':student' => $_SESSION['id'],
-          ':milestone' => $milestone_row['id']
+          ':milestone' => $milestone['id']
         ]);
       } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
       }
 
-      foreach($stmt as $row) {
+      foreach($stmt as $task) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-success" type="submit" name="task_completion">
                       <span data-feather="check"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <div class="media-body pb-3 mb-0 small lh-125">
                     <div class="d-flex justify-content-between align-items-center w-100">
-                      <strong><del><?= htmlspecialchars($row['name']) ?></del></strong>
+                      <strong><del><?= htmlspecialchars($task['name']) ?></del></strong>
                     </div>
-                    <span class="d-block"><strong><?= htmlspecialchars($row['time_spent']) ?>h</strong> - <?= htmlspecialchars($row['due_date']) ?></span>
+                    <span class="d-block"><strong><?= htmlspecialchars($task['time_spent']) ?>h</strong> - <?= htmlspecialchars($task['due_date']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="edit_task">
+                    <button class="btn btn-sm btn-square btn-info" type="submit" name="edit_task" disabled>
                       <span data-feather="edit"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task">
+                    <button class="btn btn-sm btn-square btn-info <?php if ($task['clock']) {echo 'btn-warning';} ?>" type="submit" name="clock_task" disabled>
                       <span data-feather="clock"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-outline-danger <?php if ($row['clock']) {echo 'btn-warning';} ?>" type="submit" name="delete_task">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_task">
                       <span data-feather="trash-2"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
                 </div>
 <?php
