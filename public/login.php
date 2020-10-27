@@ -28,11 +28,11 @@
   </div>
 <?php } ?>
 
-  <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
+  <form class="form-signin" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
     <object data="images/kiwi_square.svg" type="image/svg+xml" width="200" height="200"></object>
     <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
-    <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
+    <input class="form-control" type="text" id="username" name="username" value="<?= $username ?>" placeholder="Utilisateur" required autofocus>
     <label class ="sr-only" for="password">Mot de passe</label>
     <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
     <button class="btn btn-lg btn-outline-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>
