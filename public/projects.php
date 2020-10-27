@@ -245,7 +245,7 @@ include( VIEW_NAVIGATION );
                     <span class="d-block"><?= htmlspecialchars($project['client']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info" type="submit" name="edit_project">
+                    <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_project">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
@@ -289,7 +289,7 @@ include( VIEW_NAVIGATION );
                     <span class="d-block"><?= htmlspecialchars($project['client']) ?></span>
                   </div>
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-square btn-info" type="submit" name="edit_project" disabled>
+                    <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_project" disabled>
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
