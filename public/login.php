@@ -4,7 +4,9 @@
   }
   ob_start();
 
+  // Importer les constantes et changer le titre de la page
   require( 'utils/config.php' );
+  $page_title = 'Connexion';
 
   include( FUNCTION_LOGIN );
 ?>
@@ -12,20 +14,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Intranet</title>
-  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+<!-- START INCLUDE META -->
+<?php
+  include( VIEW_META );
+?>
+<!-- END INCLUDE META -->
   <link rel="stylesheet" href="styles/login.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#52de63">
-  <meta name="apple-mobile-web-app-title" content="Kiwoui Intranet">
-  <meta name="application-name" content="Kiwoui Intranet">
-  <meta name="msapplication-TileColor" content="#52de63">
-  <meta name="theme-color" content="#52de63">
 </head>
 <body class="text-center d-flex align-items-center">
 <?php if ($error['generic']) { ?>
