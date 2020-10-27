@@ -2,14 +2,16 @@
   include( UTIL_CONNECT );
 
   try {
-    $sql_query = 'SELECT account_type
-                  FROM Users
-                  WHERE username = :username LIMIT 1';
+    $sql_query = "SELECT account_type
+                  FROM   Users
+                  WHERE  username = :username
+                  LIMIT 1";
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
     ]);
     $user = $stmt->fetch();
+
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
