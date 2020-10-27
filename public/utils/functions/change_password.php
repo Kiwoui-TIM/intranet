@@ -49,8 +49,8 @@
           // Encrypter le mot de passe
           $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
           $sql_query = "UPDATE Users
-                         SET    hashed_password = :hashed_password
-                         WHERE  username = :username";
+                        SET    hashed_password = :hashed_password
+                        WHERE  username = :username";
           $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute([
             ':hashed_password' => $hashed_password,

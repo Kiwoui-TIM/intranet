@@ -61,9 +61,9 @@
       // Vérifier si l'utilisateur existe
       try {
         $sql_query = "SELECT username
-                      FROM Users
-                      WHERE username=:username
-                      LIMIT 1";
+                      FROM   Users
+                      WHERE  username=:username
+                      LIMIT  1";
         $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([
           ':username' => $username

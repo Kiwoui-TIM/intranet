@@ -80,7 +80,9 @@
         $time_spent = ($cur_timestamp - $prev_timestamp) / 3600 + $task['time_spent'];
 
         try {
-          $sql_query = "UPDATE $tbl SET time_spent = :time_spent WHERE id = :id";
+          $sql_query = "UPDATE $tbl
+                        SET    time_spent = :time_spent
+                        WHERE  id = :id";
           $stmt = $connectedDB->prepare($sql_query);
           $stmt->execute([
             ':id' => $id,
