@@ -5,7 +5,7 @@
     $sql_query = "SELECT account_type
                   FROM   Users
                   WHERE  username = :username
-                  LIMIT 1";
+                  LIMIT  1";
     $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
