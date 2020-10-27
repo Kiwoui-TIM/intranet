@@ -4,6 +4,8 @@
   }
   ob_start();
 
+  require( 'utils/config.php' );
+
   // LOGIN USER
   if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
     // define variables and set to empty values
@@ -19,7 +21,7 @@
       $username = trim($_SESSION['postdata']['username']);
       $password = trim($_SESSION['postdata']['password']);
 
-      include( 'utils/connect.php' );
+      include( UTIL_CONNECT );
 
       try {
         $sql_query = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';

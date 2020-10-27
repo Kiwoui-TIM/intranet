@@ -1,32 +1,17 @@
 <?php
   session_start();
   ob_start();
+
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = CREATE_ACC_TITLE;
+
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'utils/logout.php' );
+    include( UTIL_LOGOUT );
   }
   // Vérifier le niveau d'accès
-  include( 'utils/connect.php' );
-  try {
-    $sql_query = 'SELECT account_type
-                  FROM Users
-                  WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':username' => $_SESSION["username"]
-    ]);
-    $user = $stmt->fetch();
-  } catch(PDOException $e) {
-    echo 'Error: ' . $e->getMessage();
-  }
-  if ($user['account_type'] != 0) {
-    header('location: index.php');
-    exit;
-  }
-  $connectedDB = null;
-  require( 'utils/config.php' );
-  $page_title = 'Créer un compte';
-  $create_account = 'active';
+  include( ACCESS_ADMIN_ONLY );
 
   // Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe et du nom d'utilisateur
   $usernameClass = 'text-muted';
@@ -93,7 +78,7 @@
       }
 
       // Inclure la connexion à la base de données
-      include( 'utils/connect.php' );
+      include( UTIL_CONNECT );
 
       try {
         $sql_query = 'SELECT username
@@ -148,7 +133,7 @@
 <head>
 <!-- START INCLUDE META -->
 <?php
-include( VIEW_META );
+  include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
@@ -160,12 +145,12 @@ include( VIEW_META );
 <?php } ?>
 <!-- START INCLUDE HEADER -->
 <?php
-include( VIEW_HEADER );
+  include( VIEW_HEADER );
 ?>
 <!-- END INCLUDE HEADER -->
 <!-- START INCLUDE NAVIGATION -->
 <?php
-include( VIEW_NAVIGATION );
+  include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -255,7 +240,7 @@ include( VIEW_NAVIGATION );
       </main>
 <!-- START INCLUDE FOOTER -->
 <?php
-include( VIEW_FOOTER );
+  include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
   <script>

@@ -5,7 +5,7 @@
     </button>
     <ul class="navbar-nav px-3">
       <li class="nav-item text-nowrap">
-        <a class="nav-link" href="utils/logout.php">Déconnexion</a>
+        <a class="nav-link" href="<?= UTIL_LOGOUT ?>">Déconnexion</a>
       </li>
     </ul>
   </nav>

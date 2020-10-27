@@ -1,13 +1,15 @@
 <?php
   session_start();
   ob_start();
+
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = CHANGE_PWD_TITLE;
+
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'utils/logout.php' );
+    include( UTIL_LOGOUT );
   }
-  require( 'utils/config.php' );
-  $page_title = 'Changer de mot de passe';
-  $change_password = 'active';
 
   // Mettre, par défaut, la classe "text-muted" à l'aide du mot de passe
   $passwordClass = 'text-muted';
@@ -56,7 +58,7 @@
       }
 
       // Inclure la connexion à la base de données
-      include( 'utils/connect.php' );
+      include( UTIL_CONNECT );
 
       // S'il n'y a aucune erreur
       if (count($error) == 0) {
@@ -90,7 +92,7 @@
 <head>
 <!-- START INCLUDE META -->
 <?php
-include( VIEW_META );
+  include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
@@ -102,12 +104,12 @@ include( VIEW_META );
 <?php } ?>
 <!-- START INCLUDE HEADER -->
 <?php
-include( VIEW_HEADER );
+  include( VIEW_HEADER );
 ?>
 <!-- END INCLUDE HEADER -->
 <!-- START INCLUDE NAVIGATION -->
 <?php
-include( VIEW_NAVIGATION );
+  include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -120,7 +122,7 @@ include( VIEW_NAVIGATION );
                   <select class="form-control" name="username" id="username" aria-describedby="usernameHelp" required>
                     <option value="" disabled>Sélectionner un utilisateur...</option>
 <?php
-  include( 'utils/connect.php' );
+  include( UTIL_CONNECT );
   try {
     $sql_query = 'SELECT account_type
                   FROM Users
@@ -185,7 +187,7 @@ include( VIEW_NAVIGATION );
         </main>
 <!-- START INCLUDE FOOTER -->
 <?php
-include( VIEW_FOOTER );
+  include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
   <script>

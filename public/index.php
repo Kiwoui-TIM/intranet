@@ -1,26 +1,28 @@
 <?php
   session_start();
   ob_start();
+
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = HOME_TITLE;
+
   // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
   if (!$_SESSION['username']) {
-    include( 'utils/logout.php' );
+    include( UTIL_LOGOUT );
   }
-  require( 'utils/config.php' );
-  $page_title = 'Tableau de bord';
-  $home = 'active';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <!-- START INCLUDE META -->
 <?php
-include( VIEW_META );
+  include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
 <body class="bg-light">
 <?php
-if (!$_SESSION['already_seen']) {
+  if (!$_SESSION['already_seen']) {
 ?>
   <div class="position-absolute d-flex align-items-center justify-content-center" id="spinner-container">
     <div id="spinner" class="spinner-border text-secondary" role="status">
@@ -28,22 +30,22 @@ if (!$_SESSION['already_seen']) {
     </div>
   </div>
 <?php
-}
+  }
 ?>
 <!-- START INCLUDE HEADER -->
 <?php
-include( VIEW_HEADER );
+  include( VIEW_HEADER );
 ?>
 <!-- END INCLUDE HEADER -->
 <!-- START INCLUDE NAVIGATION -->
 <?php
-include( VIEW_NAVIGATION );
+  include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="container">
 <?php
-  include( 'utils/connect.php' );
+  include( UTIL_CONNECT );
 
   try {
     $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
@@ -185,11 +187,11 @@ include( VIEW_NAVIGATION );
       </main>
 <!-- START INCLUDE FOOTER -->
 <?php
-include( VIEW_FOOTER );
+  include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
 <?php
-if (!$_SESSION['already_seen']) {
+  if (!$_SESSION['already_seen']) {
 ?>
 <script>
   setTimeout(function () {
@@ -200,8 +202,9 @@ if (!$_SESSION['already_seen']) {
   }, 1250);
 </script>
 <?php
-}
-$_SESSION['already_seen'] = true;
+  }
+
+  $_SESSION['already_seen'] = true;
 ?>
 </body>
 </html>

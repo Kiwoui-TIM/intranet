@@ -4,13 +4,13 @@
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link <?= $home ?>" href="./">
+              <a class="nav-link <?php if ($page_title == HOME_TITLE) echo 'active' ?>" href="./">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
             </li>
 <?php
-  include( 'utils/connect.php' );
+  include( UTIL_CONNECT );
   try {
     $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
     $stmt = $connectedDB->prepare($sql_query);
@@ -25,7 +25,7 @@
   if ($user['account_type'] != 3) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $tasks ?>" href="tasks.php">
+              <a class="nav-link <?php if ($page_title == TASKS_TITLE) echo 'active' ?>" href="tasks.php">
                 <span data-feather="check-square"></span>
                 Tâches
               </a>
@@ -34,7 +34,7 @@
     if ($user['account_type'] <= 1) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $milestones ?>" href="milestones.php">
+              <a class="nav-link <?php if ($page_title == MILESTONES_TITLE) echo 'active' ?>" href="milestones.php">
                 <span data-feather="flag"></span>
                 Jalons
               </a>
@@ -43,7 +43,7 @@
       if ($user['account_type'] == 0) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $projects ?>" href="projects.php">
+              <a class="nav-link <?php if ($page_title == PROJECTS_TITLE) echo 'active' ?>" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>
@@ -60,7 +60,7 @@
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link <?= $change_password ?>" href="change-password.php">
+              <a class="nav-link <?php if ($page_title == CHANGE_PWD_TITLE) echo 'active' ?>" href="change-password.php">
                 <span data-feather="lock"></span>
                 Changer de mot de passe
               </a>
@@ -75,13 +75,13 @@
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link <?= $all_tasks ?>" href="all-tasks.php">
+              <a class="nav-link <?php if ($page_title == ALL_TASKS_TITLE) echo 'active' ?>" href="all-tasks.php">
                 <span data-feather="list"></span>
                 Toutes les tâches
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link <?= $create_account ?>" href="create-account.php">
+              <a class="nav-link <?php if ($page_title == CREATE_ACC_TITLE) echo 'active' ?>" href="create-account.php">
                 <span data-feather="user-plus"></span>
                 Créer un compte
               </a>
