@@ -78,10 +78,6 @@ body {
   text-transform: uppercase;
 }
 
-.btn-outline-primary {
-  border-width: 2px !important;
-}
-
 .btn-outline-primary:hover {
   color: #fff !important;
 }
