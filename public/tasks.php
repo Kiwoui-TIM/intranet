@@ -51,7 +51,7 @@
                     <select class="custom-select" name="milestone" id="milestone" required>
                       <option value="" disabled selected>Choisir un jalon...</option>
 <?php
-  include( 'utils/connect.php' );
+  include( UTIL_CONNECT );
 
   try {
     $sql_query = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
