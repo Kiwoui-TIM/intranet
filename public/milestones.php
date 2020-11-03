@@ -149,12 +149,12 @@
                     </div>
                     <span class="d-block text-danger"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
                   </div>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
@@ -178,12 +178,12 @@
                     </div>
                     <span class="d-block"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
                   </div>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
@@ -227,12 +227,12 @@
                     </div>
                     <span class="d-block"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
                   </div>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone" disabled>
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>

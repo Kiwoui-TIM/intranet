@@ -113,12 +113,12 @@
                     </div>
                     <span class="d-block"><?= htmlspecialchars($project['client']) ?></span>
                   </div>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_project">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Projects">
                       <span data-feather="trash-2"></span>
@@ -158,12 +158,12 @@
                     </div>
                     <span class="d-block"><?= htmlspecialchars($project['client']) ?></span>
                   </div>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_project" disabled>
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Projects">
                       <span data-feather="trash-2"></span>

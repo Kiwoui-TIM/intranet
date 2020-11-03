@@ -215,12 +215,12 @@
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_task">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
@@ -250,12 +250,12 @@
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_task">
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
@@ -302,12 +302,12 @@
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                   </form>
-                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_task" disabled>
                       <span data-feather="edit"></span>
                     </button>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                  </form>
+                  </form> -->
                   <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                     <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Tasks">
                       <span data-feather="trash-2"></span>
