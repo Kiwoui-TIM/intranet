@@ -1,31 +1,37 @@
   <div class="container-fluid">
     <div class="row">
-      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow">
         <div class="sidebar-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link <?= $home ?>" href="./">
+              <a class="nav-link <?= $page_title == HOME_TITLE ? 'active' : null ?>" href="/">
                 <span data-feather="home"></span>
                 Tableau de bord
               </a>
             </li>
 <?php
-  include( 'connect.php' );
+  include( UTIL_CONNECT );
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $sql_query = "SELECT account_type
+                  FROM   Users
+                  WHERE  username = :username
+                  LIMIT  1";
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION['username']
     ]);
     $user = $stmt->fetch();
-    $connectedDB = null;
+
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
+
+  $connectedDB = null;
+
   if ($user['account_type'] != 3) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $tasks ?>" href="tasks.php">
+              <a class="nav-link <?= $page_title == TASKS_TITLE ? 'active' : null ?>" href="tasks.php">
                 <span data-feather="check-square"></span>
                 Tâches
               </a>
@@ -34,7 +40,7 @@
     if ($user['account_type'] <= 1) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $milestones ?>" href="milestones.php">
+              <a class="nav-link <?= $page_title == MILESTONES_TITLE ? 'active' : null ?>" href="milestones.php">
                 <span data-feather="flag"></span>
                 Jalons
               </a>
@@ -43,7 +49,7 @@
       if ($user['account_type'] == 0) {
 ?>
             <li class="nav-item">
-              <a class="nav-link <?= $projects ?>" href="projects.php">
+              <a class="nav-link <?= $page_title == PROJECTS_TITLE ? 'active' : null ?>" href="projects.php">
                 <span data-feather="briefcase"></span>
                 Projets
               </a>
@@ -60,7 +66,7 @@
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link <?= $change_password ?>" href="change-password.php">
+              <a class="nav-link <?= $page_title == CHANGE_PWD_TITLE ? 'active' : null ?>" href="change-password.php">
                 <span data-feather="lock"></span>
                 Changer de mot de passe
               </a>
@@ -75,13 +81,13 @@
           </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item">
-              <a class="nav-link <?= $all_tasks ?>" href="all-tasks.php">
+              <a class="nav-link <?= $page_title == ALL_TASKS_TITLE ? 'active' : null ?>" href="all-tasks.php">
                 <span data-feather="list"></span>
                 Toutes les tâches
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link <?= $create_account ?>" href="create-account.php">
+              <a class="nav-link <?= $page_title == CREATE_ACC_TITLE ? 'active' : null ?>" href="create-account.php">
                 <span data-feather="user-plus"></span>
                 Créer un compte
               </a>

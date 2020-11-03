@@ -1,5 +1,5 @@
 <?php
-$ini = parse_ini_file('config/app.ini.php');
+$ini = parse_ini_file('./utils/config/app.ini.php');
 $DB_host = $ini['db_host'];
 $DB_name = $ini['db_name'];
 

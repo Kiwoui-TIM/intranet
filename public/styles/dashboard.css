@@ -1,5 +1,11 @@
+html,
 body {
-  font-size: .875rem;
+  min-height: 100vh;
+}
+
+body {
+  background-color: #f5f5f5;
+  font-size: .9rem;
 }
 
 .feather {
@@ -7,6 +13,10 @@ body {
   height: 16px;
   vertical-align: text-bottom;
 }
+
+/*
+ * Popup for account-related forms
+ */
 
 .popup-alert {
   position: fixed;
@@ -78,9 +88,9 @@ body {
   text-transform: uppercase;
 }
 
-.btn-outline-primary {
-  border-width: 2px !important;
-}
+/*
+ * Custom buttons
+ */
 
 .btn-outline-primary:hover {
   color: #fff !important;
@@ -88,6 +98,11 @@ body {
 
 .btn-outline-primary:active {
   color: #fff !important;
+}
+
+.btn-square {
+  width: 34px;
+  height: 34px;
 }
 
 /*
@@ -107,11 +122,15 @@ body {
   right: 1rem;
 }
 
+/*
+ * Spinner on first load
+ */
+
 #spinner-container {
   min-width: 100%;
   min-height: 100%;
   z-index: 1030;
-  background: #fff;
+  background: #f5f5f5;
   transition: ease-in-out .75s
 }
 

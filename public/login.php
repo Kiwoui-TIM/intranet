@@ -1,67 +1,25 @@
 <?php
-if (!isset($_SESSION)) {
-  session_start();
-}
-ob_start();
-
-// LOGIN USER
-if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
-  // define variables and set to empty values
-  $error = [];
-  $username = $password = '';
-
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    $username = trim($_SESSION['postdata']['username']);
-    $password = trim($_SESSION['postdata']['password']);
-
-    include( 'connect.php' );
-
-    try {
-      $query_sql = 'SELECT id, username, hashed_password, team FROM Users WHERE username=:username LIMIT 1';
-      $stmt = $connectedDB->prepare($query_sql);
-      $stmt->execute([':username' => $username]);
-      $user = $stmt->fetch();
-    } catch(PDOException $e) {
-      echo 'Error: ' . $e->getMessage();
-    }
-
-    if (password_verify($password, $user['hashed_password'])) {
-      session_regenerate_id(true);
-      $_SESSION['id'] = $user['id'];
-      $_SESSION['team'] = $user['team'];
-      $_SESSION['username'] = $username;
-      header('location: index.php');
-      exit;
-    } else {
-      $error['generic'] = 'Mauvais utilisateur ou mot de passe';
-    }
-    unset($_SESSION['postdata'], $password);
+  if (!isset($_SESSION)) {
+    session_start();
   }
-}
+  ob_start();
+
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = 'Connexion';
+
+  include( FUNCTION_LOGIN );
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Intranet</title>
-  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+<!-- START INCLUDE META -->
+<?php
+  include( VIEW_META );
+?>
+<!-- END INCLUDE META -->
   <link rel="stylesheet" href="styles/login.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#52de63">
-  <meta name="apple-mobile-web-app-title" content="Kiwoui Intranet">
-  <meta name="application-name" content="Kiwoui Intranet">
-  <meta name="msapplication-TileColor" content="#52de63">
-  <meta name="theme-color" content="#52de63">
 </head>
 <body class="text-center d-flex align-items-center">
 <?php if ($error['generic']) { ?>
@@ -70,11 +28,11 @@ if (isset($_POST['login_user']) || isset($_SESSION['postdata']['login_user'])) {
   </div>
 <?php } ?>
 
-  <form class="form-signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST">
+  <form class="form-signin" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
     <object data="images/kiwi_square.svg" type="image/svg+xml" width="200" height="200"></object>
     <h2 class="h3 mb-3 font-weight-normal">Intranet</h2>
     <label class ="sr-only" for="username">Utilisateur</label>
-    <input class="form-control" type="text" id="username" name="username" value="<?php echo $username;?>" placeholder="Utilisateur" required autofocus>
+    <input class="form-control" type="text" id="username" name="username" value="<?= $username ?>" placeholder="Utilisateur" required autofocus>
     <label class ="sr-only" for="password">Mot de passe</label>
     <input class="form-control" type="password" id="password" name="password" placeholder="Mot de passe" required>
     <button class="btn btn-lg btn-outline-primary btn-block mt-3" type="submit" name="login_user">Connexion</button>

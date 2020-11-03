@@ -1,26 +1,28 @@
 <?php
-session_start();
-ob_start();
-// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION['username']) {
-  include( 'logout.php' );
-}
-require( 'config.php' );
-$page_title = 'Tableau de bord';
-$home = 'active';
+  session_start();
+  ob_start();
+
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = HOME_TITLE;
+
+  // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
+  if (!$_SESSION['username']) {
+    include( UTIL_LOGOUT );
+  }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <!-- START INCLUDE META -->
 <?php
-include( VIEW_META );
+  include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
 <body>
 <?php
-if (!$_SESSION['already_seen']) {
+  if (!$_SESSION['already_seen']) {
 ?>
   <div class="position-absolute d-flex align-items-center justify-content-center" id="spinner-container">
     <div id="spinner" class="spinner-border text-secondary" role="status">
@@ -28,97 +30,133 @@ if (!$_SESSION['already_seen']) {
     </div>
   </div>
 <?php
-}
+  }
 ?>
 <!-- START INCLUDE HEADER -->
 <?php
-include( VIEW_HEADER );
+  include( VIEW_HEADER );
 ?>
 <!-- END INCLUDE HEADER -->
 <!-- START INCLUDE NAVIGATION -->
 <?php
-include( VIEW_NAVIGATION );
+  include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2"><?= $page_title ?></h1>
-        </div>
-        <div class="container-fluid">
+        <div class="container">
 <?php
-  include( 'connect.php' );
+  include( UTIL_CONNECT );
+
+  // Vérifier le type de compte
   try {
-    $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($query_sql);
+    $sql_query = "SELECT account_type
+                  FROM   Users
+                  WHERE  username = :username
+                  LIMIT  1";
+    $stmt = $connectedDB->prepare($sql_query);
     $stmt->execute([
       ':username' => $_SESSION["username"]
     ]);
     $user = $stmt->fetch();
+
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
+
+  // Compte client
   if ($user['account_type'] == 3) {
-    $sql_query = 'SELECT id, name FROM Projects
-                  WHERE client = :client';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':client' => $_SESSION['id']
-    ]);
+    try {
+      $sql_query = "SELECT id,
+                           name
+                    FROM   Projects
+                    WHERE  client = :client";
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':client' => $_SESSION['id']
+      ]);
+
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
+  // Compte admin
   } elseif ($user['account_type'] == 0) {
-    $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                  INNER JOIN Milestones ON Projects.id = Milestones.project
-                  ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute();
+    try {
+      $sql_query = "SELECT Projects.id,
+                           Projects.name
+                    FROM   Projects
+                    ORDER  BY Projects.id ASC";
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute();
+
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
+  // Compte étudiant
   } else {
-    $sql_query = 'SELECT DISTINCT Projects.id, Projects.name FROM Projects
-                  INNER JOIN Milestones ON Projects.id = Milestones.project
-                  WHERE Milestones.team = :team
-                  ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':team' => $_SESSION['team']
-    ]);
+    try {
+      $sql_query = "SELECT DISTINCT Projects.id,
+                                    Projects.name
+                    FROM   Projects
+                           INNER JOIN Milestones
+                                   ON Projects.id = Milestones.project
+                    WHERE  Milestones.team = :team
+                    ORDER  BY Projects.id ASC";
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':team' => $_SESSION['team']
+      ]);
+
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
   }
-  foreach($stmt as $project_row) {
-    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                  WHERE project = :project
-                  ORDER BY due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
+
+  // Afficher les projets associés
+  foreach($stmt as $project) {
+    try {
+      $sql_query = "SELECT id,
+                           name,
+                           due_date,
+                           completed
+                    FROM   Milestones
+                    WHERE  project = :project
+                    ORDER  BY due_date ASC";
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project['id']
+      ]);
+
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
     $completed = $total = 0;
-    foreach($stmt as $row) {
-      if ($row['completed']) {
+
+    foreach($stmt as $milestone) {
+      if ($milestone['completed']) {
         $completed++;
       }
       $total++;
     }
+
     $percentage = $completed / $total * 100;
 ?>
-          <div class="card mb-4">
-            <div class="card-header">
-              <h2><?= $project_row['name'] ?></h2>
+          <div class="card my-4 border-0 shadow">
+            <div class="card-header bg-white">
+              <h2><?= $project['name'] ?></h2>
             </div>
             <div class="card-body">
-              <div class="progress mb-4" style="height: 20px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated <?php if ($percentage == 100) {echo 'bg-success';} else {echo 'bg-info';} ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
-<?php
-    if ($percentage == 100) {
-?>
-                  <strong>Complété</strong>
-<?php
-    } else {
-?>
-                  <strong><?= round($percentage) ?>%</strong>
-<?php
-    }
-?>
+              <div class="progress mx-2 mb-4 shadow-sm" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $percentage == 100 ? 'bg-success' : 'bg-info' ?>" role="progressbar" aria-valuenow="<?= $percentage ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $percentage ?>%">
+                  <strong>
+                    <?= $percentage == 100 ? 'Complété' : round($percentage) ?>%
+                  </strong>
                 </div>
               </div>
-              <div class="table-responsive">
-                <table class="table">
+              <div class="m-2 overflow-auto rounded shadow-sm">
+                <table class="mb-0 table">
                   <thead class="thead-dark">
                     <tr class="d-flex">
                       <th class="col-10">Jalon</th>
@@ -127,22 +165,33 @@ include( VIEW_NAVIGATION );
                   </thead>
                   <tbody>
 <?php
-    $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                  WHERE project = :project
-                  ORDER BY due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
-    foreach($stmt as $row) {
+    try {
+      $sql_query = 'SELECT id,
+                           name,
+                           due_date,
+                           completed
+                    FROM   Milestones
+                    WHERE  project = :project
+                    ORDER  BY due_date ASC';
+      $stmt = $connectedDB->prepare($sql_query);
+      $stmt->execute([
+        ':project' => $project['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
+    }
+
+    foreach($stmt as $milestone) {
 ?>
-                    <tr class="d-flex <?php if ($row['completed']) {echo 'table-success';} else {echo 'table-danger';} ?>">
-                      <td class="col-10"><?= htmlspecialchars($row['name']) ?></td>
-                      <td class="col-2"><?= htmlspecialchars($row['due_date']) ?></td>
+                    <tr class="d-flex <?=$milestone['completed'] ? 'table-success' : 'table-danger' ?>">
+                      <td class="col-10"><?= htmlspecialchars($milestone['name']) ?></td>
+                      <td class="col-2"><?= htmlspecialchars($milestone['due_date']) ?></td>
                     </tr>
+
 <?php
     }
 ?>
+
                   </tbody>
                 </table>
               </div>
@@ -150,16 +199,18 @@ include( VIEW_NAVIGATION );
           </div>
 <?php
   }
+
+  $connectedDB = null;
 ?>
         </div>
       </main>
 <!-- START INCLUDE FOOTER -->
 <?php
-include( VIEW_FOOTER );
+  include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
 <?php
-if (!$_SESSION['already_seen']) {
+  if (!$_SESSION['already_seen']) {
 ?>
 <script>
   setTimeout(function () {
@@ -170,8 +221,9 @@ if (!$_SESSION['already_seen']) {
   }, 1250);
 </script>
 <?php
-}
-$_SESSION['already_seen'] = true;
+  }
+
+  $_SESSION['already_seen'] = true;
 ?>
 </body>
 </html>

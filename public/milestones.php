@@ -1,343 +1,267 @@
 <?php
-session_start();
-ob_start();
-// S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
-if (!$_SESSION['username']) {
-  include( 'logout.php' );
-}
-// Vérifier le niveau d'accès
-include( 'connect.php' );
-try {
-  $query_sql = 'SELECT account_type FROM Users WHERE username = :username LIMIT 1';
-  $stmt = $connectedDB->prepare($query_sql);
-  $stmt->execute([
-    ':username' => $_SESSION["username"]
-  ]);
-  $user = $stmt->fetch();
-} catch(PDOException $e) {
-  echo 'Error: ' . $e->getMessage();
-}
-if ($user['account_type'] > 1) {
-  header('location: index.php');
-  exit;
-}
-$connectedDB = null;
-require( 'config.php' );
-$page_title = 'Liste des jalons';
-$milestones = 'active';
+  session_start();
+  ob_start();
 
-// Actions des formulaires/boutons dans le tableau
+  // Importer les constantes et changer le titre de la page
+  require( 'utils/config.php' );
+  $page_title = MILESTONES_TITLE;
 
-// Ajouter les jalons
-if (isset($_POST['add_milestone']) || isset($_SESSION['postdata']['add_milestone'])) {
-  // Définir les variables et les mettre vides
-  $name = $project = $due_date = $team = '';
-
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $name = trim($_SESSION['postdata']['name']);
-    $project = trim($_SESSION['postdata']['project']);
-    $due_date = trim($_SESSION['postdata']['due_date']);
-    $team = trim($_SESSION['postdata']['team']);
-    $sql_query = 'INSERT INTO Milestones (name, project, team, due_date)
-                   VALUES (:name, :project, :team, :due_date)';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':name' => $name,
-      ':project' => $project,
-      ':team' => $team,
-      ':due_date' => $due_date
-    ]);
-    unset($_SESSION['postdata']);
-    $connectedDB = null;
+  // S'il n'y a pas d'utilisateur connecté, inclure le script de déconnexion
+  if (!$_SESSION['username']) {
+    include( UTIL_LOGOUT );
   }
-}
 
-// Supprimer les jalons
-if (isset($_POST['delete_milestone']) || isset($_SESSION['postdata']['delete_milestone'])) {
-  // Définir les variables et les mettre vides
-  $id = '';
+  // Vérifier le niveau d'accès
+  include( ACCESS_NO_STUDENT );
 
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $id = trim($_SESSION['postdata']['id']);
-    $sql_query = 'DELETE FROM Milestones WHERE id = :id';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':id' => $id
-    ]);
-    unset($_SESSION['postdata']);
-    $connectedDB = null;
-  }
-}
-
-// Compléter les jalons
-if (isset($_POST['milestone_completion']) || isset($_SESSION['postdata']['milestone_completion'])) {
-  // Définir les variables et les mettre vides
-  $id = '';
-
-  // Si la requête est faite via POST, mettre les variables POST dans un array dans SESSION
-  // puis retourner à la page qui a fait la requête.
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['postdata'] = $_POST;
-    $_POST = array();
-    header('Location: ' . $_SERVER['REQUEST_URI'],true,303);
-    exit;
-    // Si l'array "postdata" existe, changer les variables pour les valeurs entrée par l'utilisateur
-  } elseif (array_key_exists('postdata', $_SESSION)) {
-    include( 'connect.php' );
-    $id = trim($_SESSION['postdata']['id']);
-
-    $sql_query = 'SELECT completed FROM Milestones WHERE id = :id';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':id' => $id
-    ]);
-    $milestone = $stmt->fetch();
-
-    if ($milestone['completed'] == 0) {
-      $sql_query = 'UPDATE Milestones SET completed = \'1\' WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
-    } else {
-      $sql_query = 'UPDATE Milestones SET completed = \'0\' WHERE id = :id';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute([
-        ':id' => $id
-      ]);
-    }
-    $connectedDB = null;
-    unset($_SESSION['postdata']);
-  }
-}
+  // Actions des formulaires/boutons dans le tableau
+  include( FUNCTION_CREATE );
+  include( FUNCTION_DELETE );
+  include( FUNCTION_COMPLETE );
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <!-- START INCLUDE META -->
 <?php
-include( VIEW_META );
+  include( VIEW_META );
 ?>
 <!-- END INCLUDE META -->
 </head>
 <body>
 <!-- START INCLUDE HEADER -->
 <?php
-include( VIEW_HEADER );
+  include( VIEW_HEADER );
 ?>
 <!-- END INCLUDE HEADER -->
 <!-- START INCLUDE NAVIGATION -->
 <?php
-include( VIEW_NAVIGATION );
+  include( VIEW_NAVIGATION );
 ?>
 <!-- END INCLUDE NAVIGATION -->
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2"><?= $page_title ?></h1>
-        </div>
         <div class="container">
-          <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
-            <div class="form-group">
-              <label class="h6" for="name">Nom du jalon</label>
-              <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label class="h6" for="project">Projet</label>
-                <select class="form-control" name="project" id="project" required>
-                  <option value="" disabled selected>Sélectionner un projet...</option>
+          <div class="card my-4 border-0 shadow">
+            <div class="card-body">
+              <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <div class="input-group input-group-lg">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Nom du jalon" required>
+                  <select class="custom-select" name="project" id="project" required>
+                    <option value="" disabled selected>Choisir un projet...</option>
 <?php
-  include( 'connect.php' );
-  $sql_query = 'SELECT id, name FROM Projects
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute();
-  foreach($stmt as $row) {
+  include( UTIL_CONNECT );
+
+  try {
+    $sql_query = 'SELECT id,
+                         name
+                  FROM   Projects
+                  ORDER  BY id ASC';
+    $projects = $connectedDB->prepare($sql_query);
+    $projects->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
+  foreach($projects as $project) {
 ?>
-                  <option value="<?= htmlspecialchars($row['id']) ?>"><?= htmlspecialchars($row['name']) ?></option>
+                    <option value="<?= htmlspecialchars($project['id']) ?>"><?= htmlspecialchars($project['name']) ?></option>
 <?php
   }
 ?>
-                </select>
-              </div>
-              <div class="form-group col-md-6">
-                <label class="h6" for="due_date">Date d'échéance</label>
-                <input class="form-control" type="date" id="due_date" name="due_date" required>
-              </div>
+                  </select>
+                  <select class="custom-select" name="team" id="team" required>
+                    <option value="" disabled selected>Choisir une équipe...</option>
+                    <option value="2">Graphistes</option>
+                    <option value="3">Programmeurs</option>
+                    <option value="4">Intégrateurs web</option>
+                    <option value="5">Intégrateurs vidéo</option>
+                  </select>
+                  <input class="form-control" type="date" id="due_date" name="due_date" required>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="submit" name="create_item" value="Milestones">Créer un jalon</button>
+                  </div>
+                </div>
+              </form>
             </div>
-            <fieldset class="form-group">
-              <legend class="h6">Équipe</legend>
-              <div class="form-row">
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="graphistes" value="2">
-                    <label class="form-check-label" for="graphistes">Graphistes</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="programmeurs" value="3">
-                    <label class="form-check-label" for="programmeurs">Programmeurs</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-web" value="4">
-                    <label class="form-check-label" for="integrateurs-web">Intégrateurs web</label>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="team" id="integrateurs-video" value="5">
-                    <label class="form-check-label" for="integrateurs-video">Intégrateurs vidéo</label>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-            <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="add_milestone">Ajouter un jalon</button>
-          </form>
+          </div>
 <?php
-  $sql_query = 'SELECT id, name FROM Projects
-                ORDER BY id ASC';
-  $stmt = $connectedDB->prepare($sql_query);
-  $stmt->execute([
-    ':team' => $_SESSION['team']
-  ]);
-  foreach($stmt as $project_row) {
-?>
-          <h2><?= htmlspecialchars($project_row['name'])?></h2>
-          <table class="table table-bordered table-hover table-sm">
-            <thead class="thead-dark">
-              <tr class="d-flex">
-                <th class="col-6">Nom</th>
-                <th class="col-2">Date d'échéance</th>
-                <th class="col-2">Équipe</th>
-                <th class="col-1 text-center">Complétion</th>
-                <th class="col-1 text-center">Supprimer</th>
-              </tr>
-            </thead>
-            <tbody>
-<?php
-    $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                  INNER JOIN Teams ON Milestones.team = Teams.id
-                  WHERE (completed = 0 AND project = :project) ORDER BY Milestones.due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
-    foreach($stmt as $row) {
-      if ($row['2'] < date('Y-m-d')) {
-?>
-              <tr class="d-flex table-danger">
-                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
-                      <span data-feather="x"></span>
-                    </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
-                  </form>
-                </td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
-                      <span data-feather="trash-2"></span>
-                    </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
-                  </form>
-                </td>
-              </tr>
-<?php
-    } else {
-?>
-              <tr class="d-flex">
-                <td class="col-6"><?= htmlspecialchars($row['1']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['2']) ?></td>
-                <td class="col-2"><?= htmlspecialchars($row['3']) ?></td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-danger" type="submit" name="milestone_completion">
-                      <span data-feather="x"></span>
-                    </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
-                  </form>
-                </td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
-                      <span data-feather="trash-2"></span>
-                    </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
-                  </form>
-                </td>
-              </tr>
-<?php
-      }
+  try {
+    $sql_query = 'SELECT id,
+                         name
+                  FROM   Projects
+                  WHERE  completed = 0
+                  ORDER  BY id ASC';
+    $projects = $connectedDB->prepare($sql_query);
+    $projects->execute();
+  } catch(PDOException $e) {
+    echo 'Error: ' . $e->getMessage();
+  }
+
+  foreach($projects as $project) {
+    try {
+      $sql_query = 'SELECT id
+                    FROM   Milestones
+                    WHERE  project = :project';
+      $milestones = $connectedDB->prepare($sql_query);
+      $milestones->execute([
+        ':project' => $project['id']
+      ]);
+    } catch(PDOException $e) {
+      echo 'Error: ' . $e->getMessage();
     }
-    $sql_query = 'SELECT Milestones.id, Milestones.name, Milestones.due_date, Teams.name FROM Milestones
-                  INNER JOIN Teams ON Milestones.team = Teams.id
-                  WHERE (completed = 1 AND project = :project) ORDER BY Milestones.due_date ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
-      ':project' => $project_row['id']
-    ]);
-    foreach($stmt as $row) {
+
+    if(!empty($milestones->fetch())) {
 ?>
-              <tr class="d-flex table-secondary text-muted">
-                <td class="col-6"><del><?= htmlspecialchars($row['1']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['2']) ?></del></td>
-                <td class="col-2"><del><?= htmlspecialchars($row['3']) ?></del></td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-success" type="submit" name="milestone_completion">
+          <div class="card my-4 border-0 shadow">
+            <div class="card-header bg-white">
+              <h3 class="h4"><?= htmlspecialchars($project['name']) ?></h3>
+            </div>
+            <div class="card-body">
+              <div class="m-2 p-3 bg-light rounded shadow-sm">
+<?php
+      try {
+        $sql_query = 'SELECT Milestones.id,
+                             Milestones.name,
+                             Milestones.due_date,
+                             Teams.name AS team
+                      FROM   Milestones
+                      INNER  JOIN Teams
+                               ON Milestones.team = Teams.id
+                      WHERE  completed = 0 AND project = :project
+                      ORDER  BY Milestones.due_date ASC';
+        $milestones = $connectedDB->prepare($sql_query);
+        $milestones->execute([
+          ':project' => $project['id']
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
+      foreach($milestones as $milestone) {
+        if ($milestone['due_date'] < date('Y-m-d')) {
+?>
+                <div class="media pt-3 border-bottom border-gray">
+                  <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Milestones">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form>
+                  <div class="media-body pb-3 mb-0 small lh-125">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      <strong class="text-danger"><?= htmlspecialchars($milestone['name']) ?></strong>
+                    </div>
+                    <span class="d-block text-danger"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
+                  </div>
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone">
+                      <span data-feather="edit"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form> -->
+                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form>
+                </div>
+<?php
+      } else {
+?>
+                <div class="media pt-3 border-bottom border-gray">
+                  <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-danger" type="submit" name="complete_item" value="Milestones">
+                      <span data-feather="x"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form>
+                  <div class="media-body pb-3 mb-0 small lh-125">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      <strong><?= htmlspecialchars($milestone['name']) ?></strong>
+                    </div>
+                    <span class="d-block"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
+                  </div>
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone">
+                      <span data-feather="edit"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form> -->
+                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
+                      <span data-feather="trash-2"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form>
+                </div>
+<?php
+        }
+      }
+
+      try {
+        $sql_query = 'SELECT Milestones.id,
+                             Milestones.name,
+                             Milestones.due_date,
+                             Teams.name AS team
+                      FROM   Milestones
+                      INNER  JOIN Teams
+                               ON Milestones.team = Teams.id
+                      WHERE  completed = 1 AND project = :project
+                      ORDER  BY Milestones.due_date ASC';
+        $milestones = $connectedDB->prepare($sql_query);
+        $milestones->execute([
+          ':project' => $project['id']
+        ]);
+      } catch(PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
+      }
+
+      foreach($milestones as $milestone) {
+?>
+                <div class="media text-muted pt-3 border-bottom border-gray">
+                  <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-success" type="submit" name="complete_item" value="Milestones">
                       <span data-feather="check"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
                   </form>
-                </td>
-                <td class="col-1 text-center">
-                  <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" name="delete_milestone">
+                  <div class="media-body pb-3 mb-0 small lh-125">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      <strong><del><?= htmlspecialchars($milestone['name']) ?></del></strong>
+                    </div>
+                    <span class="d-block"><strong><?= htmlspecialchars($milestone['team']) ?></strong> - <?= htmlspecialchars($milestone['due_date']) ?></span>
+                  </div>
+                  <!-- <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-secondary" type="submit" name="edit_milestone" disabled>
+                      <span data-feather="edit"></span>
+                    </button>
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
+                  </form> -->
+                  <form class="ml-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+                    <button class="btn btn-sm btn-square btn-outline-danger" type="submit" name="delete_item" value="Milestones">
                       <span data-feather="trash-2"></span>
                     </button>
-                    <input type="hidden" name="id" value="<?= $row['0'] ?>">
+                    <input type="hidden" name="id" value="<?= $milestone['id'] ?>">
                   </form>
-                </td>
-              </tr>
+                </div>
+<?php
+      }
+?>
+              </div>
+            </div>
+          </div>
 <?php
     }
-?>
-            </tbody>
-          </table>
-<?php
   }
+
   $connectedDB = null;
 ?>
         </div>
       </main>
 <!-- START INCLUDE FOOTER -->
 <?php
-include( VIEW_FOOTER );
+  include( VIEW_FOOTER );
 ?>
 <!-- END INCLUDE FOOTER -->
 </body>
