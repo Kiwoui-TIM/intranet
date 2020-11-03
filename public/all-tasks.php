@@ -203,7 +203,7 @@
                           ORDER  BY due_date ASC';
             $tasks = $connectedDB->prepare($sql_query);
             $tasks->execute([
-              ':student' => $_SESSION['id'],
+              ':student' => $student['id'],
               ':milestone' => $milestone['id']
             ]);
           } catch(PDOException $e) {
