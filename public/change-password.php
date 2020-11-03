@@ -52,13 +52,14 @@
   include( UTIL_CONNECT );
   try {
     $sql_query = 'SELECT account_type
-                  FROM Users
-                  WHERE username = :username LIMIT 1';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute([
+                  FROM   Users
+                  WHERE  username = :username
+                  LIMIT  1';
+    $users = $connectedDB->prepare($sql_query);
+    $users->execute([
       ':username' => $_SESSION['username']
     ]);
-    $user = $stmt->fetch();
+    $user = $users->fetch();
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
@@ -66,17 +67,17 @@
   if ($user['account_type'] == 0) {
     try {
       $sql_query = 'SELECT username
-                    FROM Users
-                    ORDER BY id ASC';
-      $stmt = $connectedDB->prepare($sql_query);
-      $stmt->execute();
+                    FROM   Users
+                    ORDER  BY id ASC';
+      $users = $connectedDB->prepare($sql_query);
+      $users->execute();
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
 
-    foreach($stmt as $row) {
+    foreach($users as $user) {
 ?>
-                    <option value="<?= htmlspecialchars($row['username']) ?>" <?= $row['username'] == $_SESSION['username'] ? 'selected' : null ?>><?= htmlspecialchars($row['username']) ?></option>
+                    <option value="<?= htmlspecialchars($user['username']) ?>" <?= $user['username'] == $_SESSION['username'] ? 'selected' : null ?>><?= htmlspecialchars($user['username']) ?></option>
 <?php
       $connectedDB = null;
     }

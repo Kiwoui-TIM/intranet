@@ -74,7 +74,7 @@
                            Projects.name AS project
                     FROM   Milestones
                     INNER  JOIN Projects
-                                ON Milestones.project = Projects.id
+                             ON Milestones.project = Projects.id
                     WHERE  Milestones.completed = 0 AND Projects.completed = 0
                     ORDER  BY Milestones.project, Milestones.id ASC';
       $milestones = $connectedDB->prepare($sql_query);
@@ -90,7 +90,7 @@
                            Projects.name AS project
                     FROM   Milestones
                     INNER  JOIN Projects
-                                ON Milestones.project = Projects.id
+                             ON Milestones.project = Projects.id
                     WHERE  Milestones.team = :team AND Milestones.completed = 0 AND Projects.completed = 0
                     ORDER  BY Milestones.project, Milestones.id ASC';
       $milestones = $connectedDB->prepare($sql_query);
@@ -126,9 +126,9 @@
                          Projects.name
                   FROM   Projects
                   LEFT   JOIN Milestones
-                              ON Milestones.project = Projects.id
+                           ON Milestones.project = Projects.id
                   LEFT   JOIN Tasks
-                              ON Tasks.milestone = Milestones.id
+                           ON Tasks.milestone = Milestones.id
                   WHERE  Projects.completed = 0 AND Tasks.student = :student
                   ORDER  BY Projects.id ASC';
     $projects = $connectedDB->prepare($sql_query);
@@ -154,7 +154,7 @@
                            Milestones.name
                     FROM   Milestones
                     LEFT   JOIN Tasks
-                                ON Tasks.milestone = Milestones.id
+                             ON Tasks.milestone = Milestones.id
                     WHERE  Milestones.project = :project AND Milestones.completed = 0 AND Tasks.student = :student
                     ORDER  BY Milestones.id ASC';
       $milestones = $connectedDB->prepare($sql_query);
@@ -176,8 +176,8 @@
                       FROM   Tasks
                       WHERE  completed = 0 AND student = :student AND milestone = :milestone
                       ORDER  BY due_date ASC';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
+        $tasks = $connectedDB->prepare($sql_query);
+        $tasks->execute([
           ':student' => $_SESSION['id'],
           ':milestone' => $milestone['id']
         ]);
@@ -185,7 +185,7 @@
         echo 'Error: ' . $e->getMessage();
       }
 
-      foreach($stmt as $task) {
+      foreach($tasks as $task) {
         if ($task['due_date'] < date('Y-m-d')) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
@@ -264,8 +264,8 @@
                       FROM   Tasks
                       WHERE  completed = 1 AND student = :student AND milestone = :milestone
                       ORDER  BY due_date ASC';
-        $stmt = $connectedDB->prepare($sql_query);
-        $stmt->execute([
+        $tasks = $connectedDB->prepare($sql_query);
+        $tasks->execute([
           ':student' => $_SESSION['id'],
           ':milestone' => $milestone['id']
         ]);
@@ -273,7 +273,7 @@
         echo 'Error: ' . $e->getMessage();
       }
 
-      foreach($stmt as $task) {
+      foreach($tasks as $task) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">

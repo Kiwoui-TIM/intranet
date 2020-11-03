@@ -166,9 +166,13 @@
                   <tbody>
 <?php
     try {
-      $sql_query = 'SELECT id, name, due_date, completed FROM Milestones
-                    WHERE project = :project
-                    ORDER BY due_date ASC';
+      $sql_query = 'SELECT id,
+                           name,
+                           due_date,
+                           completed
+                    FROM   Milestones
+                    WHERE  project = :project
+                    ORDER  BY due_date ASC';
       $stmt = $connectedDB->prepare($sql_query);
       $stmt->execute([
         ':project' => $project['id']

@@ -34,8 +34,9 @@
 
       // Supprimer l'item
       try {
-        $sql_query = "DELETE FROM $tbl
-                      WHERE       id = :id";
+        $sql_query = "DELETE
+                      FROM   $tbl
+                      WHERE  id = :id";
         $stmt = $connectedDB->prepare($sql_query);
         $stmt->execute([
           ':id' => $id

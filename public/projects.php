@@ -53,16 +53,16 @@
 
   try {
     $sql_query = 'SELECT id, username
-                  FROM Users
-                  WHERE account_type = 3
-                  ORDER BY id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute();
+                  FROM   Users
+                  WHERE  account_type = 3
+                  ORDER  BY id ASC';
+    $clients = $connectedDB->prepare($sql_query);
+    $clients->execute();
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
 
-  foreach($stmt as $client) {
+  foreach($clients as $client) {
 ?>
                       <option value="<?= htmlspecialchars($client['id']) ?>"><?= htmlspecialchars($client['username']) ?></option>
 <?php
@@ -89,16 +89,18 @@
                          Projects.name,
                          Projects.completed,
                          Users.username AS client
-                  FROM Projects
-                  INNER JOIN Users ON Projects.client = Users.id
-                  WHERE completed = 0 ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute();
+                  FROM   Projects
+                  INNER  JOIN Users
+                           ON Projects.client = Users.id
+                  WHERE  completed = 0
+                  ORDER  BY Projects.id ASC';
+    $projects = $connectedDB->prepare($sql_query);
+    $projects->execute();
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
 
-  foreach($stmt as $project) {
+  foreach($projects as $project) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
@@ -134,16 +136,18 @@
                          Projects.name,
                          Projects.completed,
                          Users.username AS client
-                  FROM Projects
-                  INNER JOIN Users ON Projects.client = Users.id
-                  WHERE completed = 1 ORDER BY Projects.id ASC';
-    $stmt = $connectedDB->prepare($sql_query);
-    $stmt->execute();
+                  FROM   Projects
+                  INNER  JOIN Users
+                           ON Projects.client = Users.id
+                  WHERE  completed = 1
+                  ORDER  BY Projects.id ASC';
+    $projects = $connectedDB->prepare($sql_query);
+    $projects->execute();
   } catch(PDOException $e) {
     echo 'Error: ' . $e->getMessage();
   }
 
-  foreach($stmt as $project) {
+  foreach($projects as $project) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
                   <form class="mr-2" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
