@@ -129,7 +129,7 @@
                            ON Milestones.project = Projects.id
                   LEFT   JOIN Tasks
                            ON Tasks.milestone = Milestones.id
-                  WHERE  Projects.completed = 0 AND Tasks.student = :student
+                  WHERE  Projects.completed = 0 AND Milestones.completed = 0 AND Tasks.student = :student
                   ORDER  BY Projects.id ASC';
     $projects = $connectedDB->prepare($sql_query);
     $projects->execute([
