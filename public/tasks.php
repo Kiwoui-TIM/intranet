@@ -51,6 +51,7 @@
                   <select class="custom-select" name="milestone" id="milestone" required>
                     <option value="" disabled selected>Choisir un jalon...</option>
 <?php
+  // Se connecte à la base de données et récupère le niveau d'accès de l'utilisateur
   include( UTIL_CONNECT );
 
   try {
@@ -67,6 +68,7 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Si l'utilisateur est un admin, récupère tous les jalons, sans exception
   if ($user['account_type'] == 0) {
     try {
       $sql_query = 'SELECT Milestones.id,
@@ -83,6 +85,7 @@
       echo 'Error: ' . $e->getMessage();
     }
 
+  // Si l'utilisateur n'est pas un admin, récupère les jalons liés à son équipe
   } else {
     try {
       $sql_query = 'SELECT Milestones.id,
@@ -119,7 +122,7 @@
           </div>
 <?php
 
-  // Project querying
+  // Récupère les projets où l'étudiant a créé au moins une tâche
   try {
     $sql_query = 'SELECT DISTINCT
                          Projects.id,
@@ -139,6 +142,7 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Pour chaque projet récupéré précédement, crée une carte
   foreach($projects as $project) {
 ?>
           <div class="card my-4 border-0 shadow">
@@ -147,7 +151,7 @@
             </div>
             <div class="card-body">
 <?php
-    // Milestone querying
+    // Récupère les jalons où l'étudiant a créé au moins une tâche
     try {
       $sql_query = 'SELECT DISTINCT
                            Milestones.id,
@@ -166,11 +170,13 @@
       echo 'Error: ' . $e->getMessage();
     }
 
+    // Pour chaque jalon récupéré, crée une section
     foreach ($milestones as $milestone) {
 ?>
               <div class="m-2 p-3 bg-light rounded shadow-sm">
                 <h4 class="h5 border-bottom border-gray pb-2 mb-0"><?= htmlspecialchars($milestone['name']) ?></h4>
 <?php
+      // Récupère les tâches non complétées associées au jalon de la section courante
       try {
         $sql_query = 'SELECT *
                       FROM   Tasks
@@ -185,7 +191,9 @@
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Pour chaque tâche, les affiche dans une rangée
       foreach($tasks as $task) {
+        // Si la date d'échéance est passée, l'afficher en rouge
         if ($task['due_date'] < date('Y-m-d')) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
@@ -259,6 +267,7 @@
         }
       }
 
+      // Récupère les tâches complétées associées au jalon de la section courante
       try {
         $sql_query = 'SELECT *
                       FROM   Tasks
@@ -273,6 +282,7 @@
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Pour chaque tâche, les affiche dans une rangée
       foreach($tasks as $task) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
@@ -319,6 +329,7 @@
 <?php
   }
 
+  // Ferme la connexion à la base de données
   $connectedDB = null;
 ?>
         </div>

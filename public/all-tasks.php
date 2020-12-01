@@ -42,6 +42,7 @@
                   <select class="custom-select" name="project" id="project" required>
                     <option value="" disabled <?= empty($_GET['project']) ? 'selected' : null ?>>Choisir un projet...</option>
 <?php
+  // Se connecte à la base de données et récupère tous les projets
   include( UTIL_CONNECT );
 
   try {
@@ -71,8 +72,8 @@
             </div>
           </div>
 <?php
+  // Si la chaîne de requête contient un projet, le récuperer dans la base de données
   if (!empty($_GET['project'])) {
-    // Project querying
     try {
       $sql_query = 'SELECT id,
                            name,
@@ -88,6 +89,8 @@
     } catch(PDOException $e) {
       echo 'Error: ' . $e->getMessage();
     }
+
+    // Affiche le projet en carte
 ?>
           <div class="card my-4 border-0 shadow">
             <div class="card-header bg-white">
@@ -98,8 +101,10 @@
             </div>
             <div class="card-body">
 <?php
-    // Milestone querying
+    // Par défaut, assume qu'aucune tâche existe
     $task_exists = false;
+
+    // Récupère les jalons associés au projets
     try {
       $sql_query = 'SELECT id,
                            name,
@@ -115,6 +120,7 @@
       echo 'Error: ' . $e->getMessage();
     }
 
+    // Affiche les jalons en section
     foreach ($milestones as $milestone) {
 ?>
               <div class="m-2 p-3 bg-light rounded shadow-sm">
@@ -123,6 +129,7 @@
                   <?= $milestone['completed'] == 1 ? '<span class="badge badge-success">Complété</span>' : '<span class="badge badge-danger">Incomplet</span>' ?>
                 </h4>
 <?php
+      // Récupère tous les étudiants
       try {
         $sql_query = 'SELECT *
                       FROM   Users
@@ -133,6 +140,7 @@
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Pour chaque étudiant, récupère les id des tâches associés au jalon de la section
       foreach ($students as $student) {
         try {
           $sql_query = 'SELECT id
@@ -147,6 +155,7 @@
           echo 'Error: ' . $e->getMessage();
         }
 
+        // Si une tâche est présente, affiche les tâches
         if(!empty($tasks->fetch())) {
           $task_exists = true;
 ?>
@@ -156,6 +165,7 @@
                   </h5>
 <?php
 
+          // Pour chaque étudiant, récupère les tâches non complétées associés au jalon de la section
           try {
             $sql_query = 'SELECT *
                           FROM   Tasks
@@ -170,7 +180,9 @@
             echo 'Error: ' . $e->getMessage();
           }
 
+          // Pour chaque tâche, les affiche dans une rangée
           foreach($tasks as $task) {
+            // Si la date d'échéance est passée, l'afficher en rouge
             if ($task['due_date'] < date('Y-m-d')) {
 ?>
                   <div class="media pt-3 border-bottom border-gray">
@@ -196,6 +208,7 @@
             }
           }
 
+          // Pour chaque étudiant, récupère les tâches complétées associés au jalon de la section
           try {
             $sql_query = 'SELECT *
                           FROM   Tasks
@@ -210,6 +223,7 @@
             echo 'Error: ' . $e->getMessage();
           }
 
+          // Pour chaque tâche, les affiche dans une rangée
           foreach($tasks as $task) {
 ?>
                   <div class="media text-muted pt-3 border-bottom border-gray">
@@ -227,6 +241,8 @@
 <?php
         }
       }
+
+      // Si aucune tâche n'existe, affiche "Aucune tâche trouvée"
       if (!$task_exists) {
 ?>
                 <h5 class="h6 m-2">
@@ -245,6 +261,7 @@
 <?php
   }
 
+  // Ferme la connexion à la base de données
   $connectedDB = null;
 ?>
         </div>

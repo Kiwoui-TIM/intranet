@@ -48,20 +48,24 @@
             <div class="card-body">
               <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
                 <div class="row">
+                  <!-- Informations de connexion de l'utilsateur -->
                   <div class="col-md-8">
                     <div class="form-group">
                       <label class="h6" for="username">Nom d'utilisateur</label>
                       <input class="form-control" type="text" id="username" name="username" aria-describedby="usernameHelp" required autofocus>
+                      <!-- Si le nom d'utilisateur a une erreur, afficher en rouge, sinon en gris -->
                       <small class="form-text <?= $error['username'] ? 'text-danger' : 'text-muted' ?>" id="usernameHelp">Peut seulement contenir des lettres sans accents et des chiffres.</small>
                     </div>
                     <div class="form-group">
                       <label class="h6" for="password">Mot de passe</label>
                       <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
+                      <!-- Si le mot de passe a une erreur, afficher en rouge, sinon en gris -->
                       <small class="form-text <?= $error['password'] ? 'text-danger' : 'text-muted' ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
                     </div>
                     <div class="form-group mb-0">
                       <label class="h6" for="confirm-password">Confirmer le mot de passe</label>
                       <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
+                      <!-- Si le mot de passe ne correspond pas, afficher en rouge, sinon ne pas afficher -->
                       <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
                     </div>
                     <div class="form-group">
@@ -71,7 +75,10 @@
                       </div>
                     </div>
                   </div>
+
+                  <!-- Informations sur le compte -->
                   <div class="col-md-4">
+                    <!-- Type de compte -->
                     <fieldset class="form-group">
                       <legend class="h6">Type de compte</legend>
                       <div class="form-check">
@@ -91,6 +98,8 @@
                         <label class="form-check-label" for="client">Client</label>
                       </div>
                     </fieldset>
+
+                    <!-- Équipe -->
                     <fieldset class="form-group">
                       <legend class="h6">Équipe</legend>
                       <div class="form-check">
@@ -120,6 +129,7 @@
                     </fieldset>
                   </div>
                 </div>
+                <!-- Si une erreur générique est présente, l'afficher -->
                 <small class="text-danger"><?= $error['generic'] ?>&nbsp;</small>
                 <button class="btn btn-lg btn-outline-primary btn-block" type="submit" name="create_user">Créer le compte</button>
               </form>
@@ -133,12 +143,13 @@
 ?>
 <!-- END INCLUDE FOOTER -->
   <script>
-    document.querySelector('#show-password').addEventListener('click', toggleViewPassword);
+    // Permet d'afficher les mots de passe en cochant la case
     const passwordField = document.querySelector('#password');
     const confirmPasswordField = document.querySelector('#confirm-password');
+    document.querySelector('#show-password').addEventListener('click', toggleViewPassword);
 
-    function toggleViewPassword(e) {
-      const checkbox = e.target;
+    function toggleViewPassword(event) {
+      const checkbox = event.target;
       if (checkbox.checked) {
         passwordField.setAttribute('type', 'text');
         confirmPasswordField.setAttribute('type', 'text');

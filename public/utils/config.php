@@ -1,19 +1,23 @@
 <?php
+  // Constantes pour les fichiers réutilisés tels que le header et la navigation
   define('DIR_VIEWS',         'views/');
   define('VIEW_META',         DIR_VIEWS . 'meta.php');
   define('VIEW_HEADER',       DIR_VIEWS . 'header.php');
   define('VIEW_NAVIGATION',   DIR_VIEWS . 'navigation.php');
   define('VIEW_FOOTER',       DIR_VIEWS . 'footer.php');
 
+  // Constantes pour les fichiers réutilisés tels que le header et la navigation
   define('DIR_UTILS',         'utils/');
   define('UTIL_CONNECT',      DIR_UTILS . 'connect.php');
   define('UTIL_LOGOUT',       'logout.php');
 
+  // Constantes pour les règles d'accès
   define('DIR_ACCESS',        'access/');
-  define('ACCESS_ADMIN_ONLY', DIR_UTILS . DIR_ACCESS . 'admin.php');
+  define('ACCESS_ADMIN_ONLY', DIR_UTILS . DIR_ACCESS . 'admin_only.php');
   define('ACCESS_NO_STUDENT', DIR_UTILS . DIR_ACCESS . 'no_student.php');
   define('ACCESS_NO_CLIENT',  DIR_UTILS . DIR_ACCESS . 'no_client.php');
 
+  // Constantes pour les fonctions utilisés dans divers fichiers
   define('DIR_FUNCTIONS',     'functions/');
   define('FUNCTION_CREATE',   DIR_UTILS . DIR_FUNCTIONS . 'create_item.php');
   define('FUNCTION_DELETE',   DIR_UTILS . DIR_FUNCTIONS . 'delete_item.php');
@@ -23,6 +27,8 @@
   define('FUNCTION_NEW_PWD',  DIR_UTILS . DIR_FUNCTIONS . 'change_password.php');
   define('FUNCTION_LOGIN',    DIR_UTILS . DIR_FUNCTIONS . 'login.php');
 
+  // Constantes pour les titres des pages. Permet de facilement les changer
+  // et aussi de vérifier quelle page est active dans views/navigation.php
   define('HOME_TITLE',        'Tableau de bord');
   define('TASKS_TITLE',       'Liste des tâches');
   define('MILESTONES_TITLE',  'Liste des jalons');
