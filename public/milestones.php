@@ -49,6 +49,7 @@
                   <select class="custom-select" name="project" id="project" required>
                     <option value="" disabled selected>Choisir un projet...</option>
 <?php
+  // Se connecte à la base de données et récupère les projets
   include( UTIL_CONNECT );
 
   try {
@@ -85,6 +86,7 @@
             </div>
           </div>
 <?php
+  // Récupère les projets non complétés
   try {
     $sql_query = 'SELECT id,
                          name
@@ -97,6 +99,8 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Pour chaque projet, récupère les jalons et si un jalon existe, affiche
+  // le projet dans une carte
   foreach($projects as $project) {
     try {
       $sql_query = 'SELECT id
@@ -119,6 +123,7 @@
             <div class="card-body">
               <div class="m-2 p-3 bg-light rounded shadow-sm">
 <?php
+      // Récupère les jalons non complétées associées au projet de la carte courante
       try {
         $sql_query = 'SELECT Milestones.id,
                              Milestones.name,
@@ -137,7 +142,9 @@
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Pour chaque jalon, les affiche dans une rangée
       foreach($milestones as $milestone) {
+        // Si la date d'échéance est passée, l'afficher en rouge
         if ($milestone['due_date'] < date('Y-m-d')) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
@@ -199,6 +206,7 @@
         }
       }
 
+      // Récupère les jalons complétées associées au projet de la carte courante
       try {
         $sql_query = 'SELECT Milestones.id,
                              Milestones.name,
@@ -217,6 +225,7 @@
         echo 'Error: ' . $e->getMessage();
       }
 
+      // Pour chaque jalon, les affiche dans une rangée
       foreach($milestones as $milestone) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
@@ -255,6 +264,7 @@
     }
   }
 
+  // Ferme la connexion à la base de données
   $connectedDB = null;
 ?>
         </div>

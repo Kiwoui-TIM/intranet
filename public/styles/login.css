@@ -1,3 +1,4 @@
+/* Restreint la largeur du formulaire */
 .form-signin {
   width: 100%;
   max-width: 330px;
@@ -12,10 +13,13 @@
   font-size: 16px;
 }
 
+/* L'input qui sera en focus sera plus élevé */
 .form-signin .form-control:focus {
   z-index: 2;
 }
 
+/* Superpose le username et le password et enlève les coins ronds pour
+   les coins au centre du form */
 .form-signin input[name="username"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;

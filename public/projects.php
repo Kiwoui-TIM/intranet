@@ -49,6 +49,7 @@
                   <select class="custom-select" name="client" id="client" required>
                     <option value="" disabled selected>Choisir un client...</option>
 <?php
+  // Se connecte à la base de données et récupère les clients
   include( UTIL_CONNECT );
 
   try {
@@ -84,6 +85,7 @@
             <div class="card-body">
               <div class="m-2 p-3 bg-light rounded shadow-sm">
 <?php
+  // Récupère les projets non complétés
   try {
     $sql_query = 'SELECT Projects.id,
                          Projects.name,
@@ -100,6 +102,7 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Affiche chaque projet dans une carte
   foreach($projects as $project) {
 ?>
                 <div class="media pt-3 border-bottom border-gray">
@@ -131,6 +134,7 @@
 <?php
   }
 
+  // Récupère les projets complétés
   try {
     $sql_query = 'SELECT Projects.id,
                          Projects.name,
@@ -147,6 +151,7 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Affiche chaque projet dans une carte
   foreach($projects as $project) {
 ?>
                 <div class="media text-muted pt-3 border-bottom border-gray">
@@ -178,6 +183,7 @@
 <?php
   }
 
+  // Ferme la connexion à la base de données
   $connectedDB = null;
 ?>
               </div>

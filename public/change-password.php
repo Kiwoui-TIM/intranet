@@ -47,9 +47,12 @@
                 <div class="form-group">
                   <label class="h6" for="username">Nom d'utilisateur</label>
                   <select class="form-control" name="username" id="username" aria-describedby="usernameHelp" required>
+                    <!-- Sélection de l'utilisateur -->
                     <option value="" disabled>Sélectionner un utilisateur...</option>
 <?php
+  // Se connecte à la base de données et vérifie le type d'utilisateur
   include( UTIL_CONNECT );
+
   try {
     $sql_query = 'SELECT account_type
                   FROM   Users
@@ -64,6 +67,7 @@
     echo 'Error: ' . $e->getMessage();
   }
 
+  // Si l'utilisateur est un admin, peut modifier le mot de passe de n'importe quel utilisateur
   if ($user['account_type'] == 0) {
     try {
       $sql_query = 'SELECT username
@@ -81,6 +85,7 @@
 <?php
       $connectedDB = null;
     }
+  // Si l'utilisateur n'est pas un admin, peut seulement modifier son mot de passe
   } else {
 ?>
                     <option value="<?= htmlspecialchars($_SESSION['username']) ?>" selected><?= htmlspecialchars($_SESSION['username']) ?></option>
@@ -90,14 +95,17 @@
                     </select>
                     <small class="form-text text-muted" id="usernameHelp">Si vous n'êtes pas administrateur, vous ne verrez que vous.</small>
                   </div>
+                  <!-- Mots de passe -->
                   <div class="form-group">
                     <label class="h6" for="password">Mot de passe</label>
                     <input class="form-control" type="password" id="password" name="password" aria-describedby="passwordHelp" required>
+                    <!-- Si le mot de passe a une erreur, afficher en rouge, sinon en gris -->
                     <small class="form-text <?= $error['password'] ? 'text-danger' : 'text-muted' ?>" id="passwordHelp">Doit contenir : de 8 à 72 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.</small>
                   </div>
                   <div class="form-group mb-0">
                     <label class="h6" for="confirm-password">Confirmer le mot de passe</label>
                     <input class="form-control" type="password" id="confirm-password" name="confirm-password" aria-describedby="confirmPasswordHelp" required>
+                    <!-- Si le mot de passe ne correspond pas, afficher en rouge, sinon ne pas afficher -->
                     <small class="form-text text-danger" id="confirmPasswordHelp"><?= $error['confirmPassword'] ?>&nbsp;</small>
                   </div>
                   <div class="form-group">
@@ -119,12 +127,13 @@
 ?>
 <!-- END INCLUDE FOOTER -->
   <script>
-    document.querySelector('#show-password').addEventListener('click', toggleViewPassword);
+    // Permet d'afficher les mots de passe en cochant la case
     const passwordField = document.querySelector('#password');
     const confirmPasswordField = document.querySelector('#confirm-password');
+    document.querySelector('#show-password').addEventListener('click', toggleViewPassword);
 
-    function toggleViewPassword(e) {
-      const checkbox = e.target;
+    function toggleViewPassword(event) {
+      const checkbox = event.target;
       if (checkbox.checked) {
         passwordField.setAttribute('type', 'text');
         confirmPasswordField.setAttribute('type', 'text');
