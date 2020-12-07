@@ -3,8 +3,8 @@
 $ini = parse_ini_file('./utils/config/app.ini.php');
 $DB_host = $ini['db_host'];
 $DB_name = $ini['db_name'];
-$DB_user = $ini['db_name'];
-$DB_password = $ini['db_name'];
+$DB_user = $ini['db_username'];
+$DB_password = $ini['db_password'];
 
 try {
   // Tente de se connecter à la base de données avec le charset SQL en utilsant PDO
